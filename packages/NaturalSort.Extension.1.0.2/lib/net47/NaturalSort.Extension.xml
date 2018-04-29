@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NaturalSort.Extension</name>
+    </assembly>
+    <members>
+        <member name="T:NaturalSort.Extension.StringComparerNaturalSortExtension">
+            <summary>
+            Extension for <see cref="T:System.StringComparer"/> that adds support for natural sorting.
+            </summary>
+        </member>
+        <member name="M:NaturalSort.Extension.StringComparerNaturalSortExtension.WithNaturalSort(System.StringComparer)">
+            <summary>
+            Enhances string comparer with natural sorting functionality,
+            which allows it to sort numbers inside the strings as numbers, not as letters.
+            (e.g. "1", "2", "10" instead of "1", "10", "2")
+            </summary>
+            <param name="stringComparer">Used string comparer</param>
+            <returns>Returns comparer of strings that considers natural sorting.</returns>
+        </member>
+        <member name="F:NaturalSort.Extension.StringComparerNaturalSortExtension.NaturalSortComparer._stringComparer">
+            <summary>
+            String comparer used for comparing strings.
+            </summary>
+        </member>
+        <member name="F:NaturalSort.Extension.StringComparerNaturalSortExtension.NaturalSortComparer.NumberSequenceRegex">
+            <summary>
+            Regex to find sequences of numbers to split.
+            </summary>
+        </member>
+        <member name="M:NaturalSort.Extension.StringComparerNaturalSortExtension.NaturalSortComparer.Tokenize(System.String)">
+            <summary>
+            Splits inputs into tokens, where each token is either a number or a piece of string.
+            </summary>
+        </member>
+        <member name="M:NaturalSort.Extension.StringComparerNaturalSortExtension.NaturalSortComparer.ParseNumberOrZero(System.String)">
+            <summary>
+            Parses string as a number, or returns 0 otherwise.
+            </summary>
+        </member>
+        <member name="M:NaturalSort.Extension.StringComparerNaturalSortExtension.NaturalSortComparer.TokenCompare(System.String,System.String)">
+            <summary>
+            Compares two tokens.
+            </summary>
+        </member>
+    </members>
+</doc>
