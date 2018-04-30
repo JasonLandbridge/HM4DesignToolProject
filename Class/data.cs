@@ -28,11 +28,7 @@ namespace DataNameSpace
         private static Settings SettingsObject;
         private static Data DataObject;
         private static LevelOverview LevelOverviewObject;
-
-        public static GameValues GameValue = new GameValues();
-
-        //public static windowMain windowMainObject;
-        public static List<String> roomCategories = new List<String> { "Room 1", "Room 2", "Room 3", "Room 4", "Room 5", "Room 6" };
+        private static GameValues GameValueObject = new GameValues();
 
         public static Settings GetSettings
         {
@@ -68,6 +64,21 @@ namespace DataNameSpace
                 return LevelOverviewObject;
             }
         }
+        public static GameValues GetGameValues
+        {
+            get
+            {
+                if (GameValueObject == null)
+                {
+                    GameValueObject = new GameValues();
+                }
+
+                return GameValueObject;
+            }
+        }
+
+        public static List<String> roomCategories = new List<String> { "Room 1", "Room 2", "Room 3", "Room 4", "Room 5", "Room 6" };
+
 
         public static Double StringToDouble(String difficultyModifier = null)
         {
@@ -127,17 +138,27 @@ namespace DataNameSpace
     public class GameValues
     {
         // TODO Make sure to import the constant values from GSettings
-        public int difficultyModifierTreatmentsBased = 11;
-        public int startLevelDuration = 110000;
-        public int timeIncreasePerLevel = 4500;
+        private int difficultyModifierTreatmentsBased = 11;
+        private int startLevelDuration = 110000;
+        private int timeIncreasePerLevel = 4500;
 
-        public int initialTimeBetweenPatients = 11000;
-        public int decreaseTimeBetweenPatients = 250;
+        private int initialTimeBetweenPatients = 11000;
+        private int decreaseTimeBetweenPatients = 250;
 
-        public int initialTimePerTreatment = 6000;
-        public int decreaseTimePerTreatment = 250;
-        public int checkoutPerPatient = 2000;
-        public int treatmentMinimumTime = 1600;
+        private int initialTimePerTreatment = 6000;
+        private int decreaseTimePerTreatment = 250;
+        private int checkoutPerPatient = 2000;
+        private int treatmentMinimumTime = 1600;
+
+        public int DifficultyModifierTreatmentsBased { get => difficultyModifierTreatmentsBased; set => difficultyModifierTreatmentsBased = value; }
+        public int StartLevelDuration { get => startLevelDuration; set => startLevelDuration = value; }
+        public int TimeIncreasePerLevel { get => timeIncreasePerLevel; set => timeIncreasePerLevel = value; }
+        public int InitialTimeBetweenPatients { get => initialTimeBetweenPatients; set => initialTimeBetweenPatients = value; }
+        public int DecreaseTimeBetweenPatients { get => decreaseTimeBetweenPatients; set => decreaseTimeBetweenPatients = value; }
+        public int InitialTimePerTreatment { get => initialTimePerTreatment; set => initialTimePerTreatment = value; }
+        public int DecreaseTimePerTreatment { get => decreaseTimePerTreatment; set => decreaseTimePerTreatment = value; }
+        public int CheckoutPerPatient { get => checkoutPerPatient; set => checkoutPerPatient = value; }
+        public int TreatmentMinimumTime { get => treatmentMinimumTime; set => treatmentMinimumTime = value; }
 
         public GameValues()
         {
@@ -172,23 +193,23 @@ namespace DataNameSpace
 
         public Double TreatmentPerPatient(Double difficultyModifier)
         {
-            if (Math.Round(difficultyModifier / difficultyModifierTreatmentsBased, 2) + 1 > 3.5)
+            if (Math.Round(difficultyModifier / DifficultyModifierTreatmentsBased, 2) + 1 > 3.5)
             {
                 return 3.5;
             }
             else
             {
-                return Math.Round(difficultyModifier / difficultyModifierTreatmentsBased, 2) + 1;
+                return Math.Round(difficultyModifier / DifficultyModifierTreatmentsBased, 2) + 1;
             }
         }
 
         public Double TimePerTreatment(Double difficultyModifier)
         {
-            Double x = initialTimePerTreatment - difficultyModifier * decreaseTimePerTreatment;
+            Double x = InitialTimePerTreatment - difficultyModifier * DecreaseTimePerTreatment;
 
-            if (x < treatmentMinimumTime)
+            if (x < TreatmentMinimumTime)
             {
-                return treatmentMinimumTime;
+                return TreatmentMinimumTime;
             }
             else
             {
@@ -198,7 +219,7 @@ namespace DataNameSpace
 
         public Double MilliSecondsPerLevel(Double difficultyModifier)
         {
-            Double x = startLevelDuration + difficultyModifier * timeIncreasePerLevel;
+            Double x = StartLevelDuration + difficultyModifier * TimeIncreasePerLevel;
 
             if (x > 400000)
             {
@@ -218,14 +239,14 @@ namespace DataNameSpace
 
         public Double TimeBetweenPatients(Double difficultyModifier)
         {
-            return initialTimeBetweenPatients - difficultyModifier * decreaseTimeBetweenPatients;
+            return InitialTimeBetweenPatients - difficultyModifier * DecreaseTimeBetweenPatients;
         }
 
         public Double AverageEntryTimePerPatient(Double difficultyModifier)
         {
             Double x = TreatmentPerPatient(difficultyModifier) * TimePerTreatment(difficultyModifier);
             x += TimeBetweenPatients(difficultyModifier);
-            x += checkoutPerPatient;
+            x += CheckoutPerPatient;
 
             return x;
         }

@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using DataNameSpace;
 using NaturalSort.Extension;
-using NLua;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
