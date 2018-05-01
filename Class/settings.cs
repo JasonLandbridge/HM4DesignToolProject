@@ -73,7 +73,10 @@ namespace SettingsNamespace
                     //Loop over each treatment
                     foreach (Treatment treatmentRow in roomCategory.Value)
                     {
-                        treatmentList.Add(treatmentRow.TreatmentName, treatmentRow.ToString());
+                        if (treatmentRow != null && treatmentRow.TreatmentName != null) 
+                        {
+                            treatmentList.Add(treatmentRow.TreatmentName, treatmentRow.ToString());
+                        }
                     }
                     convertedDict.Add(roomCategory.Key, treatmentList);
                 }

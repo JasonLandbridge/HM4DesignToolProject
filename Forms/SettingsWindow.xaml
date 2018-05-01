@@ -163,11 +163,11 @@
 							</Grid.ColumnDefinitions>
 
 							<!-- Treatments DataGrid List -->
-							<DataGrid x:Name="treatmentDataGridView" ItemsSource="{Binding Path=TreatmentList, diag:PresentationTraceSources.TraceLevel=High}" Grid.Column="0" Grid.Row="0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" UseLayoutRounding="False" CanUserReorderColumns="False" CanUserResizeColumns="False" MinColumnWidth="75" ColumnHeaderHeight="30" Margin="5" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="Cell"  >
+							<DataGrid x:Name="treatmentDataGridView" ItemsSource="{Binding Path=TreatmentList}" Grid.Column="0" Grid.Row="0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" UseLayoutRounding="False" CanUserReorderColumns="False" CanUserResizeColumns="False" MinColumnWidth="75" ColumnHeaderHeight="30" Margin="5" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="Cell"  >
 								<DataGrid.Columns>
 									<DataGridCheckBoxColumn Binding="{x:Null}" Header="Select" MaxWidth="70" MinWidth="50"/>
-									<DataGridTextColumn Binding="{Binding TreatmentName, Mode=TwoWay, diag:PresentationTraceSources.TraceLevel=High}" Header="Treatment Name" MinWidth="50" Width="*"/>
-									<DataGridComboBoxColumn Header="Difficulty Unlocked" SelectedValueBinding="{x:Null}" SelectedItemBinding="{x:Null}" TextBinding="{x:Null}" Width="*"/>
+									<DataGridTextColumn Binding="{Binding TreatmentName, Mode=TwoWay}" Header="Treatment Name" MinWidth="50" Width="*"/>
+									<DataGridComboBoxColumn x:Name="difficultyUnlockedColumn" TextBinding="{Binding DifficultyUnlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, diag:PresentationTraceSources.TraceLevel=High}" SelectedItemBinding="{Binding Path=DifficultyUnlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Difficulty Unlocked" Width="*"/>
 									<mah:DataGridNumericUpDownColumn Binding="{Binding HeartsValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Hearts Value" Width="*"/>
 									<mah:DataGridNumericUpDownColumn Binding="{Binding Weight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Base Weight" Width="*" MaxWidth="80"/>
 									<DataGridCheckBoxColumn Binding="{Binding Gesture, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Gesture" Width="*" MaxWidth="60"/>

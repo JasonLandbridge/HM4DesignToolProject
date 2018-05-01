@@ -541,34 +541,34 @@ namespace DataNameSpace
         }
 
         #region Operators
-        public override bool Equals(Object obj)
-        {
-            return obj is Treatment && this == (Treatment)obj;
-        }
+        //public override bool Equals(Object obj)
+        //{
+        //    return obj is Treatment && this == (Treatment)obj;
+        //}
 
-        public override int GetHashCode()
-        {
-            var hashCode = 1917950600;
-            hashCode = hashCode * -1521134295 + base.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TreatmentName);
-            hashCode = hashCode * -1521134295 + DifficultyUnlocked.GetHashCode();
-            hashCode = hashCode * -1521134295 + HeartsValue.GetHashCode();
-            hashCode = hashCode * -1521134295 + Weight.GetHashCode();
-            hashCode = hashCode * -1521134295 + Gesture.GetHashCode();
-            hashCode = hashCode * -1521134295 + AlwaysLast.GetHashCode();
-            return hashCode;
-        }
+        //public override int GetHashCode()
+        //{
+        //    var hashCode = 1917950600;
+        //    hashCode = hashCode * -1521134295 + base.GetHashCode();
+        //    hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TreatmentName);
+        //    hashCode = hashCode * -1521134295 + DifficultyUnlocked.GetHashCode();
+        //    hashCode = hashCode * -1521134295 + HeartsValue.GetHashCode();
+        //    hashCode = hashCode * -1521134295 + Weight.GetHashCode();
+        //    hashCode = hashCode * -1521134295 + Gesture.GetHashCode();
+        //    hashCode = hashCode * -1521134295 + AlwaysLast.GetHashCode();
+        //    return hashCode;
+        //}
 
-        public static bool operator ==(Treatment x, Treatment y)
-        {
-            return x.TreatmentName == y.TreatmentName && x.DifficultyUnlocked == y.DifficultyUnlocked && x.HeartsValue == y.HeartsValue &&
-           x.Weight == y.Weight && x.Gesture == y.Gesture && x.AlwaysLast == y.AlwaysLast;
-        }
-        public static bool operator !=(Treatment x, Treatment y)
-        {
-            return !(x.TreatmentName == y.TreatmentName && x.DifficultyUnlocked == y.DifficultyUnlocked && x.HeartsValue == y.HeartsValue &&
-           x.Weight == y.Weight && x.Gesture == y.Gesture && x.AlwaysLast == y.AlwaysLast);
-        }
+        //public static bool operator ==(Treatment x, Treatment y)
+        //{
+        //    return x.TreatmentName == y.TreatmentName && x.DifficultyUnlocked == y.DifficultyUnlocked && x.HeartsValue == y.HeartsValue &&
+        //   x.Weight == y.Weight && x.Gesture == y.Gesture && x.AlwaysLast == y.AlwaysLast;
+        //}
+        //public static bool operator !=(Treatment x, Treatment y)
+        //{
+        //    return !(x.TreatmentName == y.TreatmentName && x.DifficultyUnlocked == y.DifficultyUnlocked && x.HeartsValue == y.HeartsValue &&
+        //   x.Weight == y.Weight && x.Gesture == y.Gesture && x.AlwaysLast == y.AlwaysLast);
+        //}
         #endregion
 
         #region Events

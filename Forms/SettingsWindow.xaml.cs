@@ -78,7 +78,7 @@ namespace UiWindows
         #region PatientTypeTabProperties
         private int lastLoadedPatientTypeCategoriesIndex = -1;
         private List<String> PatientTypeList = Globals.GetData.GetPatientTypesFromDisk();
-        private Dictionary<String, List<String>> patientTypeCategoriesDict = Globals.GetSettings.GetPatientTypes(); 
+        private Dictionary<String, List<String>> patientTypeCategoriesDict = Globals.GetSettings.GetPatientTypes();
         private Dictionary<String, CheckBox> PatientTypeCheckboxDict
         {
             get
@@ -115,6 +115,20 @@ namespace UiWindows
 
         #region TreatmentTabProperties
         private int lastLoadedTreatmentCategoriesIndex = -1;
+        private String SelectedTreatmentRoomCategoryKey
+        {
+            get
+            {
+                if (treatmentRoomList.Items.Count > 0)
+                {
+                    return treatmentRoomList.SelectedItem.ToString();
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+        }
         private Dictionary<String, List<Treatment>> treatmentCategoriesDict = Globals.GetSettings.GetTreatmentDictionary();
         private ObservableCollection<Treatment> LoadedTreatmentList = new ObservableCollection<Treatment> { };
         public ObservableCollection<Treatment> TreatmentList
@@ -130,6 +144,29 @@ namespace UiWindows
             }
 
         }
+        private ObservableCollection<String> treatmentDifficultyModifierList = new ObservableCollection<String> { };
+        public ObservableCollection<String> TreatmentDifficultyModifierList
+        {
+            get
+            {
+                //ObservableCollection<String> treatmentDifficultyModifierList = new ObservableCollection<String> { };
+                //if (balancingCategoriesDict.ContainsKey(SelectedTreatmentRoomCategoryKey))
+                //{
+                //    foreach (String treatmentDifficultyModifier in balancingCategoriesDict[SelectedTreatmentRoomCategoryKey])
+                //    {
+                //        treatmentDifficultyModifierList.Add(treatmentDifficultyModifier);
+                //    }
+                //}
+
+                return treatmentDifficultyModifierList;
+            }
+            set
+            {
+                OnPropertyChanged();
+                treatmentDifficultyModifierList = value;
+            }
+        }
+
         #endregion
 
         #region BalancingTabProperties
@@ -137,7 +174,8 @@ namespace UiWindows
         private Dictionary<String, List<String>> balancingCategoriesDict = Globals.GetSettings.GetBalancingCategories();  // Room[N] -> List with double difficulty Modifiers
 
         private ObservableCollection<String> LoadedDifficultyModifierList = new ObservableCollection<String> { };
-        public ObservableCollection<String> DifficultyModifierList {
+        public ObservableCollection<String> DifficultyModifierList
+        {
             get
             {
                 return LoadedDifficultyModifierList;
@@ -146,11 +184,13 @@ namespace UiWindows
             set
             {
                 LoadedDifficultyModifierList = value;
+                OnPropertyChanged("TreatmentDifficultyModifierList");
             }
         }
         public GameValues GlobalValues
         {
-            get{
+            get
+            {
                 return Globals.GetGameValues;
             }
         }
@@ -233,8 +273,9 @@ namespace UiWindows
             DataContext = this;
 
             SetupSettingsWindow();
-
             LoadSaveData();
+            SetupBinding();
+
         }
 
         private void SetupSettingsWindow()
@@ -278,7 +319,6 @@ namespace UiWindows
             //Set categories for the treatmentRoomList
             #region SetupTreatmentTab
             //set the itemssource
-            treatmentDataGridView.ItemsSource = this.TreatmentList;
             foreach (String roomName in Globals.roomCategories)
             {
                 treatmentRoomList.Items.Add(roomName);
@@ -306,6 +346,12 @@ namespace UiWindows
             #endregion
         }
 
+        private void SetupBinding()
+        {
+            treatmentDataGridView.ItemsSource = TreatmentList;
+            difficultyUnlockedColumn.ItemsSource = TreatmentDifficultyModifierList;
+
+        }
         private void LoadSaveData()
         {
             //Changing the index will automatically load the save data in the UI
@@ -331,7 +377,7 @@ namespace UiWindows
         }
 
         #region StoreData
-        
+
         private void StorePatientTypeCategory()
         {
             if (lastLoadedPatientTypeCategoriesIndex > -1)
@@ -386,7 +432,7 @@ namespace UiWindows
                 String categoryName = balancingRoomList.Items.GetItemAt(lastLoadedBalancingCategoriesIndex).ToString();
                 if (balancingCategoriesDict.ContainsKey(categoryName))
                 {
-                        balancingCategoriesDict[categoryName] = DifficultyModifierList.ToList();
+                    balancingCategoriesDict[categoryName] = DifficultyModifierList.ToList();
                 }
 
             }
@@ -409,23 +455,23 @@ namespace UiWindows
                 if (patientTypeCategoriesDict.ContainsKey(categoryKey))
                 {
                     List<String> loadedPatientTypeList = patientTypeCategoriesDict[categoryKey];
-                        foreach (KeyValuePair<String, CheckBox> patientType in PatientTypeCheckboxDict)
+                    foreach (KeyValuePair<String, CheckBox> patientType in PatientTypeCheckboxDict)
+                    {
+                        if (loadedPatientTypeList.Contains(patientType.Key))
                         {
-                            if (loadedPatientTypeList.Contains(patientType.Key))
-                            {
-                                patientType.Value.IsChecked = true;
-                            }
-                            else
-                            {
-                                patientType.Value.IsChecked = false;
-                            }
+                            patientType.Value.IsChecked = true;
                         }
+                        else
+                        {
+                            patientType.Value.IsChecked = false;
+                        }
+                    }
 
                     lastLoadedPatientTypeCategoriesIndex = patientTypeRoomList.SelectedIndex;
                 }
             }
         }
-        
+
         private void LoadTreatmentCategory(String categoryKey = null)
         {
             if (treatmentRoomList.SelectedIndex > -1)
@@ -441,11 +487,11 @@ namespace UiWindows
                     }
 
                     lastLoadedTreatmentCategoriesIndex = treatmentRoomList.SelectedIndex;
-
+                    UpdateTreatmentDifficultyModifierList();
                 }
             }
         }
-       
+
         private void LoadBalancingCategory(String CategoryKey = null)
         {
             if (balancingRoomList.SelectedIndex > -1 && CategoryKey != null && balancingCategoriesDict.ContainsKey(CategoryKey))
@@ -469,7 +515,7 @@ namespace UiWindows
                 }
             }
 
-        } 
+        }
 
         private void LoadDifficultyModifierData(String diffCategoryValue)
         {
@@ -477,6 +523,22 @@ namespace UiWindows
         }
         #endregion
 
+
+        private void UpdateTreatmentDifficultyModifierList()
+        {
+            ObservableCollection<String> treatmentDifficultyModifierList = new ObservableCollection<String> { };
+            if (balancingCategoriesDict.ContainsKey(SelectedTreatmentRoomCategoryKey))
+            {
+                foreach (String treatmentDifficultyModifier in balancingCategoriesDict[SelectedTreatmentRoomCategoryKey])
+                {
+                    treatmentDifficultyModifierList.Add(treatmentDifficultyModifier);
+                }
+                TreatmentDifficultyModifierList = treatmentDifficultyModifierList;
+                OnPropertyChanged("TreatmentDifficultyModifierList");
+                difficultyUnlockedColumn.ItemsSource = TreatmentDifficultyModifierList;
+
+            }
+        }
         #region Signals
 
         #region GeneralTabSignals
@@ -608,6 +670,7 @@ namespace UiWindows
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
 
         #endregion
 
