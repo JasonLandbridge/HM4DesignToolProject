@@ -8,6 +8,8 @@ using LevelData;
 using NaturalSort.Extension;
 using System.IO;
 using System.Windows.Media;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace DataNameSpace
 {
@@ -299,16 +301,18 @@ namespace DataNameSpace
 
     }
 
-    public struct Treatment
+    public class Treatment : INotifyPropertyChanged
     {
         private String _treatmentName;
-        private Double _difficultyUnlocked;
-        private int _heartsValue;
-        private int _weight;
-        private bool _gesture;
-        private bool _alwaysLast;
+        private Double _difficultyUnlocked = 0;
+        private int _heartsValue = 0;
+        private int _weight = 0;
+        private bool _gesture = false;
+        private bool _alwaysLast = false;
         //private Color _colorValue;
         private String _colorValueString;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public String TreatmentName
         {
@@ -388,6 +392,10 @@ namespace DataNameSpace
             }
         }
 
+        public Treatment(String treatmentName)
+        {
+
+        }
 
         public Treatment(String treatmentName = null, Double difficultyUnlocked = 0, int heartsValue = 0, int weight = 0, bool gesture = false, bool alwaysLast = false, Color color = new Color())
         {
@@ -562,6 +570,15 @@ namespace DataNameSpace
            x.Weight == y.Weight && x.Gesture == y.Gesture && x.AlwaysLast == y.AlwaysLast);
         }
         #endregion
+
+        #region Events
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
+
     }
 
 }

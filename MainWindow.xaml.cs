@@ -136,7 +136,8 @@ namespace HM4DesignTool
 
         private void menuItemSettings_Click(object sender, RoutedEventArgs e)
         {
-            new SettingsWindow().Show();
+            SettingsWindow dialog = new SettingsWindow();
+            Nullable<bool> dialogResult = dialog.ShowDialog();
         }
         #endregion
 

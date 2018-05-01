@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using DataNameSpace;
+using System.Linq;
 
 namespace UiWindows
 {
@@ -31,7 +32,7 @@ namespace UiWindows
     public partial class SettingsWindow : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-
+        #region GeneralTabProperties
         private String _projectDirectoryPathValue = Globals.GetSettings.projectPathData;
         public String ProjectDirectoryPathValue
         {
@@ -72,83 +73,69 @@ namespace UiWindows
                 return ProjectDirectoryPathValue + "\\images\\";
             }
         }
+        #endregion
 
-        //Patient Type Tab
-        private int lastLoadedPatientTypeCategoriesIndex = 0;
-        private Dictionary<String, List<String>> patientTypeCategoriesDict = Globals.GetSettings.GetPatientTypes();  // Room[N] -> List with only checked patientTypes
+        #region PatientTypeTabProperties
+        private int lastLoadedPatientTypeCategoriesIndex = -1;
+        private List<String> PatientTypeList = Globals.GetData.GetPatientTypesFromDisk();
+        private Dictionary<String, List<String>> patientTypeCategoriesDict = Globals.GetSettings.GetPatientTypes(); 
+        private Dictionary<String, CheckBox> PatientTypeCheckboxDict
+        {
+            get
+            {
+                Dictionary<String, CheckBox> patientTypeCheckboxDict = new Dictionary<String, CheckBox> { };
 
-        //Treatment Type Tab
-        private int lastLoadedTreatmentCategoriesIndex = 0;
+                foreach (ItemCollection checkList in new List<ItemCollection> { patientTypeMaleCheckList.Items, patientTypeFemaleCheckList.Items, patientTypeOtherCheckList.Items })
+                {
+                    foreach (CheckBox itemChecked in checkList)
+                    {
+                        patientTypeCheckboxDict.Add(itemChecked.Content.ToString(), itemChecked);
+                    }
+
+                }
+
+                return patientTypeCheckboxDict;
+
+            }
+        }
+        public String PatientListPreview
+        {
+            get
+            {
+                String text = String.Empty;
+                foreach (String patientType in PatientTypeList)
+                {
+                    text += patientType + Environment.NewLine;
+                }
+
+                return text;
+            }
+        }
+        #endregion
+
+        #region TreatmentTabProperties
+        private int lastLoadedTreatmentCategoriesIndex = -1;
         private Dictionary<String, List<Treatment>> treatmentCategoriesDict = Globals.GetSettings.GetTreatmentDictionary();
         private ObservableCollection<Treatment> LoadedTreatmentList = new ObservableCollection<Treatment> { };
         public ObservableCollection<Treatment> TreatmentList
         {
             get
             {
-                if (lastLoadedTreatmentCategoriesIndex > -1 && treatmentRoomList.Items.Count > 0)
-                {
-                    String categoryName = treatmentRoomList.Items[lastLoadedTreatmentCategoriesIndex].ToString();
-
-                    foreach (Treatment treatment in treatmentCategoriesDict[categoryName])
-                    {
-                        LoadedTreatmentList.Add(treatment);
-                    }
-                }
-
                 return LoadedTreatmentList;
             }
             set
             {
-                if (lastLoadedTreatmentCategoriesIndex > -1 && treatmentRoomList.Items.Count > 0)
-                {
-                    String categoryName = treatmentRoomList.Items[lastLoadedTreatmentCategoriesIndex].ToString();
-                    List < Treatment > treatmentList = new List<Treatment>{ };
-                    foreach (Treatment treatment in value)
-                    {
-                        treatmentList.Add(treatment);
-                    }
-
-
-                }
-
+                LoadedTreatmentList = value;
+                OnPropertyChanged();
             }
 
         }
+        #endregion
 
-
-        //Balancing Tab
-        private int lastLoadedBalancingCategoriesIndex = 0;
-        private String GetPreviousBalancingCategoryKey
-        {
-            get
-            {
-                if (lastLoadedBalancingCategoriesIndex < balancingRoomList.Items.Count)
-                {
-                    return balancingRoomList.Items[lastLoadedBalancingCategoriesIndex].ToString();
-                }
-                else
-                {
-                    return null;
-                }
-
-            }
-        }
-        private String GetCurrentBalancingCategoryKey
-        {
-            get
-            {
-                if (balancingRoomList.SelectedIndex > -1 && balancingRoomList.SelectedIndex < balancingRoomList.Items.Count)
-                {
-                   return balancingRoomList.Items[balancingRoomList.SelectedIndex].ToString();
-                }
-                else
-                {
-                    return balancingRoomList.Items[lastLoadedBalancingCategoriesIndex].ToString();
-                }
-
-            }
-        }
+        #region BalancingTabProperties
+        private int lastLoadedBalancingCategoriesIndex = -1;
         private Dictionary<String, List<String>> balancingCategoriesDict = Globals.GetSettings.GetBalancingCategories();  // Room[N] -> List with double difficulty Modifiers
+
         private ObservableCollection<String> LoadedDifficultyModifierList = new ObservableCollection<String> { };
         public ObservableCollection<String> DifficultyModifierList {
             get
@@ -167,90 +154,131 @@ namespace UiWindows
                 return Globals.GetGameValues;
             }
         }
-
+        private Double difficultyModifier = 0;
+        private Double LoadedDifficultyModifier
+        {
+            get
+            {
+                return difficultyModifier;
+            }
+            set
+            {
+                difficultyModifier = value;
+                OnPropertyChanged("AverageEntryTimePerPatient");
+                OnPropertyChanged("TimeBetweenPatients");
+                OnPropertyChanged("NumberOfPatients");
+                OnPropertyChanged("TreatmentPerPatient");
+                OnPropertyChanged("TimePerTreatment");
+                OnPropertyChanged("MilliSecondsPerLevel");
+                OnPropertyChanged("MinutesPerLevel");
+            }
+        }
         public Double AverageEntryTimePerPatient
         {
             get
             {
-                Double difficultyModifier = 0;
-                return GlobalValues.AverageEntryTimePerPatient(difficultyModifier);
+                return GlobalValues.AverageEntryTimePerPatient(LoadedDifficultyModifier);
             }
         }
         public Double TimeBetweenPatients
         {
             get
             {
-                Double difficultyModifier = 0;
-                return GlobalValues.TimeBetweenPatients(difficultyModifier);
+                return GlobalValues.TimeBetweenPatients(LoadedDifficultyModifier);
             }
         }
         public Double NumberOfPatients
         {
             get
             {
-                Double difficultyModifier = 0;
-                return GlobalValues.NumberOfPatients(difficultyModifier);
+                return GlobalValues.NumberOfPatients(LoadedDifficultyModifier);
             }
         }
         public Double TreatmentPerPatient
         {
             get
             {
-                Double difficultyModifier = 0;
-                return GlobalValues.TreatmentPerPatient(difficultyModifier);
+                return GlobalValues.TreatmentPerPatient(LoadedDifficultyModifier);
             }
         }
         public Double TimePerTreatment
         {
             get
             {
-                Double difficultyModifier = 0;
-                return GlobalValues.TimePerTreatment(difficultyModifier);
+                return GlobalValues.TimePerTreatment(LoadedDifficultyModifier);
             }
         }
         public Double MilliSecondsPerLevel
         {
             get
             {
-                Double difficultyModifier = 0;
-                return GlobalValues.MilliSecondsPerLevel(difficultyModifier);
+                return GlobalValues.MilliSecondsPerLevel(LoadedDifficultyModifier);
             }
         }
         public Double MinutesPerLevel
         {
             get
             {
-                Double difficultyModifier = 0;
-                return GlobalValues.MinutesPerLevel(difficultyModifier);
+                return GlobalValues.MinutesPerLevel(LoadedDifficultyModifier);
             }
         }
 
+        #endregion
 
 
         public SettingsWindow()
         {
             InitializeComponent();
+
             DataContext = this;
 
             SetupSettingsWindow();
-            //treatmentDataGridView.ItemsSource = null;
-            //treatmentDataGridView.ItemsSource = TreatmentList; //Preferably do this somewhere else, not in the add method.
-            //treatmentDataGridView.Items.Refresh();
 
-            //add items
-            TreatmentList.Add(new Treatment("test1", 5, 10, 20, false, true));
-            TreatmentList.Add(new Treatment("test2", 5, 15, 10, true, false));
-            TreatmentList.Add(new Treatment("test3", 5, 10, 30, false, true));
-
-            //set the itemssource
-            treatmentDataGridView.ItemsSource = this.TreatmentList;
+            LoadSaveData();
         }
 
         private void SetupSettingsWindow()
         {
+
+            //Set categories for the patientTypeRoomList
+            #region SetupPatientTypeTab
+            foreach (String roomName in Globals.roomCategories)
+            {
+                patientTypeRoomList.Items.Add(roomName);
+
+                if (!patientTypeCategoriesDict.ContainsKey(roomName))
+                {
+                    patientTypeCategoriesDict.Add(roomName, new List<String> { });
+                }
+
+            }
+            // Sort and create all checkboxes for the different groups
+            foreach (String patientType in PatientTypeList)
+            {
+                CheckBox checkBox = new CheckBox();
+                checkBox.Content = patientType;
+                checkBox.IsChecked = false;
+                if (patientType.Contains("_male"))
+                {
+                    patientTypeMaleCheckList.Items.Add(checkBox);
+                }
+                else if (patientType.Contains("_female"))
+                {
+                    patientTypeFemaleCheckList.Items.Add(checkBox);
+                }
+                else
+                {
+                    patientTypeOtherCheckList.Items.Add(checkBox);
+                }
+
+            }
+
+            #endregion
+
             //Set categories for the treatmentRoomList
             #region SetupTreatmentTab
-            treatmentRoomList.Items.Clear();
+            //set the itemssource
+            treatmentDataGridView.ItemsSource = this.TreatmentList;
             foreach (String roomName in Globals.roomCategories)
             {
                 treatmentRoomList.Items.Add(roomName);
@@ -261,11 +289,10 @@ namespace UiWindows
                 }
 
             }
-            treatmentRoomList.SelectedIndex = 0;
             #endregion
 
+            //Set categories for the balancingRoomList
             #region SetupBalancingTab
-            balancingRoomList.Items.Clear();
             foreach (String roomName in Globals.roomCategories)
             {
                 balancingRoomList.Items.Add(roomName);
@@ -276,167 +303,183 @@ namespace UiWindows
                 }
 
             }
-            balancingRoomList.SelectedIndex = 0;
             #endregion
+        }
 
+        private void LoadSaveData()
+        {
+            //Changing the index will automatically load the save data in the UI
+            patientTypeRoomList.SelectedIndex = 0;
+            treatmentRoomList.SelectedIndex = 0;
+            balancingRoomList.SelectedIndex = 0;
         }
 
         private void SendSaveData()
         {   //Connect all the stored settings in this window with the SettingsObject
             Globals.GetSettings.projectPathData = ProjectDirectoryPathValue;
 
+            StorePatientTypeCategory();
+            Globals.GetSettings.SetPatientTypes(patientTypeCategoriesDict);
+
+            StoreTreatmentCategory();
+            Globals.GetSettings.SetTreatmentCategories(treatmentCategoriesDict);
+
+            StoreBalancingCategory();
             Globals.GetSettings.SetBalancingCategories(balancingCategoriesDict);
 
             Globals.GetSettings.SaveSettings();
         }
 
         #region StoreData
-        /*
+        
         private void StorePatientTypeCategory()
         {
-            String categoryKey = patientTypeRoomList.Items[lastLoadedPatientTypeCategoriesIndex].ToString();
-            List<String> checkedPatientTypes = new List<String> { };
-
-
-            foreach (CheckedListBox checkList in new List<CheckedListBox> { patientTypeMaleCheckList, patientTypeFemaleCheckList, patientTypeOtherCheckList })
+            if (lastLoadedPatientTypeCategoriesIndex > -1)
             {
-                foreach (object itemChecked in checkList.CheckedItems)
+                String categoryKey = patientTypeRoomList.Items[lastLoadedPatientTypeCategoriesIndex].ToString();
+
+                if (patientTypeCategoriesDict.ContainsKey(categoryKey))
                 {
-                    checkedPatientTypes.Add(itemChecked.ToString());
+                    List<String> checkedPatientTypes = new List<String> { };
+
+                    foreach (KeyValuePair<String, CheckBox> patientType in PatientTypeCheckboxDict)
+                    {
+                        if ((bool)patientType.Value.IsChecked)
+                        {
+                            checkedPatientTypes.Add(patientType.Key);
+                        }
+                    }
+
+                    patientTypeCategoriesDict[categoryKey] = checkedPatientTypes;
+
+                }
+                else
+                {
+                    Console.WriteLine("ERROR: windowSettings.StorePatientTypeCategory, patientTypeCategoriesDict does not contain key: " + categoryKey);
                 }
 
-            }
-
-            if (patientTypeCategoriesDict.ContainsKey(categoryKey))
-            {
-                patientTypeCategoriesDict[categoryKey] = checkedPatientTypes;
-            }
-            else
-            {
-                Console.WriteLine("ERROR: windowSettings.StorePatientTypeCategory, patientTypeCategoriesDict does not contain key: " + categoryKey);
             }
         }
 
         private void StoreTreatmentCategory()
         {
-            String categoryKey = treatmentRoomList.Items[lastLoadedTreatmentCategoriesIndex].ToString();
-            List<Treatment> treatmentDataRows = new List<Treatment> { };
-
-            foreach (DataGridViewRow Datarow in treatmentDataGridView.Rows)
+            if (lastLoadedTreatmentCategoriesIndex > -1)
             {
-                //Check if TreatmentName has been filled in otherwise discard
-                if (Datarow.Cells[1].Value != null && Datarow.Cells[1].Value.ToString() != "")
+                String categoryName = treatmentRoomList.Items.GetItemAt(lastLoadedTreatmentCategoriesIndex).ToString();
+                if (treatmentCategoriesDict.ContainsKey(categoryName))
                 {
-                    treatmentDataRows.Add(new Treatment(Datarow));
+                    treatmentCategoriesDict[categoryName] = TreatmentList.ToList();
                 }
+
+            }
+            else
+            {
+                Console.WriteLine("ERROR: settingsWindowStoreTreatmentCategory, lastLoadedTreatmentCategoriesIndex is -1!");
             }
 
-            treatmentCategoriesDict[categoryKey] = treatmentDataRows;
         }
-         */
+
         private void StoreBalancingCategory()
         {
-            if (GetPreviousBalancingCategoryKey != null)
+            if (lastLoadedBalancingCategoriesIndex > -1)
             {
-                List<String> difficultyModifiers = new List<String> { };
-                if (balancingCategoriesDict.ContainsKey(GetPreviousBalancingCategoryKey))
+                String categoryName = balancingRoomList.Items.GetItemAt(lastLoadedBalancingCategoriesIndex).ToString();
+                if (balancingCategoriesDict.ContainsKey(categoryName))
                 {
-
-                    foreach (String difficultyModifier in DifficultyModifierList)
-                    {
-                        difficultyModifiers.Add(difficultyModifier);
-                    }
-
-                    if (balancingCategoriesDict.ContainsKey(GetPreviousBalancingCategoryKey))
-                    {
-                        balancingCategoriesDict[GetPreviousBalancingCategoryKey] = difficultyModifiers;
-                    }
-                    
+                        balancingCategoriesDict[categoryName] = DifficultyModifierList.ToList();
                 }
-                else
-                {
-                    Console.WriteLine("ERROR: settingsWindow.StoreBalancingCategory, balancingCategoriesDict does not contain key: " + GetPreviousBalancingCategoryKey);
-                }
+
+            }
+            else
+            {
+                Console.WriteLine("ERROR: settingsWindow.StoreBalancingCategory, lastLoadedBalancingCategoriesIndex is -1!");
             }
 
+
         }
-      
+
         #endregion
 
         #region LoadData
-        /*
-        private void LoadPatientTypeCategory()
+        private void LoadPatientTypeCategory(String categoryKey = null)
         {
             if (patientTypeRoomList.SelectedIndex > -1)
             {
-                String categoryKey = patientTypeRoomList.Items[patientTypeRoomList.SelectedIndex].ToString();
-                List<String> patientTypeList = patientTypeCategoriesDict[categoryKey];
-                foreach (CheckedListBox checkList in new List<CheckedListBox> { patientTypeMaleCheckList, patientTypeFemaleCheckList, patientTypeOtherCheckList })
+
+                if (patientTypeCategoriesDict.ContainsKey(categoryKey))
                 {
-                    for (int i = 0; i < checkList.Items.Count; i++)
-                    {
-                        //Check if the patientType occurs
-                        checkList.SetItemChecked(i, patientTypeList.Contains(checkList.Items[i].ToString()));
-                    }
+                    List<String> loadedPatientTypeList = patientTypeCategoriesDict[categoryKey];
+                        foreach (KeyValuePair<String, CheckBox> patientType in PatientTypeCheckboxDict)
+                        {
+                            if (loadedPatientTypeList.Contains(patientType.Key))
+                            {
+                                patientType.Value.IsChecked = true;
+                            }
+                            else
+                            {
+                                patientType.Value.IsChecked = false;
+                            }
+                        }
+
+                    lastLoadedPatientTypeCategoriesIndex = patientTypeRoomList.SelectedIndex;
                 }
-                lastLoadedPatientTypeCategoriesIndex = patientTypeRoomList.SelectedIndex;
             }
         }
-        */
+        
         private void LoadTreatmentCategory(String categoryKey = null)
         {
             if (treatmentRoomList.SelectedIndex > -1)
             {
-                if (categoryKey != null)
+                if (treatmentCategoriesDict.ContainsKey(categoryKey))
                 {
-                    categoryKey = treatmentRoomList.Items[treatmentRoomList.SelectedIndex].ToString();
-                }
-                List<Treatment> treatmentDataRows = treatmentCategoriesDict[categoryKey];
+                    List<Treatment> treatmentDataRows = treatmentCategoriesDict[categoryKey];
 
-                LoadedTreatmentList.Clear();
-                foreach (Treatment treatment in treatmentDataRows)
-                {
-                    LoadedTreatmentList.Add(treatment);
-                }
+                    LoadedTreatmentList.Clear();
+                    foreach (Treatment treatment in treatmentDataRows)
+                    {
+                        LoadedTreatmentList.Add(treatment);
+                    }
 
-                lastLoadedTreatmentCategoriesIndex = treatmentRoomList.SelectedIndex;
+                    lastLoadedTreatmentCategoriesIndex = treatmentRoomList.SelectedIndex;
+
+                }
             }
         }
        
-        private void LoadBalancingCategory()
+        private void LoadBalancingCategory(String CategoryKey = null)
         {
-            if (balancingRoomList.SelectedIndex > -1 && balancingRoomList.SelectedIndex != lastLoadedBalancingCategoriesIndex)
+            if (balancingRoomList.SelectedIndex > -1 && CategoryKey != null && balancingCategoriesDict.ContainsKey(CategoryKey))
             {
                 //Clear and Load the list in the Difficulty Modifier
                 DifficultyModifierList.Clear();
-                foreach (String difficultyModifier in balancingCategoriesDict[GetCurrentBalancingCategoryKey])
+                for (int i = 0; i < balancingCategoriesDict[CategoryKey].Count; i++)
                 {
+                    String difficultyModifier = balancingCategoriesDict[CategoryKey][i];
+                    //Add n.0 behind whole numbers
+                    if (!difficultyModifier.Contains("."))
+                    {
+                        difficultyModifier = difficultyModifier + ".0";
+                    }
                     DifficultyModifierList.Add(difficultyModifier);
                 }
                 lastLoadedBalancingCategoriesIndex = balancingRoomList.SelectedIndex;
+                if (difficultyModifierList.Items.Count > 0)
+                {
+                    difficultyModifierList.SelectedIndex = 0;
+                }
             }
 
         } 
-        /*
-        private void LoadDifficultyModifierData(String difficultyModifier)
+
+        private void LoadDifficultyModifierData(String diffCategoryValue)
         {
-
-            Dictionary<String, Double> balancingData = Globals.GameValue.GetBalancingData(difficultyModifier);
-
-            averageEntryTimePerPatientValue.Text = balancingData["averageEntryTimePerPatient"].ToString();
-            timeBetweenPatientsValue.Text = balancingData["timeBetweenPatients"].ToString();
-            numberOfPatientsValue.Text = balancingData["numberOfPatients"].ToString();
-            treatmentPerPatientValue.Text = balancingData["treatmentPerPatient"].ToString();
-            timePerTreatmentValue.Text = balancingData["timePerTreatment"].ToString();
-            milliSecondsPerLevelValue.Text = balancingData["milliSecondsPerLevel"].ToString();
-            minutesPerLevelValue.Text = String.Format("{0:0.0000000}", balancingData["minutesPerLevel"]);
-
+            LoadedDifficultyModifier = Globals.StringToDouble(diffCategoryValue);
         }
-                */
-
         #endregion
 
         #region Signals
+
+        #region GeneralTabSignals
         private void projectDirectoryBrowseButton_Click(object sender, RoutedEventArgs e)
         {
             //http://www.ookii.org/software/dialogs/
@@ -451,60 +494,113 @@ namespace UiWindows
             }
 
         }
+        #endregion
 
+        #region PatientTypeTabSignals
+        private void patientTypeRoomList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            StorePatientTypeCategory();
+            String categoryKey = patientTypeRoomList.SelectedItem.ToString();
+            LoadPatientTypeCategory(categoryKey);
+
+        }
+        #endregion
+
+        #region TreatmentTabSignals
         private void treatmentRowButtonAdd_Click(object sender, RoutedEventArgs e)
         {
-
-            List<Treatment> tmpList = new List<Treatment> { };
-            tmpList.Add(new Treatment("test1", 5, 10, 20, false, true));
-            tmpList.Add(new Treatment("test2", 5, 15, 10, true, false));
-            tmpList.Add(new Treatment("test3", 5, 10, 30, false, true));
-
-            treatmentCategoriesDict["Room 1"] = tmpList;
-
-            treatmentDataGridView.Items.Refresh();
+            TreatmentList.Add(new Treatment());
         }
 
-        private void treatmentRoomList_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void treatmentRoomList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var item = ItemsControl.ContainerFromElement(treatmentRoomList, e.OriginalSource as DependencyObject) as ListBoxItem;
-            if (item != null)
+            StoreTreatmentCategory();
+            String categoryKey = treatmentRoomList.SelectedItem.ToString();
+            LoadTreatmentCategory(categoryKey);
+        }
+
+        #endregion
+
+        #region BalancingTabSignals
+
+        private void balancingRoomList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            StoreBalancingCategory();
+            String categoryKey = balancingRoomList.SelectedItem.ToString();
+            LoadBalancingCategory(categoryKey);
+        }
+
+        private void difficultyModifierList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (difficultyModifierList.SelectedItem != null)
             {
-                LoadTreatmentCategory(item.ToString());
+                ChangeGameValueEnabledState(true);
+                String diffCategoryKey = difficultyModifierList.SelectedItem.ToString();
+                LoadDifficultyModifierData(diffCategoryKey);
             }
-        }
-
-        private void balancingRoomList_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            var item = ItemsControl.ContainerFromElement(balancingRoomList, e.OriginalSource as DependencyObject) as ListBoxItem;
-            if (item != null)
+            else
             {
-                StoreBalancingCategory();
-                LoadBalancingCategory();
-
+                ChangeGameValueEnabledState(false);
+                Console.WriteLine("ERROR: SettingsWindow.difficultyModifierList_SelectionChanged, difficultyModifierList.SelectedItem was null!");
             }
         }
 
         private void diffModifierRowButtonAdd_Click(object sender, RoutedEventArgs e)
         {
             Double newValue = (Double)diffModifierValue.Value;
-            if (!DifficultyModifierList.Contains(newValue.ToString("0.##")))
+            String newValueStr = String.Format("{0:N1}", newValue);
+            if (!DifficultyModifierList.Contains(newValueStr))
             {
-                DifficultyModifierList.Add(newValue.ToString("0.##"));
+                DifficultyModifierList.Add(newValueStr);
             }
         }
 
+        private void diffModifierRowButtonRemove_Click(object sender, RoutedEventArgs e)
+        {
+            String ValueStr = difficultyModifierList.SelectedItem.ToString();
+            if (!DifficultyModifierList.Contains(ValueStr))
+            {
+                DifficultyModifierList.Remove(ValueStr);
+            }
 
+        }
+
+        private void ChangeGameValueEnabledState(bool State)
+        {
+            averageEntryTimePerPatientValue.IsEnabled = State;
+            timeBetweenPatientsValue.IsEnabled = State;
+            numberOfPatientsValue.IsEnabled = State;
+            treatmentPerPatientValue.IsEnabled = State;
+            timePerTreatmentValue.IsEnabled = State;
+            milliSecondsPerLevelValue.IsEnabled = State;
+            minutesPerLevelValue.IsEnabled = State;
+
+            if (!State)
+            {
+                averageEntryTimePerPatientValue.Clear();
+                timeBetweenPatientsValue.Clear();
+                numberOfPatientsValue.Clear();
+                treatmentPerPatientValue.Clear();
+                timePerTreatmentValue.Clear();
+                milliSecondsPerLevelValue.Clear();
+                minutesPerLevelValue.Clear();
+            }
+        }
+
+        #endregion
+
+        #region GeneralControlsSignals
         private void buttonSave_Click(object sender, RoutedEventArgs e)
         {
             SendSaveData();
             this.Close();
         }
-
         private void buttonCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
+        #endregion
+
         #endregion
 
         #region Events
@@ -514,6 +610,9 @@ namespace UiWindows
         }
 
         #endregion
+
+
+
 
     }
 }

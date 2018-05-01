@@ -7,326 +7,317 @@
 		xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"  x:Class="UiWindows.SettingsWindow"
         mc:Ignorable="d"
-        Title="SettingsWindow" Height="450" Width="1000">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <TabControl HorizontalAlignment="Stretch" Grid.Row="0">
-            <TabItem Header="General">
-                <Grid Background="#FFF">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Grid HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch"/>
-                    <StackPanel HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch">
-                        <GroupBox x:Name="projectDirectoryGroup" Header="HM4 Project Directories" >
-                            <StackPanel Orientation="Vertical">
-                                <Grid Height="44">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                    </Grid.RowDefinitions>
-                                    <Label x:Name="projectDirectoryLabel" Content="Data directory (e.g, 'C:/hm4/data/')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
-                                    <TextBox x:Name="projectDirectoryPathText" Text="{Binding ProjectDirectoryPathValue, Mode=OneWay}" Grid.Column="0" Grid.Row="1" Margin="5,0" />
-                                    <Button x:Name="projectDirectoryBrowseButton" Grid.Column="1" Grid.Row="1" Content="Browse" Margin="5,0" Padding="5,1" Click="projectDirectoryBrowseButton_Click"/>
-                                </Grid>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                    </Grid.RowDefinitions>
-                                    <Label x:Name="projectPathScriptLabel" Content="Script directory (e.g, 'C:/hm4/data/script/')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
-                                    <TextBox x:Name="projectPathScriptText" Text="{Binding ProjectPathScriptValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="1" Margin="5,0" IsEnabled="False" />
-                                </Grid>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                    </Grid.RowDefinitions>
-                                    <Label x:Name="projectPathLevelLabel" Content="Level directory (e.g, 'C:/hm4/data/script/levels')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
-                                    <TextBox x:Name="projectPathLevelText" Text="{Binding ProjectPathLevelValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="1" Margin="5,0" IsEnabled="False" />
-                                </Grid>
+        Title="SettingsWindow" Height="600" Width="1000">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		<TabControl HorizontalAlignment="Stretch" Grid.Row="0">
+			<TabItem Header="General">
+				<Grid Background="#FFF">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<Grid HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch"/>
+					<StackPanel HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch">
+						<GroupBox x:Name="projectDirectoryGroup" Header="HM4 Project Directories" >
+							<StackPanel Orientation="Vertical">
+								<Grid Height="44">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition Width="Auto"/>
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition/>
+										<RowDefinition/>
+									</Grid.RowDefinitions>
+									<Label x:Name="projectDirectoryLabel" Content="Data directory (e.g, 'C:/hm4/data/')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
+									<TextBox x:Name="projectDirectoryPathText" Text="{Binding ProjectDirectoryPathValue, Mode=OneWay}" Grid.Column="0" Grid.Row="1" Margin="5,0" />
+									<Button x:Name="projectDirectoryBrowseButton" Grid.Column="1" Grid.Row="1" Content="Browse" Margin="5,0" Padding="5,1" Click="projectDirectoryBrowseButton_Click"/>
+								</Grid>
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition/>
+										<RowDefinition/>
+									</Grid.RowDefinitions>
+									<Label x:Name="projectPathScriptLabel" Content="Script directory (e.g, 'C:/hm4/data/script/')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
+									<TextBox x:Name="projectPathScriptText" Text="{Binding ProjectPathScriptValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="1" Margin="5,0" IsEnabled="False" />
+								</Grid>
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition/>
+										<RowDefinition/>
+									</Grid.RowDefinitions>
+									<Label x:Name="projectPathLevelLabel" Content="Level directory (e.g, 'C:/hm4/data/script/levels')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
+									<TextBox x:Name="projectPathLevelText" Text="{Binding ProjectPathLevelValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="1" Margin="5,0" IsEnabled="False" />
+								</Grid>
 
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                    </Grid.RowDefinitions>
-                                    <Label x:Name="projectPathImagesLabel" Content="Images directory (e.g, 'C:/hm4/data/images/')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
-                                    <TextBox x:Name="projectPathImagesText" Text="{Binding ProjectPathImagesValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="1" Margin="5,0" IsEnabled="False" />
-                                </Grid>
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition Width="Auto"/>
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition/>
+										<RowDefinition/>
+									</Grid.RowDefinitions>
+									<Label x:Name="projectPathImagesLabel" Content="Images directory (e.g, 'C:/hm4/data/images/')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
+									<TextBox x:Name="projectPathImagesText" Text="{Binding ProjectPathImagesValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="1" Margin="5,0" IsEnabled="False" />
+								</Grid>
 
-                            </StackPanel>
+							</StackPanel>
 
-                        </GroupBox>
-                    </StackPanel>
-                </Grid>
-            </TabItem>
-            <!-- Patient Types Tab -->
-            <TabItem Header="Patient Types">
-                <Grid Background="#FFF">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <!-- Patient Type Room List -->
-                    <GroupBox Grid.Column="0" Header="Room List" Margin="5,0">
-                        <ListBox  MinWidth="150" />
-                    </GroupBox>
+						</GroupBox>
+					</StackPanel>
+				</Grid>
+			</TabItem>
+			<!-- Patient Types Tab -->
+			<TabItem Header="Patient Types">
+				<Grid Background="#FFF">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<!-- Patient Type Room List -->
+					<GroupBox x:Name="patientTypeRoomGroup" Header="Room List" Margin="5,0">
+						<ListBox x:Name="patientTypeRoomList"  MinWidth="150" SelectionChanged="patientTypeRoomList_SelectionChanged" />
+					</GroupBox>
 
-                    <!-- Patient Type Check List -->
-                    <GroupBox Header="Patient Types" Grid.Column="1" Margin="5,0">
-                        <Grid  >
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
+					<!-- Patient Type Check List -->
+					<GroupBox Header="Patient Types" Grid.Column="1" Margin="5,0">
+						<Grid  >
+							<Grid.RowDefinitions>
+								<RowDefinition/>
+								<RowDefinition/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
 
-                            <GroupBox Header="Male Patients" Grid.Column="0" Grid.Row="0">
-                                <ListBox >
-                                    <CheckBox Content="Test1"/>
-                                    <CheckBox Content="Test2"/>
-                                    <CheckBox Content="Test3"/>
-                                </ListBox>
-                            </GroupBox>
-                            <GroupBox Header="Female Patients" Grid.Column="1" Grid.Row="0">
-                                <ListBox >
-                                    <CheckBox Content="Test1"/>
-                                    <CheckBox Content="Test2"/>
-                                    <CheckBox Content="Test3"/>
-                                </ListBox>
-                            </GroupBox>
+							<GroupBox x:Name="patientTypeMaleCheckListGroup" Header="Male Patients" Grid.Column="0" Grid.Row="0">
+								<ListBox x:Name="patientTypeMaleCheckList" >
+								</ListBox>
+							</GroupBox>
+							<GroupBox x:Name="patientTypeFemaleCheckListGroup" Header="Female Patients" Grid.Column="1" Grid.Row="0">
+								<ListBox x:Name="patientTypeFemaleCheckList" >
+								</ListBox>
+							</GroupBox>
 
-                            <GroupBox Header="Other Patients" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
-                                <WrapPanel Margin="5" >
-                                    <CheckBox Margin="5"  Content="Test1"/>
-                                    <CheckBox Margin="5"  Content="Test2"/>
-                                    <CheckBox Margin="5" Content="Test3"/>
-                                </WrapPanel>
-                            </GroupBox>
+							<GroupBox x:Name="patientTypeOtherCheckListGroup" Header="Other Patients" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+								<ListBox x:Name="patientTypeOtherCheckList" Margin="5" >
+								</ListBox>
+							</GroupBox>
 
 
 
-                        </Grid>
-                    </GroupBox>
+						</Grid>
+					</GroupBox>
 
-                    <!-- Patient Type Text List -->
-                    <GroupBox Grid.Column="2" Header="Current Patient List" Margin="5,0" MaxWidth="200" MinWidth="150">
-                        <Grid >
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Label Grid.Row="0"  FontSize="10" FontStyle="Italic">
-                                <TextBlock TextWrapping="WrapWithOverflow" Text="Patient types are retrieved from the [imagesDirectory]/Patients/" />
-                            </Label>
-                            <TextBox Grid.Row="1" VerticalScrollBarVisibility="Auto"/>
-                        </Grid>
-                    </GroupBox>
-                </Grid>
-            </TabItem>
-            <!-- Treatments Tab -->
-            <TabItem Header="Treatments">
-                <Grid Background="#FFF">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <!-- Treatments Room List -->
-                    <GroupBox x:Name="treatmentRoomListGroup" Grid.Column="0" Header="Room List" Margin="5,0">
-                        <ListBox x:Name="treatmentRoomList"  MinWidth="150" PreviewMouseDown="treatmentRoomList_PreviewMouseDown" />
-                    </GroupBox>
+					<!-- Patient Type Text List -->
+					<GroupBox Grid.Column="2" Header="Current Patient List" Margin="5,0" MaxWidth="200" MinWidth="150">
+						<Grid >
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition/>
+							</Grid.RowDefinitions>
+							<Label Grid.Row="0"  FontSize="10" FontStyle="Italic">
+								<TextBlock TextWrapping="WrapWithOverflow" Text="Patient types are retrieved from the [imagesDirectory]/Patients/" />
+							</Label>
+							<TextBox Grid.Row="1" Text="{Binding PatientListPreview, Mode=OneWay}" IsEnabled="False"/>
+						</Grid>
+					</GroupBox>
+				</Grid>
+			</TabItem>
+			<!-- Treatments Tab -->
+			<TabItem Header="Treatments">
+				<Grid Background="#FFF">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<!-- Treatments Room List -->
+					<GroupBox x:Name="treatmentRoomListGroup" Grid.Column="0" Header="Room List" Margin="5,0">
+						<ListBox x:Name="treatmentRoomList"  MinWidth="150" SelectionChanged="treatmentRoomList_SelectionChanged" />
+					</GroupBox>
 
-                    <!-- Treatments Overview -->
-                    <GroupBox Header="Treatments" Grid.Column="1" Margin="5,0">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
+					<!-- Treatments Overview -->
+					<GroupBox Header="Treatments" Grid.Column="1" Margin="5,0">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
 
-                            <!-- Treatments DataGrid List -->
-                            <DataGrid x:Name="treatmentDataGridView" ItemsSource="{Binding Path=TreatmentList, diag:PresentationTraceSources.TraceLevel=High}" Grid.Column="0" Grid.Row="0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" UseLayoutRounding="False" CanUserReorderColumns="False" CanUserResizeColumns="False" MinColumnWidth="75" ColumnHeaderHeight="30" Margin="5" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="Cell"  >
-                                <DataGrid.Columns>
-                                    <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Select" MaxWidth="70" MinWidth="50"/>
-                                    <DataGridTextColumn Binding="{Binding TreatmentName}" Header="Treatment Name" MinWidth="50" Width="*"/>
-                                    <DataGridComboBoxColumn ClipboardContentBinding="{x:Null}" Header="Difficulty Unlocked" SelectedValueBinding="{x:Null}" SelectedItemBinding="{x:Null}" TextBinding="{x:Null}" Width="*"/>
-                                    <mah:DataGridNumericUpDownColumn Binding="{Binding HeartsValue}" Header="Hearts Value" Width="*"/>
-                                    <mah:DataGridNumericUpDownColumn Binding="{Binding Weight}" Header="Base Weight" Width="*" MaxWidth="80"/>
-                                    <DataGridCheckBoxColumn Binding="{Binding Gesture}" ClipboardContentBinding="{x:Null}" Header="Gesture" Width="*" MaxWidth="60"/>
-                                    <DataGridCheckBoxColumn Binding="{Binding AlwaysLast}" ClipboardContentBinding="{x:Null}" Header="Always Last" Width="*" MaxWidth="80"/>
-                                    <DataGridTextColumn Binding="{Binding ColorValueString}" ClipboardContentBinding="{x:Null}" Header="Color Value" Width="*"/>
-                                </DataGrid.Columns>
-                            </DataGrid>
-                            <Grid Grid.Column="0" Grid.Row="1">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <Button x:Name="treatmentRowButtonAdd" Grid.Column="1" Grid.Row="0" Content="Add Row" Width="80" Margin="5,0" Click="treatmentRowButtonAdd_Click"/>
-                                <Button x:Name="treatmentRowButtonRemove" Grid.Column="2" Grid.Row="0" Content="Remove Row" Width="80" Margin="5,0"/>
-                            </Grid>
+							<!-- Treatments DataGrid List -->
+							<DataGrid x:Name="treatmentDataGridView" ItemsSource="{Binding Path=TreatmentList, diag:PresentationTraceSources.TraceLevel=High}" Grid.Column="0" Grid.Row="0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" UseLayoutRounding="False" CanUserReorderColumns="False" CanUserResizeColumns="False" MinColumnWidth="75" ColumnHeaderHeight="30" Margin="5" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="Cell"  >
+								<DataGrid.Columns>
+									<DataGridCheckBoxColumn Binding="{x:Null}" Header="Select" MaxWidth="70" MinWidth="50"/>
+									<DataGridTextColumn Binding="{Binding TreatmentName, Mode=TwoWay, diag:PresentationTraceSources.TraceLevel=High}" Header="Treatment Name" MinWidth="50" Width="*"/>
+									<DataGridComboBoxColumn Header="Difficulty Unlocked" SelectedValueBinding="{x:Null}" SelectedItemBinding="{x:Null}" TextBinding="{x:Null}" Width="*"/>
+									<mah:DataGridNumericUpDownColumn Binding="{Binding HeartsValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Hearts Value" Width="*"/>
+									<mah:DataGridNumericUpDownColumn Binding="{Binding Weight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Base Weight" Width="*" MaxWidth="80"/>
+									<DataGridCheckBoxColumn Binding="{Binding Gesture, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Gesture" Width="*" MaxWidth="60"/>
+									<DataGridCheckBoxColumn Binding="{Binding AlwaysLast, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Always Last" Width="*" MaxWidth="80"/>
+									<DataGridTextColumn Binding="{Binding ColorValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Color Value" Width="*"/>
+								</DataGrid.Columns>
+							</DataGrid>
+							<Grid Grid.Column="0" Grid.Row="1">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition/>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="Auto"/>
+								</Grid.ColumnDefinitions>
+								<Button x:Name="treatmentRowButtonAdd" Grid.Column="1" Grid.Row="0" Content="Add Row" Width="80" Margin="5,0" Click="treatmentRowButtonAdd_Click"/>
+								<Button x:Name="treatmentRowButtonRemove" Grid.Column="2" Grid.Row="0" Content="Remove Row" Width="80" Margin="5,0"/>
+							</Grid>
 
-                        </Grid>
-                    </GroupBox>
+						</Grid>
+					</GroupBox>
 
-                </Grid>
-            </TabItem>
-            <!-- Balancing Tab -->
-            <TabItem Header="Balancing">
-                <Grid Background="#FFF">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <!-- Balancing Room List -->
-                    <GroupBox x:Name="balancingRoomListGroup" Grid.Column="0" Header="Room List" Margin="5,0">
-                        <ListBox x:Name="balancingRoomList"  MinWidth="150" PreviewMouseDown="balancingRoomList_PreviewMouseDown" />
-                    </GroupBox>
+				</Grid>
+			</TabItem>
+			<!-- Balancing Tab -->
+			<TabItem Header="Balancing">
+				<Grid Background="#FFF">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<!-- Balancing Room List -->
+					<GroupBox x:Name="balancingRoomListGroup" Grid.Column="0" Header="Room List" Margin="5,0">
+						<ListBox x:Name="balancingRoomList"  MinWidth="150" SelectedIndex="0" SelectionChanged="balancingRoomList_SelectionChanged" AutomationProperties.ItemType="String" />
+					</GroupBox>
 
-                    <!-- Difficulty Modifier Overview -->
-                    <GroupBox  x:Name="difficultyModifierListGroup" Header="Difficulty Modifier" Grid.Column="1" Margin="5,0">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <!-- Difficulty Modifier List -->
-                            <ListBox x:Name="difficultyModifierList" ItemsSource="{Binding Path=DifficultyModifierList, Mode=TwoWay}" />
+					<!-- Difficulty Modifier Overview -->
+					<GroupBox  x:Name="difficultyModifierListGroup" Header="Difficulty Modifier" Grid.Column="1" Margin="5,0">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+							<!-- Difficulty Modifier List -->
+							<ListBox x:Name="difficultyModifierList" ItemsSource="{Binding Path=DifficultyModifierList, Mode=TwoWay}" Margin="0,0,0,5" SelectionChanged="difficultyModifierList_SelectionChanged" />
 
-                            <!-- Difficulty Modifier Controls -->
-                            <Grid Grid.Column="0" Grid.Row="1">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <Button x:Name="diffModifierRowButtonAdd" Grid.Column="0" Grid.Row="0" Content="Add"  Margin="5,0" Click="diffModifierRowButtonAdd_Click" Width="50"/>
-                                <xctk:DecimalUpDown x:Name="diffModifierValue" Grid.Column="1" Grid.Row="0" DefaultValue="1.0" DisplayDefaultValueOnEmptyText="True" Increment="0.5" Minimum="0" Maximum="1000" MouseWheelActiveTrigger="MouseOver" ParsingNumberStyle="Float" TextAlignment="Left" Value="1" Width="50" />
-                                <Button x:Name="diffModifierRowButtonRemove" Grid.Column="2" Grid.Row="0" Content="Remove" Margin="5,0" Width="50"/>
-                            </Grid>
+							<!-- Difficulty Modifier Controls -->
+							<Grid Grid.Column="0" Grid.Row="1" Margin="0,5">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition/>
+									<ColumnDefinition/>
+									<ColumnDefinition/>
+								</Grid.ColumnDefinitions>
+								<Button x:Name="diffModifierRowButtonAdd" Grid.Column="0" Grid.Row="0" Content="Add"  Margin="5,0" Click="diffModifierRowButtonAdd_Click" Width="50"/>
+								<xctk:DecimalUpDown x:Name="diffModifierValue" Grid.Column="1" Grid.Row="0" DefaultValue="1.0" DisplayDefaultValueOnEmptyText="True" Increment="0.5" Minimum="0" Maximum="1000" MouseWheelActiveTrigger="MouseOver" ParsingNumberStyle="Float" TextAlignment="Left" Value="1" Width="50" />
+								<Button x:Name="diffModifierRowButtonRemove" Grid.Column="2" Grid.Row="0" Content="Remove" Margin="5,0" Width="50" Click="diffModifierRowButtonRemove_Click"/>
+							</Grid>
 
-                        </Grid>
-                    </GroupBox>
+						</Grid>
+					</GroupBox>
 
-                    <!-- Calculated Values Overview -->
-                    <GroupBox x:Name="calculatedValuesGroup" Header="Calculated Values" Grid.Column="2" Margin="5,0">
-                        <Grid >
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
+					<!-- Calculated Values Overview -->
+					<GroupBox x:Name="calculatedValuesGroup" Header="Calculated Values" Grid.Column="2" Margin="5,0">
+						<Grid >
+							<Grid.RowDefinitions>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="2*"/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
 
-                            <Label MinWidth="150" Grid.Column="0" Grid.Row="0" MaxHeight="25" Content="Average Entry Time Per Patient: " Margin="0,5" />
-                            <Label MinWidth="200" Grid.Column="0" Grid.Row="1" MaxHeight="25" Content="Time Between Patients: " Margin="0,5" />
-                            <Label MinWidth="150" Grid.Column="0" Grid.Row="2" MaxHeight="25" Content="Number of Patients: " Margin="0,5"/>
-                            <Label MinWidth="150" Grid.Column="0" Grid.Row="3" MaxHeight="25" Content="Treatment Per Patient: " Margin="0,5"/>
-                            <Label MinWidth="150" Grid.Column="0" Grid.Row="4" MaxHeight="25" Content="Time per Treatment: " Margin="0,5" />
-                            <Label MinWidth="150" Grid.Column="0" Grid.Row="5" MaxHeight="25" Content="Milisecond per Level: " Margin="0,5"/>
-                            <Label MinWidth="150" Grid.Column="0" Grid.Row="6" MaxHeight="25" Content="Minutes per Level: " Margin="0,5"/>
+							<Label MinWidth="150" Grid.Column="0" Grid.Row="0" MaxHeight="25" Content="Average Entry Time Per Patient: " Margin="0,5" />
+							<Label MinWidth="200" Grid.Column="0" Grid.Row="1" MaxHeight="25" Content="Time Between Patients: " Margin="0,5" />
+							<Label MinWidth="150" Grid.Column="0" Grid.Row="2" MaxHeight="25" Content="Number of Patients: " Margin="0,5"/>
+							<Label MinWidth="150" Grid.Column="0" Grid.Row="3" MaxHeight="25" Content="Treatment Per Patient: " Margin="0,5"/>
+							<Label MinWidth="150" Grid.Column="0" Grid.Row="4" MaxHeight="25" Content="Time per Treatment: " Margin="0,5" />
+							<Label MinWidth="150" Grid.Column="0" Grid.Row="5" MaxHeight="25" Content="Milisecond per Level: " Margin="0,5"/>
+							<Label MinWidth="150" Grid.Column="0" Grid.Row="6" MaxHeight="25" Content="Minutes per Level: " Margin="0,5"/>
 
-                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=AverageEntryTimePerPatient, Mode=OneWay}" Margin="0,5" MaxHeight="25" />
-                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=TimeBetweenPatients, Mode=OneWay}" Margin="0,5" MaxHeight="25"/>
-                            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=NumberOfPatients, Mode=OneWay}" Margin="0,5" MaxHeight="25"/>
-                            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=TreatmentPerPatient, Mode=OneWay}" Margin="0,5" MaxHeight="25"/>
-                            <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=TimePerTreatment, Mode=OneWay}" Margin="0,5" MaxHeight="25"/>
-                            <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=MilliSecondsPerLevel, Mode=OneWay}" Margin="0,5" MaxHeight="25"/>
-                            <TextBox Grid.Column="1" Grid.Row="6" Text="{Binding Path=MinutesPerLevel, Mode=OneWay}" Margin="0,5" MaxHeight="25"/>
+							<TextBox x:Name="averageEntryTimePerPatientValue" Grid.Column="1" Grid.Row="0" Text="{Binding Path=AverageEntryTimePerPatient, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25" />
+							<TextBox x:Name="timeBetweenPatientsValue" Grid.Column="1" Grid.Row="1" Text="{Binding Path=TimeBetweenPatients, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25"/>
+							<TextBox x:Name="numberOfPatientsValue" Grid.Column="1" Grid.Row="2" Text="{Binding Path=NumberOfPatients, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25"/>
+							<TextBox x:Name="treatmentPerPatientValue" Grid.Column="1" Grid.Row="3" Text="{Binding Path=TreatmentPerPatient, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25"/>
+							<TextBox x:Name="timePerTreatmentValue" Grid.Column="1" Grid.Row="4" Text="{Binding Path=TimePerTreatment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25"/>
+							<TextBox x:Name="milliSecondsPerLevelValue" Grid.Column="1" Grid.Row="5" Text="{Binding Path=MilliSecondsPerLevel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25"/>
+							<TextBox x:Name="minutesPerLevelValue" Grid.Column="1" Grid.Row="6" Text="{Binding Path=MinutesPerLevel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25"/>
 
 
-                        </Grid>
-                    </GroupBox>
-                    <!-- Calculated Values Overview -->
-                    <GroupBox x:Name="globalValuesGroup" Header="Global Values" Grid.Column="3" Margin="5,0">
-                        <Grid >
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
+						</Grid>
+					</GroupBox>
+					<!-- Calculated Values Overview -->
+					<GroupBox x:Name="globalValuesGroup" Header="Global Values" Grid.Column="3" Margin="5,0">
+						<Grid >
+							<Grid.RowDefinitions>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+								<RowDefinition/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="2*"/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+							<TextBlock MinWidth="150" Grid.Column="0" Grid.Row="0" MaxHeight="20" TextWrapping="WrapWithOverflow" Text="DifficultyModifier Treatments Based: " Margin="0,5">
+							</TextBlock>
+							<Label MinWidth="200" Grid.Column="0" Grid.Row="1" MaxHeight="25" Content="StartLevelDuration: " Margin="0,5" />
+							<Label MinWidth="150" Grid.Column="0" Grid.Row="2" MaxHeight="25" Content="TimeIncreasePerLevel: " Margin="0,5"/>
+							<Label MinWidth="150" Grid.Column="0" Grid.Row="3" MaxHeight="25" Content="InitialTimeBetweenPatients: " Margin="0,5"/>
+							<Label MinWidth="150" Grid.Column="0" Grid.Row="4" MaxHeight="25" Content="DecreaseTimeBetweenPatients: " Margin="0,5" />
+							<Label MinWidth="150" Grid.Column="0" Grid.Row="5" MaxHeight="25" Content="InitialTimePerTreatment: " Margin="0,5"/>
+							<Label MinWidth="150" Grid.Column="0" Grid.Row="6" MaxHeight="25" Content="DecreaseTimePerTreatment: " Margin="0,5"/>
+							<Label MinWidth="150" Grid.Column="0" Grid.Row="7" MaxHeight="25" Content="CheckoutPerPatient: " Margin="0,5"/>
+							<Label MinWidth="150" Grid.Column="0" Grid.Row="8" MaxHeight="25" Content="TreatmentMinimumTime: " Margin="0,5"/>
 
-                            <Label MinWidth="150" Grid.Column="0" Grid.Row="0" MaxHeight="25" Content="DifficultyModifier Treatments Based: " Margin="0,5" />
-                            <Label MinWidth="200" Grid.Column="0" Grid.Row="1" MaxHeight="25" Content="StartLevelDuration: " Margin="0,5" />
-                            <Label MinWidth="150" Grid.Column="0" Grid.Row="2" MaxHeight="25" Content="TimeIncreasePerLevel: " Margin="0,5"/>
-                            <Label MinWidth="150" Grid.Column="0" Grid.Row="3" MaxHeight="25" Content="InitialTimeBetweenPatients: " Margin="0,5"/>
-                            <Label MinWidth="150" Grid.Column="0" Grid.Row="4" MaxHeight="25" Content="DecreaseTimeBetweenPatients: " Margin="0,5" />
-                            <Label MinWidth="150" Grid.Column="0" Grid.Row="5" MaxHeight="25" Content="InitialTimePerTreatment: " Margin="0,5"/>
-                            <Label MinWidth="150" Grid.Column="0" Grid.Row="6" MaxHeight="25" Content="DecreaseTimePerTreatment: " Margin="0,5"/>
-                            <Label MinWidth="150" Grid.Column="0" Grid.Row="7" MaxHeight="25" Content="CheckoutPerPatient: " Margin="0,5"/>
-                            <Label MinWidth="150" Grid.Column="0" Grid.Row="8" MaxHeight="25" Content="TreatmentMinimumTime: " Margin="0,5"/>
+							<TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=GlobalValues.DifficultyModifierTreatmentsBased, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False" />
+							<TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=GlobalValues.StartLevelDuration, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
+							<TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=GlobalValues.TimeIncreasePerLevel, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
+							<TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=GlobalValues.InitialTimeBetweenPatients, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
+							<TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=GlobalValues.DecreaseTimeBetweenPatients, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
+							<TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=GlobalValues.InitialTimePerTreatment, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
+							<TextBox Grid.Column="1" Grid.Row="6" Text="{Binding Path=GlobalValues.DecreaseTimePerTreatment, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
+							<TextBox Grid.Column="1" Grid.Row="7" Text="{Binding Path=GlobalValues.CheckoutPerPatient, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
+							<TextBox Grid.Column="1" Grid.Row="8" Text="{Binding Path=GlobalValues.TreatmentMinimumTime, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
 
-                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=GlobalValues.DifficultyModifierTreatmentsBased, Mode=OneWay}" Margin="0,5" MaxHeight="25" />
-                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=GlobalValues.StartLevelDuration, Mode=OneWay}" Margin="0,5" MaxHeight="25"/>
-                            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=GlobalValues.TimeIncreasePerLevel, Mode=OneWay}" Margin="0,5" MaxHeight="25"/>
-                            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=GlobalValues.InitialTimeBetweenPatients, Mode=OneWay}" Margin="0,5" MaxHeight="25"/>
-                            <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=GlobalValues.DecreaseTimeBetweenPatients, Mode=OneWay}" Margin="0,5" MaxHeight="25"/>
-                            <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=GlobalValues.InitialTimePerTreatment, Mode=OneWay}" Margin="0,5" MaxHeight="25"/>
-                            <TextBox Grid.Column="1" Grid.Row="6" Text="{Binding Path=GlobalValues.DecreaseTimePerTreatment, Mode=OneWay}" Margin="0,5" MaxHeight="25"/>
-                            <TextBox Grid.Column="1" Grid.Row="7" Text="{Binding Path=GlobalValues.CheckoutPerPatient, Mode=OneWay}" Margin="0,5" MaxHeight="25"/>
-                            <TextBox Grid.Column="1" Grid.Row="8" Text="{Binding Path=GlobalValues.TreatmentMinimumTime, Mode=OneWay}" Margin="0,5" MaxHeight="25"/>
+						</Grid>
 
-                        </Grid>
+					</GroupBox>
 
-                    </GroupBox>
+				</Grid>
+			</TabItem>
+		</TabControl>
+		<StackPanel Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft" >
+			<Button x:Name="buttonCancel" Content="Cancel" Margin="5,5" Width="50" Click="buttonCancel_Click"/>
+			<Button x:Name="buttonSave" Content="Save" Margin="5,5"  Width="50" Click="buttonSave_Click" />
 
-                </Grid>
-            </TabItem>
-        </TabControl>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft" >
-            <Button x:Name="buttonCancel" Content="Cancel" Margin="5,5" Width="50" Click="buttonCancel_Click"/>
-            <Button x:Name="buttonSave" Content="Save" Margin="5,5"  Width="50" Click="buttonSave_Click" />
-
-        </StackPanel>
-    </Grid>
+		</StackPanel>
+	</Grid>
 </Window>

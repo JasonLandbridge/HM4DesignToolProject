@@ -1,5 +1,81 @@
 {
-  "patientTypeCategories": null,
-  "treatmentCategories": null,
-  "balancingCategories": null
+  "patientTypeCategories": {
+    "Room 1": [
+      "doctor_male2",
+      "normal_male1",
+      "teen1_male_casual",
+      "teen2_male_casual"
+    ],
+    "Room 2": [],
+    "Room 3": [],
+    "Room 4": [],
+    "Room 5": [],
+    "Room 6": [
+      "doctor_male1",
+      "normal_male",
+      "senior_male1",
+      "business_female",
+      "doctor_female2"
+    ]
+  },
+  "treatmentCategories": {
+    "Room 1": {
+      "fdfvd": "3,54,0,False,False",
+      "test2": "0,546,45645,False,True",
+      "dfvdfvd": "0,5456,456,False,False",
+      "fvdfvdfv": "0,456456,54,False,False",
+      "dfvdfvdfvd": "0,4564,456,False,False"
+    },
+    "Room 2": {
+      "fdf536563vd": "3,54,0,False,False",
+      "fdv45363456dfv": "0,546,45645,False,True",
+      "df34563456vdfvd": "0,5456,456,False,False",
+      "fvd34563456fvdfv": "0,456456,54,False,False",
+      "dfv34563456dfvdfvd": "0,4564,456,False,False"
+    },
+    "Room 3": {},
+    "Room 4": {},
+    "Room 5": {},
+    "Room 6": {}
+  },
+  "balancingCategories": {
+    "Room 1": [
+      "1.0",
+      "2.5",
+      "4.5",
+      "6.5",
+      "7.5",
+      "10.0",
+      "11.5"
+    ],
+    "Room 2": [
+      "10",
+      "20.5",
+      "40",
+      "50.5"
+    ],
+    "Room 3": [
+      "1.0",
+      "2.5",
+      "4.5",
+      "6.5",
+      "8.5",
+      "10.5"
+    ],
+    "Room 4": [],
+    "Room 5": [
+      "2.0",
+      "4.0",
+      "5.5",
+      "7.0",
+      "8.5",
+      "10.0"
+    ],
+    "Room 6": [
+      "5",
+      "2.5",
+      "4.5",
+      "6"
+    ]
+  }
 }
