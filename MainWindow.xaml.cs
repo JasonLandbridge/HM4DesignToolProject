@@ -31,7 +31,13 @@ namespace HM4DesignTool
                 return Globals.GetData.StatusbarText;
             }
         }
-
+        public List<String> GetLevelTypes
+        {
+            get
+            {
+                return Globals.GetLevelTypes;
+            }
+        }
 
         public MainWindow()
         {
@@ -39,15 +45,13 @@ namespace HM4DesignTool
 
             this.DataContext = this;
             this.levelDataLayout.DataContext = Globals.GetLevelOverview;
-
             PatientRowDataTemplate = FindResource("PatientRowControlTemplate") as DataTemplate;
+            patientOverviewLayout.ItemTemplate = PatientRowDataTemplate;
+            levelTypeDropDown.ItemsSource = GetLevelTypes;
+
 
             SetupWindow();
 
-            LoadLevelList();
-
-
-            patientOverviewLayout.ItemTemplate = PatientRowDataTemplate;
         }
 
         private void SetupWindow()
@@ -60,14 +64,18 @@ namespace HM4DesignTool
                 levelListFilter.Items.Add(category);
             }
 
+            BeforeLoadWindowSettings();
+
             //Populate LevelList
             LoadLevelList();
+
+            AfterLoadWindowSettings();
         }
 
         private void LoadLevelList()
         {
             int roomIndex = levelListFilter.SelectedIndex;
-            bool firstCategoryOpen = true;
+            bool firstCategoryOpen = true; 
             bool storyFilter = (bool)levelListStoryCheck.IsChecked;
             bool bonusFilter = (bool)levelListBonusCheck.IsChecked;
             bool unknownFilter = (bool)levelListUnknownCheck.IsChecked;
@@ -100,36 +108,47 @@ namespace HM4DesignTool
             }
         }
 
-
-
-        private void AddPatientRow()
+        private void BeforeLoadWindowSettings()
         {
+            //Set saved Room Filter settings
+            levelListFilter.SelectedIndex = Globals.GetSettings.RoomFilterDropdownIndex;
+            levelListStoryCheck.IsChecked = Globals.GetSettings.RoomFilterStoryCheck;
+            levelListBonusCheck.IsChecked = Globals.GetSettings.RoomFilterBonusCheck;
+            levelListUnknownCheck.IsChecked = Globals.GetSettings.RoomFilterUnknownCheck;
+        }
 
-            ContentControl patientRow = new ContentControl();
-            patientRow.ContentTemplate = PatientRowDataTemplate;
-            //patientOverviewLayout.Children.Add(patientRow);
 
+        private void AfterLoadWindowSettings()
+        {
+            if (levelListDisplay.Items.Count > 0)
+            {
+                TreeViewItem categoryItem = levelListDisplay.Items[0] as TreeViewItem;
+                categoryItem.IsExpanded = Globals.GetSettings.LevelListFirstCategoryOpen;
+            }
 
-
-            //PatientRowControlTemplate.
-
-            //XamlReader.Load()
-            //// Create a stringBuilder
-            //StringBuilder sb = new StringBuilder();
-
-            //// use xaml to declare a button as string containing xaml
-            //sb.Append(@"<ContentControl ContentTemplate=\"{ StaticResource PatientRowControlTemplate}\"/>");
-            //sb.Append(@"Content='Click Me!' />");
-
-            //// Create a button using a XamlReader
-            //Button myButton = (Button)XamlReader.Parse(sb.ToString());
-
-            //// Add created button to previously created container.
-            //stackPanel.Children.Add(myButton);
         }
 
 
 
+        private void StoreWindowSettings()
+        {
+            Globals.GetSettings.RoomFilterDropdownIndex = levelListFilter.SelectedIndex;
+            Globals.GetSettings.RoomFilterStoryCheck = (bool)levelListStoryCheck.IsChecked;
+            Globals.GetSettings.RoomFilterBonusCheck = (bool)levelListBonusCheck.IsChecked;
+            Globals.GetSettings.RoomFilterUnknownCheck = (bool)levelListUnknownCheck.IsChecked;
+
+            if (levelListDisplay.Items.Count > 0)
+            {
+                TreeViewItem categoryItem = levelListDisplay.Items[0] as TreeViewItem;
+                Globals.GetSettings.LevelListFirstCategoryOpen = categoryItem.IsExpanded;
+            }
+            else
+            {
+                Globals.GetSettings.LevelListFirstCategoryOpen = true;
+            }
+            
+            Globals.GetSettings.SaveSettings();
+        }
 
         #region Signals
         #region Menu
@@ -178,7 +197,11 @@ namespace HM4DesignTool
 
         private void buttonPatientOverviewAddRow_Click(object sender, RoutedEventArgs e)
         {
-            AddPatientRow();
+            Globals.GetLevelOverview.AddPatientToLoadedLevel();
+            patientOverviewLayout.ItemsSource = Globals.GetLevelOverview.GetLevelLoaded.PatientCollection;
+            //ContentControl patientRow = new ContentControl();
+            //patientRow.ContentTemplate = PatientRowDataTemplate;
+
         }
 
         #endregion
@@ -195,6 +218,12 @@ namespace HM4DesignTool
 
 
         #endregion
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            StoreWindowSettings();
+
+        }
 
     }
 }

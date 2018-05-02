@@ -1,3 +1,8 @@
 {
-  "ProjectDirectoryPath": "I:\\hm4\\data"
+  "ProjectDirectoryPath": "I:\\hm4\\data",
+  "RoomFilterDropdownIndex": 6,
+  "LevelListFirstCategoryOpen": true,
+  "RoomFilterStoryCheck": false,
+  "RoomFilterBonusCheck": true,
+  "RoomFilterUnknownCheck": false
 }

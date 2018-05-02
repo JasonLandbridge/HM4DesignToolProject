@@ -19,15 +19,6 @@ namespace UiWindows
     /// </summary>
     /// 
 
-    public class TestObject
-    {
-        public String TreatmentName { get; set; }
-
-        public TestObject(String TreatmentName)
-        {
-            this.TreatmentName = TreatmentName;
-        }
-    }
 
     public partial class SettingsWindow : INotifyPropertyChanged
     {

@@ -111,12 +111,15 @@
     <Compile Include="Forms\RoomExportWindow.xaml.cs">
       <DependentUpon>RoomExportWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
     <Page Include="Forms\SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\RoomExportWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\NewLevelWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -133,6 +136,9 @@
     <Compile Include="Class\level.cs" />
     <Compile Include="Forms\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\NewLevelWindow.xaml.cs">
+      <DependentUpon>NewLevelWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

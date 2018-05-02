@@ -73,7 +73,7 @@ namespace SettingsNamespace
                     //Loop over each treatment
                     foreach (Treatment treatmentRow in roomCategory.Value)
                     {
-                        if (treatmentRow != null && treatmentRow.TreatmentName != null) 
+                        if (treatmentRow != null && treatmentRow.TreatmentName != null)
                         {
                             treatmentList.Add(treatmentRow.TreatmentName, treatmentRow.ToString());
                         }
@@ -279,6 +279,63 @@ namespace SettingsNamespace
             gSettings.Save();
         }
 
+        public int RoomFilterDropdownIndex
+        {
+            get
+            {
+                return pSettings.RoomFilterDropdownIndex;
+            }
+            set
+            {
+                pSettings.RoomFilterDropdownIndex = value;
+            }
+        }
+        public bool LevelListFirstCategoryOpen
+        {
+            get
+            {
+                return pSettings.LevelListFirstCategoryOpen;
+            }
+            set
+            {
+                pSettings.LevelListFirstCategoryOpen = value;
+            }
+        }
+
+        public bool RoomFilterStoryCheck
+        {
+            get
+            {
+                return pSettings.RoomFilterStoryCheck;
+            }
+            set
+            {
+                pSettings.RoomFilterStoryCheck = value;
+            }
+        }
+        public bool RoomFilterBonusCheck
+        {
+            get
+            {
+                return pSettings.RoomFilterBonusCheck;
+            }
+            set
+            {
+                pSettings.RoomFilterBonusCheck = value;
+            }
+        }
+        public bool RoomFilterUnknownCheck
+        {
+            get
+            {
+                return pSettings.RoomFilterUnknownCheck;
+            }
+            set
+            {
+                pSettings.RoomFilterUnknownCheck = value;
+            }
+        }
+
     }
 
     public class PersonalSettings : JsonSettings
@@ -286,6 +343,15 @@ namespace SettingsNamespace
         public override string FileName { get; set; } = "personal.json"; //for loading and saving.
 
         public string ProjectDirectoryPath { get; set; } = "";
+
+        public int RoomFilterDropdownIndex { get; set; } = 0;
+        public bool LevelListFirstCategoryOpen { get; set; } = true;
+        public bool RoomFilterStoryCheck { get; set; } = true;
+        public bool RoomFilterBonusCheck { get; set; } = true;
+        public bool RoomFilterUnknownCheck { get; set; } = true;
+
+
+
 
         public PersonalSettings()
         {

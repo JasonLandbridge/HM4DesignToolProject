@@ -80,7 +80,19 @@ namespace DataNameSpace
         }
 
         public static List<String> roomCategories = new List<String> { "Room 1", "Room 2", "Room 3", "Room 4", "Room 5", "Room 6" };
-
+        public static List<String> GetLevelTypes
+        {
+            get
+            {
+                IEnumerable<LevelType> output = Enum.GetValues(typeof(LevelType)).Cast<LevelType>();
+                List<String> LevelTypeString = new List<string> { };
+                foreach (LevelType leveltype in output)
+                {
+                    LevelTypeString.Add(leveltype.ToString());
+                }
+                return LevelTypeString;
+            }
+        }
 
         public static Double StringToDouble(String difficultyModifier = null)
         {

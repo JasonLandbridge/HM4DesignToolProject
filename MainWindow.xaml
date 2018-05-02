@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:HM4DesignTool"
 		xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         mc:Ignorable="d"
-        Title="HM4 Design Tool" Height="768" Width="1280">
+        Title="HM4 Design Tool" Height="768" Width="1280" Closed="Window_Closed">
 	<Window.Resources>
 		<DataTemplate x:Key="PatientRowControlTemplate" >
 			<Grid Margin="5,5,0,0">
@@ -192,7 +192,7 @@
 											<Label Grid.Column="1" Grid.Row="0" Content="-" Margin="10,0" />
 											<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0"/>
 										</Grid>
-										<ComboBox Grid.Column="1" Grid.Row="3"  Margin="5,5"/>
+										<ComboBox x:Name="levelTypeDropDown" Grid.Column="1" Grid.Row="3"  Margin="5,5" ItemsSource="{Binding Path=GetLevelTypes, UpdateSourceTrigger=PropertyChanged}"/>
 
 
 
@@ -317,7 +317,7 @@
 
 						</Grid>
 					</TabItem>
-					<TabItem Header="Patient Overview">
+					<TabItem Header="Patient Overview" IsEnabled="{Binding Path=LevelOverviewActive}">
 						<TabItem.Background>
 							<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
 								<GradientStop Color="#FFF0F0F0" Offset="0"/>
@@ -357,6 +357,9 @@
 								<Label Grid.Column="4" Content="Randomize" />
 								<Label Grid.Column="5" Content="Treatments" />
 							</Grid>
+							<ScrollViewer HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" >
+								<ItemsControl x:Name="patientOverviewLayout" ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, PresentationTraceSources.TraceLevel=High, UpdateSourceTrigger=PropertyChanged}" />
+							</ScrollViewer>
 
 							<!---<ItemsControl x:Name="patientOverviewLayout" ItemTemplate="{StaticResource PatientRowControlTemplate}"  HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch">
 								<ItemsControl.ItemsPanel>
@@ -367,7 +370,6 @@
 							</ItemsControl>
 														-->
 							<!-- Patient Overview Data -->
-							<ItemsControl x:Name="patientOverviewLayout" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" ItemsSource="{Binding Path=GetLevelLoaded.PatientCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
 							<!--	
 							<StackPanel x:Name="patientOverviewLayout" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch">
@@ -390,7 +392,7 @@
 
 						</Grid>
 					</TabItem>
-					<TabItem Header="Patient Chances">
+					<TabItem Header="Patient Chances" IsEnabled="{Binding Path=LevelOverviewActive}">
 						<Grid Background="#FFF">
 							<DataGrid HorizontalAlignment="Stretch"  Margin="0" VerticalAlignment="Stretch" ItemsSource="{Binding Mode=OneWay, Source={StaticResource PatientRowControlTemplate}}"/>
 						</Grid>

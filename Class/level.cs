@@ -121,6 +121,8 @@ namespace LevelData
                 {
                     _currentLevelLoaded = value;
                     NotifyPropertyChanged();
+                    NotifyPropertyChanged("LevelOverviewActive");
+
                 }
             }
         }
@@ -317,6 +319,14 @@ namespace LevelData
             return levelObjectData[levelName];
         }
 
+        public void AddPatientToLoadedLevel()
+        {
+            if (GetLevelLoaded != null)
+            {
+                GetLevelLoaded.AddPatient();
+            }
+        }
+
         private bool LevelExist(String levelName)
         {
             levelName = CleanLevelName(levelName);
@@ -387,11 +397,13 @@ namespace LevelData
         }
     }
 
-    public class Level
+    public class Level : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         String LevelName = String.Empty;
 
-        private Dictionary<int, Patient> patientDatabase = new Dictionary<int, Patient>();
+        private List<Patient> patientDatabase = new List<Patient> { };
         private Dictionary<String, float> patientChancesDict = new Dictionary<String, float>();
         private DesignToolData designToolData = new DesignToolData();
         private String currentLevelScript = null;
@@ -402,13 +414,18 @@ namespace LevelData
                 ObservableCollection<Patient> patientCollection = new ObservableCollection<Patient>();
                 if (patientDatabase.Count > 0)
                 {
-                    foreach (KeyValuePair<int, Patient> patient in patientDatabase)
+                    foreach (Patient patient in patientDatabase)
                     {
-                        patientCollection.Add(patient.Value);
+                        patientCollection.Add(patient);
                     }
 
                 }
                 return patientCollection;
+            }
+            set
+            {
+                patientDatabase = value.ToList();
+                OnPropertyChanged();
             }
         }
 
@@ -464,7 +481,7 @@ namespace LevelData
                 {
                     output += "levelDesc.triggers = " + Environment.NewLine;
                     output += "{" + Environment.NewLine;
-                    foreach (Patient patient in patientDatabase.Values)
+                    foreach (Patient patient in patientDatabase)
                     {
                         output += patient.ToString();
                     }
@@ -477,21 +494,23 @@ namespace LevelData
         }
         #endregion
 
-
-        private void AddPatient(String patientData, int index = -1)
+        public void AddPatient(String patientData = null, int index = -1)
         {
             if (index == -1)
             {
                 index = patientDatabase.Count();
             }
-            if (patientDatabase.ContainsKey(index))
-            {
-                patientDatabase.Remove(index);
-            }
             String patientName = "Patient_" + index.ToString();
-            Patient patientObject = new Patient(patientData, patientName);
+            Patient patientObject = new Patient(patientName);
 
-            patientDatabase.Add(index, patientObject);
+            if (patientData != null)
+            {
+                patientObject.SetPatientData(patientData);
+
+            }
+
+            patientDatabase.Insert(index, patientObject);
+
         }
 
         private void ParseRawText(String levelName)
@@ -604,13 +623,23 @@ namespace LevelData
 
 
         }
+
+        #region Events
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        #endregion
+
     }
 
     public class Patient
     {
         private String patientName = String.Empty;
-        private int delay = -1;
-        private int weight = -1;
+        private int delay = 1000;
+        private int weight = 0;
         private List<String> treatmentList;
         private Dictionary<String, String> patientTraits;
         private bool weightEnabled = false;
@@ -656,13 +685,17 @@ namespace LevelData
 
         }
 
-        public Patient(String patientData, String patientName = null)
+        public Patient(String patientName = null)
         {
-            ParsePatientData(patientData);
             if (patientName != null)
             {
                 this.patientName = patientName;
             }
+        }
+
+        public void SetPatientData(String patientData)
+        {
+                ParsePatientData(patientData);
         }
 
         public override string ToString()
@@ -773,7 +806,15 @@ namespace LevelData
             patientData = RemoveFirstComma(patientData);
             if (patientData.Length > 5)
             {
-                 patientTraits = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<String, String>>(patientData);
+                try
+                {
+                    patientTraits = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<String, String>>(patientData);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("ERROR: Level.ParsePatientData, failed to parse patientData: " + patientData);
+                }
+
             }
         }
 
