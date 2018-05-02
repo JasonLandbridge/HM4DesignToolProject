@@ -79,7 +79,7 @@
 		<DockPanel>
 			<Menu DockPanel.Dock="Top">
 				<MenuItem Header="_File">
-					<MenuItem Header="_Open"/>
+					<MenuItem  x:Name="menuItemNewLevel" Header="_New Levels" Click="menuItemNewLevel_Click"/>
 					<MenuItem Header="_Close"/>
 					<MenuItem Header="_Save"/>
 				</MenuItem>

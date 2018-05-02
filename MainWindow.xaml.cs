@@ -158,6 +158,14 @@ namespace HM4DesignTool
             SettingsWindow dialog = new SettingsWindow();
             Nullable<bool> dialogResult = dialog.ShowDialog();
         }
+
+        private void menuItemNewLevel_Click(object sender, RoutedEventArgs e)
+        {
+            NewLevelWindow dialog = new NewLevelWindow();
+            Nullable<bool> dialogResult = dialog.ShowDialog();
+
+        }
+
         #endregion
 
         #region LevelList
@@ -224,6 +232,7 @@ namespace HM4DesignTool
             StoreWindowSettings();
 
         }
+
 
     }
 }
