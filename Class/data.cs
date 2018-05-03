@@ -10,11 +10,12 @@ using System.IO;
 using System.Windows.Media;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace DataNameSpace
 {
 
-    public enum LevelType
+    public enum LevelTypeEnum
     {
         Unknown = 0,
         Story = 1,
@@ -23,6 +24,7 @@ namespace DataNameSpace
         MiniGame = 4,
         OliverOne = 5,
         OliverAll = 6
+
     }
 
     public static class Globals
@@ -84,9 +86,9 @@ namespace DataNameSpace
         {
             get
             {
-                IEnumerable<LevelType> output = Enum.GetValues(typeof(LevelType)).Cast<LevelType>();
+                IEnumerable<LevelTypeEnum> output = Enum.GetValues(typeof(LevelTypeEnum)).Cast<LevelTypeEnum>();
                 List<String> LevelTypeString = new List<string> { };
-                foreach (LevelType leveltype in output)
+                foreach (LevelTypeEnum leveltype in output)
                 {
                     LevelTypeString.Add(leveltype.ToString());
                 }
@@ -106,7 +108,25 @@ namespace DataNameSpace
             }
         }
 
+        public static String FilterToNumerical(String str)
+        {
 
+            return Regex.Replace(str, @"[^\d]", "");
+        }
+
+        public static String GetCategoryKey(int RoomIndex)
+        {
+            //Convert RoomNumber to RoomIndex, [1,2,3,4..] => [0,1,2,3..] 
+            RoomIndex--;
+            if (-1 < RoomIndex && RoomIndex < roomCategories.Count)
+            {
+                return roomCategories[RoomIndex];
+            }
+            else
+            {
+                return String.Empty;
+            }
+        }
     }
 
     public class Data
@@ -313,7 +333,7 @@ namespace DataNameSpace
 
     }
 
-    public class Treatment : INotifyPropertyChanged
+    public class Treatment : Object, INotifyPropertyChanged
     {
         private String _treatmentName;
         private Double _difficultyUnlocked = 0;
@@ -409,7 +429,7 @@ namespace DataNameSpace
 
         }
 
-        public Treatment(String treatmentName = null, Double difficultyUnlocked = 0, int heartsValue = 0, int weight = 0, bool gesture = false, bool alwaysLast = false, Color color = new Color())
+        public Treatment(String treatmentName, Double difficultyUnlocked = 0, int heartsValue = 0, int weight = 0, bool gesture = false, bool alwaysLast = false, Color color = new Color())
         {
             _treatmentName = treatmentName;
             _difficultyUnlocked = difficultyUnlocked;
@@ -542,6 +562,11 @@ namespace DataNameSpace
             return outputDict;
         }
 
+        public override string ToString()
+        {
+            return ToString(true);
+        }
+
         public String ToString(bool includeTreatmentName = false)
         {
             return String.Join(",", ToList(includeTreatmentName));
@@ -551,6 +576,7 @@ namespace DataNameSpace
         {
             return TreatmentName == null || TreatmentName == "";
         }
+
 
         #region Operators
         //public override bool Equals(Object obj)

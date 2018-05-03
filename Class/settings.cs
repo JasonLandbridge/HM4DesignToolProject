@@ -168,7 +168,7 @@ namespace SettingsNamespace
         {
             if (categoryKey != null)
             {
-                Dictionary<String, List<Treatment>> filterdTreatmentDict = new Dictionary<String, List<Treatment>> { };  // Room[N] -> List with Treatment Structs
+                Dictionary<String, List<Treatment>> filterdTreatmentDict = new Dictionary<String, List<Treatment>> { };  // Room[N] -> List with Treatment Class
 
                 if (treatmentCategoriesDict.ContainsKey(categoryKey))
                 {
@@ -224,7 +224,7 @@ namespace SettingsNamespace
         }
         public List<Treatment> GetTreatmentList(String categoryKey)
         {
-            if (categoryKey != null)
+            if (categoryKey != null && categoryKey != String.Empty)
             {
                 Dictionary<String, List<Treatment>> treatmentDictionary = GetTreatmentDictionary(categoryKey);
                 if (treatmentDictionary.ContainsKey(categoryKey))
@@ -235,7 +235,41 @@ namespace SettingsNamespace
             return new List<Treatment> { };
 
         }
+        public Treatment GetTreatment(String TreatmentName, int RoomIndex = -1)
+        {
+            if (RoomIndex > -1 && Globals.GetCategoryKey(RoomIndex) != String.Empty)
+            {
+                List<Treatment> TreatmentList = GetTreatmentList(Globals.GetCategoryKey(RoomIndex));
+                if (TreatmentList != null && TreatmentList.Count > 0)
+                {
+                    foreach (Treatment treatment in TreatmentList)
+                    {
+                        if (treatment.TreatmentName == TreatmentName)
+                        {
+                            return treatment;
+                        }
+                    }
+                }
 
+            }
+            else
+            //Longer method of retrieving the treatment without roomIndex
+            {
+                foreach (KeyValuePair<String, List<Treatment>> category in GetTreatmentDictionary())
+                {
+                    foreach(Treatment treatment in category.Value)
+                    {
+                        if (treatment.TreatmentName == TreatmentName)
+                        {
+                            return treatment;
+                        }
+                    }
+                }
+            }
+
+
+            return new Treatment("Unknown");
+        }
         #endregion
 
         #region Setters

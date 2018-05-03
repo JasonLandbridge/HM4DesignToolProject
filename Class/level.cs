@@ -11,25 +11,75 @@ using DataNameSpace;
 using NaturalSort.Extension;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace LevelData
 {
 
-    struct DesignToolData
+    public class DesignToolData : INotifyPropertyChanged
     {
-        public float DifficultyLevel;
-        public LevelType levelType;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private int _roomIndex = 0;
+        private float _difficultyLevel = 0;
+        private LevelTypeEnum _levelType = LevelTypeEnum.Unknown;
+
+        public int Roomindex
+        {
+            get
+            {
+                return _roomIndex;
+            }
+            set
+            {
+                _roomIndex = value;
+            }
+        }
+        public float DifficultyLevel
+        {
+            get
+            {
+                return _difficultyLevel;
+            }
+            set
+            {
+                _difficultyLevel = value;
+            }
+        }
+        public LevelTypeEnum LevelType
+        {
+            get
+            {
+                return _levelType;
+            }
+            set
+            {
+                _levelType = value;
+            }
+        }
+        public String LevelTypeString
+        {
+            get
+            {
+                return Enum.GetName(typeof(LevelTypeEnum), LevelType);
+            }
+            set
+            {
+                //Enum.TryParse(value, out LevelTypeEnum LevelType);
+                LevelType = (LevelTypeEnum)Enum.Parse(typeof(LevelTypeEnum), value);
+            }
+        }
 
         private const String startDesignToolDataText = "--[[HM4DesignToolData:";
+        private const String RoomIndexText = "RoomIndex:";
         private const String DifficultyLevelText = "DifficultyLevel:";
         private const String LevelTypeText = "LevelType:";
         private const String endDesignToolDataText = "--]]";
 
 
-        public DesignToolData(float difficultyLevel = 0, LevelType levelType = LevelType.Unknown)
+        public DesignToolData()
         {
-            this.DifficultyLevel = difficultyLevel;
-            this.levelType = levelType;
+
         }
 
         public void ParseDesignData(String designToolData)
@@ -42,6 +92,14 @@ namespace LevelData
             foreach (String entry in designToolList)
             {
                 String textItem = entry;
+
+                if (textItem.Contains(RoomIndexText))
+                {
+                    textItem = textItem.Replace(RoomIndexText, "");
+                    textItem = Globals.FilterToNumerical(textItem);
+                    Roomindex = Convert.ToInt32(textItem);
+                }
+
                 if (textItem.Contains(DifficultyLevelText))
                 {
                     textItem = textItem.Replace(DifficultyLevelText, "");
@@ -53,28 +111,28 @@ namespace LevelData
                     switch (textItem)
                     {
                         case "Bonus":
-                            levelType = LevelType.Bonus;
+                            LevelType = LevelTypeEnum.Bonus;
                             break;
                         case "Story":
-                            levelType = LevelType.Story;
+                            LevelType = LevelTypeEnum.Story;
                             break;
                         case "MiniGame":
-                            levelType = LevelType.MiniGame;
+                            LevelType = LevelTypeEnum.MiniGame;
                             break;
                         case "TimeTrial":
-                            levelType = LevelType.TimeTrial;
+                            LevelType = LevelTypeEnum.TimeTrial;
                             break;
                         case "Oliver":
-                            levelType = LevelType.OliverOne;
+                            LevelType = LevelTypeEnum.OliverOne;
                             break;
                         case "OliverOne":
-                            levelType = LevelType.OliverOne;
+                            LevelType = LevelTypeEnum.OliverOne;
                             break;
                         case "OliverAll":
-                            levelType = LevelType.OliverAll;
+                            LevelType = LevelTypeEnum.OliverAll;
                             break;
                         default:
-                            levelType = LevelType.Unknown;
+                            LevelType = LevelTypeEnum.Unknown;
                             break;
                     }
                 }
@@ -89,19 +147,33 @@ namespace LevelData
         {
             String output = startDesignToolDataText + Environment.NewLine;
 
+            if (Roomindex > 0)
+            {
+                output += RoomIndexText + " \t" + Roomindex.ToString() + Environment.NewLine;
+            }
+
+
             if (DifficultyLevel > 0)
             {
                 output += DifficultyLevelText + " \t" + DifficultyLevel.ToString() + Environment.NewLine;
             }
 
-            if (levelType > 0)
+            if (LevelType > 0)
             {
-                output += LevelTypeText + " \t" + levelType.ToString() + Environment.NewLine;
+                output += LevelTypeText + " \t" + LevelType.ToString() + Environment.NewLine;
             }
 
             output += endDesignToolDataText + Environment.NewLine;
             return output;
         }
+
+        #region Events
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
+
     }
 
     public class LevelOverview : INotifyPropertyChanged
@@ -110,18 +182,20 @@ namespace LevelData
 
         private Dictionary<string, Level> levelObjectData = new Dictionary<string, Level>();
         private Level _currentLevelLoaded = null;
-        public Level GetLevelLoaded {
-        get
+        public Level GetLevelLoaded
+        {
+            get
             {
                 return _currentLevelLoaded;
             }
-        set
+            set
             {
                 if (value != _currentLevelLoaded)
                 {
                     _currentLevelLoaded = value;
                     NotifyPropertyChanged();
                     NotifyPropertyChanged("LevelOverviewActive");
+                    OnPropertyChanged("DifficultyModifierList");
 
                 }
             }
@@ -141,7 +215,22 @@ namespace LevelData
             }
         }
         private List<String> levelList = new List<String> { };
+        public ObservableCollection<String> DifficultyModifierList
+        {
+            get
+            {
+                if (GetLevelLoaded != null)
+                {
+                    String categoryKey = Globals.GetCategoryKey(GetLevelLoaded.GetRoomIndex);
+                    if (categoryKey != String.Empty)
+                    {
+                        return new ObservableCollection<String>(Globals.GetSettings.GetDifficultyModifierList(categoryKey));
+                    }
+                }
+                return new ObservableCollection<String> { };
 
+            }
+        }
         public LevelOverview()
         {
 
@@ -311,10 +400,10 @@ namespace LevelData
         {
             levelName = CleanLevelName(levelName);
             if (LevelExist(levelName))
-             {
+            {
                 levelObjectData.Remove(levelName);
-             }
-             
+            }
+
             levelObjectData.Add(levelName, CreateLevel(levelName));
             return levelObjectData[levelName];
         }
@@ -395,18 +484,32 @@ namespace LevelData
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
+        #region Events
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        #endregion
+
+
     }
 
     public class Level : INotifyPropertyChanged
     {
+
         public event PropertyChangedEventHandler PropertyChanged;
+        #region LevelProperties
 
         String LevelName = String.Empty;
-
+        private List<String> _treatmentOptions = new List<String> { };
         private List<Patient> patientDatabase = new List<Patient> { };
         private Dictionary<String, float> patientChancesDict = new Dictionary<String, float>();
         private DesignToolData designToolData = new DesignToolData();
         private String currentLevelScript = null;
+
         public ObservableCollection<Patient> PatientCollection
         {
             get
@@ -429,6 +532,9 @@ namespace LevelData
             }
         }
 
+        #endregion
+
+
         public Level(string levelName)
         {
             LevelName = levelName;
@@ -436,6 +542,130 @@ namespace LevelData
         }
 
         #region Getters
+
+        public String GetDesignToolData
+        {
+            get
+            {
+                return designToolData.ToString();
+            }
+        }
+
+        public int GetRoomIndex
+        {
+            get
+            {
+                if (designToolData.Roomindex != 0)
+                {
+                    return designToolData.Roomindex;
+                }
+                else
+                {
+                    int roomIndex = -1;
+
+                    //Generate the RoomIndex based on the naming convention of the levelName
+                    if (LevelName != String.Empty)
+                    {
+
+                        //Assuming the room index is in r2_b04... naming convention]
+                        if (LevelName.StartsWith("level"))
+                        {
+                            int levelIndex = Convert.ToInt16(LevelName.Replace("level", ""));
+                            while (roomIndex < 100)
+                            {
+                                int minIndex = (roomIndex - 1) * 10 + 1;
+                                int maxIndex = (roomIndex * 10) + 1;
+
+                                if (Enumerable.Range(minIndex, maxIndex).Contains(levelIndex))
+                                {
+                                    break;
+                                }
+                                roomIndex++;
+                            }
+
+                        }
+                        else if (LevelName.StartsWith("r"))
+                        {
+                            roomIndex = Convert.ToInt16(Globals.FilterToNumerical(LevelName.Substring(1, 1)));
+                        }
+                        else
+                        {
+                            roomIndex = -1;
+                        }
+
+                    }
+                    //Store the newly generated RoomIndex
+                    GetRoomIndex = roomIndex;
+                    return roomIndex;
+                }
+            }
+            set
+            {
+                designToolData.Roomindex = value;
+                OnPropertyChanged("GetDesignToolData");
+                OnPropertyChanged("GetNewLevelScript");
+
+            }
+        }
+        public float GetDifficultyModifier
+        {
+            get
+            {
+                return designToolData.DifficultyLevel;
+            }
+            set
+            {
+                designToolData.DifficultyLevel = value;
+            }
+        }
+        public String GetDifficultyModifierString
+        {
+            get
+            {
+                return GetDifficultyModifier.ToString("0.0");
+            }
+            set
+            {
+                GetDifficultyModifier = float.Parse(value, CultureInfo.InvariantCulture.NumberFormat);
+                OnPropertyChanged("GetNewLevelScript");
+
+            }
+        }
+        public String GetLevelTypeString
+        {
+            get
+            {
+                return designToolData.LevelTypeString;
+            }
+            set
+            {
+                designToolData.LevelTypeString = value;
+                OnPropertyChanged("GetDesignToolData");
+                OnPropertyChanged("GetNewLevelScript");
+
+            }
+        }
+        public ObservableCollection<String> GetTreatmentOptions
+        {
+            get
+            {
+                List<String> treatmentListString = new List<String> { };
+
+                String categoryKey = Globals.GetCategoryKey(GetRoomIndex);
+                if (GetRoomIndex > -1 && categoryKey != String.Empty)
+                {
+                    List<Treatment> treatmentList = Globals.GetSettings.GetTreatmentList(categoryKey);
+
+                    foreach (Treatment treatment in treatmentList)
+                    {
+                        treatmentListString.Add(treatment.TreatmentName);
+                    }
+                }
+
+                return new ObservableCollection<String>(treatmentListString);
+
+            }
+        }
         public String GetCurrentLevelScript
         {
             get
@@ -501,7 +731,7 @@ namespace LevelData
                 index = patientDatabase.Count();
             }
             String patientName = "Patient_" + index.ToString();
-            Patient patientObject = new Patient(patientName);
+            Patient patientObject = new Patient(this, patientName);
 
             if (patientData != null)
             {
@@ -635,15 +865,32 @@ namespace LevelData
 
     }
 
-    public class Patient
+    public class Patient : INotifyPropertyChanged
     {
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private String patientName = String.Empty;
         private int delay = 1000;
         private int weight = 0;
-        private List<String> treatmentList;
+        private List<String> _treatmentList;
         private Dictionary<String, String> patientTraits;
+        private Level ParentLevel = null;
         private bool weightEnabled = false;
-
+        public int RoomIndex
+        {
+            get
+            {
+                if (ParentLevel != null)
+                {
+                    return ParentLevel.GetRoomIndex;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+        }
         public String PatientName
         {
             get
@@ -678,6 +925,59 @@ namespace LevelData
                 weight = value;
             }
         }
+        public List<String> TreatmentList
+        {
+            get
+            {
+                return _treatmentList;
+            }
+            set
+            {
+                _treatmentList = value;
+                OnPropertyChanged("TreatmentCollection");
+            }
+        }
+        public ObservableCollection<Treatment> TreatmentCollection
+        {
+            get
+            {
+                ObservableCollection<Treatment> treatmentCollection = new ObservableCollection<Treatment> { };
+                if (TreatmentList != null)
+                {
+                    foreach (String treatment in TreatmentList)
+                    {
+                        treatmentCollection.Add(Globals.GetSettings.GetTreatment(treatment, RoomIndex));
+                    }
+                }
+
+                return treatmentCollection;
+            }
+            set
+            {
+                List<String> treatmentList = new List<String> { };
+
+                foreach (Treatment treatment in value)
+                {
+                    treatmentList.Add(treatment.TreatmentName);
+                }
+
+                TreatmentList = treatmentList;
+            }
+        }
+        public ObservableCollection<String> TreatmentOptions
+        {
+            get
+            {
+                if(ParentLevel != null)
+                {
+                    return ParentLevel.GetTreatmentOptions;
+                }
+                else
+                {
+                    return new ObservableCollection<String> { };
+                }
+            }
+        }
 
         public Patient()
         {
@@ -685,17 +985,20 @@ namespace LevelData
 
         }
 
-        public Patient(String patientName = null)
+        public Patient(Level ParentLevel, String patientName = null)
         {
+            this.ParentLevel = ParentLevel;
+
             if (patientName != null)
             {
                 this.patientName = patientName;
             }
+
         }
 
         public void SetPatientData(String patientData)
         {
-                ParsePatientData(patientData);
+            ParsePatientData(patientData);
         }
 
         public override string ToString()
@@ -712,10 +1015,10 @@ namespace LevelData
                 output += " weight = " + weight.ToString() + ",";
             }
 
-            if (treatmentList != null && treatmentList.Count() > 0)
+            if (_treatmentList != null && _treatmentList.Count() > 0)
             {
                 output += " todo = {";
-                foreach (String treatment in treatmentList)
+                foreach (String treatment in _treatmentList)
                 {
                     output += "\"" + treatment + "\",";
                 }
@@ -757,7 +1060,7 @@ namespace LevelData
                 if (startIndex > -1 && endIndex > -1)
                 {
                     String delayString = patientData.Substring(startIndex, endIndex - startIndex);
-                    delayString = Regex.Replace(delayString, @"[^\d]", "");
+                    delayString = Globals.FilterToNumerical(delayString);
                     if (delayString != "None")
                     {
                         delay = Convert.ToInt32(delayString);
@@ -797,7 +1100,7 @@ namespace LevelData
                 {
                     String rawTreatments = patientData.Substring(startIndex, endIndex - startIndex);
                     rawTreatments = rawTreatments.Replace("\"", "");
-                    treatmentList = rawTreatments.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList<String>();
+                    TreatmentList = rawTreatments.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList<String>();
                     patientData = patientData.Remove(startIndex - treatmentText.Length, endIndex);
 
                 }
@@ -822,12 +1125,22 @@ namespace LevelData
         {
             if (patientString.StartsWith(","))
             {
-                return patientString.Substring(1, patientString.Count()-1);
+                return patientString.Substring(1, patientString.Count() - 1);
             }
             else
             {
                 return patientString;
             }
         }
+
+        #region Events
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        #endregion
+
     }
 }

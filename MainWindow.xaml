@@ -8,13 +8,21 @@
 		xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         mc:Ignorable="d"
         Title="HM4 Design Tool" Height="768" Width="1280" Closed="Window_Closed">
+
 	<Window.Resources>
+		<!-- PatientRowTreatmentTemplate -->
+		<DataTemplate x:Key="PatientRowTreatmentTemplate">
+			<ComboBox  SelectedIndex="0" Margin="5,0" SelectedValue="{Binding TreatmentName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, PresentationTraceSources.TraceLevel=High}" ItemsSource="{Binding Mode=OneWay, ElementName=patientRow, Path=DataContext.TreatmentOptions}" Width="125"/>
+		</DataTemplate>
+		<!--PatientRowControlTemplate-->
 		<DataTemplate x:Key="PatientRowControlTemplate" >
-			<Grid Margin="5,5,0,0">
+			<Grid x:Name="patientRow" Margin="5,5,0,0">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="25"/>
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="Auto"/>
@@ -25,48 +33,30 @@
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 				<CheckBox MinWidth="20" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" />
-				<TextBox MinWidth="100" Grid.Column="1" Text="{Binding Path=PatientName, Mode=TwoWay, FallbackValue=Patient}" />
-				<wpfTool:IntegerUpDown Grid.Column="2" Margin="5,0" MinWidth="80" Value="{Binding Path=Delay, Mode=TwoWay, FallbackValue=0}"/>
-				<wpfTool:IntegerUpDown Grid.Column="3" Margin="5,0" MinWidth="80" Value="{Binding Path=Weight, Mode=TwoWay, FallbackValue=0}"/>
-				<StackPanel Grid.Column="4" Orientation="Horizontal">
-					<Button Content=" R " Margin="5,0"/>
-					<CheckBox Margin="5,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-					<wpfTool:IntegerUpDown HorizontalContentAlignment="Stretch" />
-					<Label Content="-" />
-					<wpfTool:IntegerUpDown />
-				</StackPanel>
+				<TextBox MinWidth="100" Grid.Column="1" Text="{Binding PatientName, FallbackValue=Patient, Mode=TwoWay}" />
+				<wpfTool:IntegerUpDown Grid.Column="2" Margin="5,0" MinWidth="80" Value="{Binding Delay, FallbackValue=0, Mode=TwoWay}"/>
+				<wpfTool:IntegerUpDown Grid.Column="3" Margin="5,0" MinWidth="80" Value="{Binding Weight, FallbackValue=0, Mode=TwoWay}"/>
+				<Separator Grid.Column="4" Grid.Row="0" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Width="1" />
 				<StackPanel Grid.Column="5" Orientation="Horizontal">
-					<ComboBox UseLayoutRounding="False" SelectedIndex="0" Margin="5,0" >
-						<ComboBoxItem Content="Treatment1"/>
-						<ComboBoxItem Content="Treatment2"/>
-						<ComboBoxItem Content="Treatment3"/>
-						<ComboBoxItem Content="Treatment4"/>
-						<ComboBoxItem Content="Treatment5"/>
-					</ComboBox>
-					<ComboBox UseLayoutRounding="False" SelectedIndex="0" Margin="5,0">
-						<ComboBoxItem Content="Treatment1"/>
-						<ComboBoxItem Content="Treatment2"/>
-						<ComboBoxItem Content="Treatment3"/>
-						<ComboBoxItem Content="Treatment4"/>
-						<ComboBoxItem Content="Treatment5"/>
-					</ComboBox>
-					<ComboBox UseLayoutRounding="False" SelectedIndex="0" Margin="5,0">
-						<ComboBoxItem Content="Treatment1"/>
-						<ComboBoxItem Content="Treatment2"/>
-						<ComboBoxItem Content="Treatment3"/>
-						<ComboBoxItem Content="Treatment4"/>
-						<ComboBoxItem Content="Treatment5"/>
-					</ComboBox>
-					<ComboBox UseLayoutRounding="False" SelectedIndex="0" Margin="5,0">
-						<ComboBoxItem Content="Treatment1"/>
-						<ComboBoxItem Content="Treatment2"/>
-						<ComboBoxItem Content="Treatment3"/>
-						<ComboBoxItem Content="Treatment4"/>
-						<ComboBoxItem Content="Treatment5"/>
-					</ComboBox>
+					<Button x:Name="randomizeButton" Content=" R " Margin="5,0" Width="30"/>
+					<CheckBox x:Name="randomizeRangeCheck" Margin="5,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+					<StackPanel Orientation="Horizontal" Visibility="{Binding IsChecked, Converter={StaticResource VisibilityOfBool}, ElementName=randomizeRangeCheck}">
+						<wpfTool:IntegerUpDown HorizontalContentAlignment="Stretch" />
+						<Label Content="-" />
+						<wpfTool:IntegerUpDown Margin="0,0,5,0" />
+					</StackPanel>
+
 				</StackPanel>
-				<Button  Grid.Column="6" Content="Treatments" MinWidth="80"/>
-				<Button  Grid.Column="7" Content="Traits" MinWidth="80"/>
+				<Separator Grid.Column="6" Grid.Row="0" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Width="1" />
+				<ItemsControl Grid.Column="7" x:Name="patientTreatmentRow" ItemTemplate="{DynamicResource PatientRowTreatmentTemplate}" ItemsSource="{Binding TreatmentCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+				</ItemsControl>
+				<Button  Grid.Column="8" Content="Treatments" MinWidth="80"/>
+				<Button  Grid.Column="9" Content="Traits" MinWidth="80"/>
 			</Grid>
 		</DataTemplate>
 	</Window.Resources>
@@ -172,14 +162,12 @@
 										<Label MinWidth="100" Grid.Column="0" Grid.Row="2" Content="Delay Random Range: " Margin="0,5"/>
 										<Label MinWidth="100" Grid.Column="0" Grid.Row="3" Content="Level Type: " Margin="0,5"/>
 
-										<Label MinWidth="100" Grid.Column="1" Grid.Row="0" Content="0" Margin="0,5"/>
+										<wpfTool:IntegerUpDown x:Name="roomIndexValue" MinWidth="100" Grid.Column="1" Grid.Row="0" Margin="0,5" Value="{Binding GetLevelLoaded.GetRoomIndex, UpdateSourceTrigger=PropertyChanged, FallbackValue=-1}" DefaultValue="0"/>
 										<Grid Grid.Column="1" Grid.Row="1" Margin="0,5">
 											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="Auto"/>
 												<ColumnDefinition/>
 											</Grid.ColumnDefinitions>
-											<CheckBox x:Name="difficultyModifierCheckBox" HorizontalAlignment="Stretch" Margin="5, 0" VerticalAlignment="Stretch" VerticalContentAlignment="Center"/>
-											<ComboBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="5,0" VerticalAlignment="Stretch" Visibility="{Binding ElementName=difficultyModifierCheckBox, Path=IsChecked}"/>
+											<ComboBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="5,0" VerticalAlignment="Stretch" ItemsSource="{Binding Path=DifficultyModifierList, Mode=OneWay}" SelectedValue="{Binding GetLevelLoaded.GetDifficultyModifierString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 											<!-- <wpfTool:DecimalUpDown Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Visibility="{Binding ElementName=difficultyModifierCheckBox, Path=IsChecked}"/> -->
 										</Grid>
 										<Grid Grid.Column="1" Grid.Row="2" Margin="0,5">
@@ -188,11 +176,11 @@
 												<ColumnDefinition Width="Auto"/>
 												<ColumnDefinition/>
 											</Grid.ColumnDefinitions>
-											<wpfTool:IntegerUpDown Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0"/>
+											<wpfTool:IntegerUpDown Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="-1000" DefaultValue="-1000"/>
 											<Label Grid.Column="1" Grid.Row="0" Content="-" Margin="10,0" />
-											<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0"/>
+											<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="1000" DefaultValue="1000"/>
 										</Grid>
-										<ComboBox x:Name="levelTypeDropDown" Grid.Column="1" Grid.Row="3"  Margin="5,5" ItemsSource="{Binding Path=GetLevelTypes, UpdateSourceTrigger=PropertyChanged}"/>
+										<ComboBox x:Name="levelTypeDropDown" Grid.Column="1" Grid.Row="3"  Margin="5,5" ItemsSource="{Binding Path=GetLevelTypes, Mode=OneTime}" SelectedIndex="0" SelectedValue="{Binding GetLevelLoaded.GetLevelTypeString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
 
 
@@ -209,7 +197,7 @@
 										</Grid.ColumnDefinitions>
 										<Label MinWidth="100" Grid.Column="0" Grid.Row="0" Content="HM4 Design Tool Data: " />
 										<CheckBox Grid.Column="1" Grid.Row="0" Content="Insert Data" VerticalContentAlignment="Center"/>
-										<TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+										<TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Text="{Binding GetLevelLoaded.GetDesignToolData, Mode=OneWay}"/>
 									</Grid>
 								</Grid>
 							</GroupBox>
@@ -358,7 +346,7 @@
 								<Label Grid.Column="5" Content="Treatments" />
 							</Grid>
 							<ScrollViewer HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" >
-								<ItemsControl x:Name="patientOverviewLayout" ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, PresentationTraceSources.TraceLevel=High, UpdateSourceTrigger=PropertyChanged}" />
+								<ItemsControl x:Name="patientOverviewLayout" ItemTemplate="{DynamicResource PatientRowControlTemplate}"  ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 							</ScrollViewer>
 
 							<!---<ItemsControl x:Name="patientOverviewLayout" ItemTemplate="{StaticResource PatientRowControlTemplate}"  HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch">

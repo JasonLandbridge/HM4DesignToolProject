@@ -142,11 +142,11 @@ namespace UiWindows
 
                     if (LevelExist(fileName))
                     {
-                        item.Background = Brushes.Red;
+                        item.Background = Brushes.IndianRed;
                     }
                     else
                     {
-                        item.Background = Brushes.Green;
+                        item.Background = Brushes.LightGreen;
 
                     }
                     fileItemList.Add(item);

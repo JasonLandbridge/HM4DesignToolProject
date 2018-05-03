@@ -20,7 +20,17 @@ namespace HM4DesignTool
     public partial class MainWindow : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public DataTemplate PatientRowDataTemplate;
+        private DataTemplate _patientRowDataTemplate = null;
+        public DataTemplate PatientRowDataTemplate {
+            get
+            {
+                if (_patientRowDataTemplate == null)
+                {
+                    _patientRowDataTemplate = FindResource("PatientRowControlTemplate") as DataTemplate;
+                }
+                return _patientRowDataTemplate;
+            }
+        }
 
         public SettingsWindow SettingsWindow;
         public String StatusbarText
@@ -45,11 +55,9 @@ namespace HM4DesignTool
 
             this.DataContext = this;
             this.levelDataLayout.DataContext = Globals.GetLevelOverview;
-            PatientRowDataTemplate = FindResource("PatientRowControlTemplate") as DataTemplate;
-            patientOverviewLayout.ItemTemplate = PatientRowDataTemplate;
             levelTypeDropDown.ItemsSource = GetLevelTypes;
-
-
+            OnPropertyChanged("PatientRowDataTemplate");
+            //patientOverviewLayout.ItemTemplate = PatientRowDataTemplate;
             SetupWindow();
 
         }

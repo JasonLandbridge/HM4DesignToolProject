@@ -250,7 +250,7 @@ namespace UiWindows
         {
             get
             {
-                return GlobalValues.MinutesPerLevel(LoadedDifficultyModifier);
+                return Math.Round(GlobalValues.MinutesPerLevel(LoadedDifficultyModifier), 6);
             }
         }
 
@@ -562,7 +562,7 @@ namespace UiWindows
         #region TreatmentTabSignals
         private void treatmentRowButtonAdd_Click(object sender, RoutedEventArgs e)
         {
-            TreatmentList.Add(new Treatment());
+            TreatmentList.Add(new Treatment("Unknown"));
         }
 
         private void treatmentRoomList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -610,12 +610,26 @@ namespace UiWindows
 
         private void diffModifierRowButtonRemove_Click(object sender, RoutedEventArgs e)
         {
-            String ValueStr = difficultyModifierList.SelectedItem.ToString();
-            if (!DifficultyModifierList.Contains(ValueStr))
+            if (difficultyModifierList.SelectedItem != null)
             {
-                DifficultyModifierList.Remove(ValueStr);
+                String ValueStr = difficultyModifierList.SelectedItem.ToString();
+                int index = difficultyModifierList.SelectedIndex;
+                if (DifficultyModifierList.Contains(ValueStr))
+                {
+                    DifficultyModifierList.Remove(ValueStr);
+                }
+                if (difficultyModifierList.Items.Count > 0)
+                {
+                    if(index < difficultyModifierList.Items.Count)
+                    {
+                        difficultyModifierList.SelectedIndex = index;
+                    }
+                    else
+                    {
+                        difficultyModifierList.SelectedIndex = difficultyModifierList.Items.Count - 1;
+                    }
+                }
             }
-
         }
 
         private void ChangeGameValueEnabledState(bool State)

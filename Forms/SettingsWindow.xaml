@@ -167,7 +167,7 @@
 								<DataGrid.Columns>
 									<DataGridCheckBoxColumn Binding="{x:Null}" Header="Select" MaxWidth="70" MinWidth="50"/>
 									<DataGridTextColumn Binding="{Binding TreatmentName, Mode=TwoWay}" Header="Treatment Name" MinWidth="50" Width="*"/>
-									<DataGridComboBoxColumn x:Name="difficultyUnlockedColumn" TextBinding="{Binding DifficultyUnlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, diag:PresentationTraceSources.TraceLevel=High}" SelectedItemBinding="{Binding Path=DifficultyUnlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Difficulty Unlocked" Width="*"/>
+									<DataGridComboBoxColumn x:Name="difficultyUnlockedColumn" TextBinding="{Binding DifficultyUnlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItemBinding="{Binding Path=DifficultyUnlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Difficulty Unlocked" Width="*"/>
 									<mah:DataGridNumericUpDownColumn Binding="{Binding HeartsValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Hearts Value" Width="*"/>
 									<mah:DataGridNumericUpDownColumn Binding="{Binding Weight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Base Weight" Width="*" MaxWidth="80"/>
 									<DataGridCheckBoxColumn Binding="{Binding Gesture, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Gesture" Width="*" MaxWidth="60"/>
@@ -215,7 +215,7 @@
 								<ColumnDefinition/>
 							</Grid.ColumnDefinitions>
 							<!-- Difficulty Modifier List -->
-							<ListBox x:Name="difficultyModifierList" ItemsSource="{Binding Path=DifficultyModifierList, Mode=TwoWay}" Margin="0,0,0,5" SelectionChanged="difficultyModifierList_SelectionChanged" />
+							<ListBox x:Name="difficultyModifierList" ItemsSource="{Binding Path=DifficultyModifierList, Mode=OneWay}" Margin="0,0,0,5" SelectionChanged="difficultyModifierList_SelectionChanged" />
 
 							<!-- Difficulty Modifier Controls -->
 							<Grid Grid.Column="0" Grid.Row="1" Margin="0,5">
