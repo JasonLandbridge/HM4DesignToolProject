@@ -49,7 +49,7 @@
 
 			<CheckBox x:Name="useRangeCheckbox" Content="Use Range" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Center" Grid.ColumnSpan="4" Click="useRangeCheckbox_Click"/>
 			<Separator Grid.Column="8" Grid.Row="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Width="1" />
-			<Label Content="Max Index:" Grid.Column="9" Grid.Row="2"/>
+			<Label x:Name="levelInstanceRangeLabel" Content="Max Index:" Grid.Column="9" Grid.Row="2"/>
 			<xctk:IntegerUpDown x:Name="levelInstanceRangeValue" Grid.Column="10" Grid.Row="2" Margin="5,0" MinWidth="50" Minimum="0" Maximum="200" Value="2" ValueChanged="levelInstanceRangeValue_ValueChanged"/>
 
 		</Grid>
@@ -59,17 +59,17 @@
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
 			</Grid.ColumnDefinitions>
-			<ListBox x:Name="levelListDisplay" Grid.Column="0" Grid.Row="0" Margin="0,5" ItemsSource="{Binding FileNameList, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+			<ListBox x:Name="levelListDisplay" Grid.Column="0" Grid.Row="0" Margin="0,5" ItemsSource="{Binding FileNameListBoxItems, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 		</Grid>
 		
 		<Grid Grid.Row="2" >
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition/>
 				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition />
 				<ColumnDefinition Width="Auto"/>
 			</Grid.ColumnDefinitions>
-			<Button Content="Save" Grid.Column="1" IsDefault="True" Width="50" Margin="5,0,5,5" />
-			<Button Content="Cancel" Grid.Column="2" IsCancel="True" Width="50" Margin="5,0,5,5"  />
+			<Button x:Name="buttonSave" Content="Save Level Files" Grid.Column="0" IsDefault="True" Width="100" Margin="5,0,5,5" Click="buttonSave_Click" />
+			<Button x:Name="buttonOk" Content="Ok" Grid.Column="2" IsCancel="True" Width="100" Margin="5,0,5,5"  />
 		</Grid>
 	</Grid>
 </Window>

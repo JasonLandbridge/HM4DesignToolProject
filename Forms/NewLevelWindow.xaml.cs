@@ -5,13 +5,16 @@ using System.Windows.Controls;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
+using System.IO;
+using DataNameSpace;
+using System.Windows.Media;
 
 namespace UiWindows
 {
     /// <summary>
     /// Interaction logic for Window2.xaml
     /// </summary>
-    public partial class NewLevelWindow :  INotifyPropertyChanged
+    public partial class NewLevelWindow : INotifyPropertyChanged
     {
 
         private int RoomIndex
@@ -125,7 +128,33 @@ namespace UiWindows
                 return fileList;
             }
         }
+        public ObservableCollection<ListBoxItem> FileNameListBoxItems
+        {
+            get
+            {
+                ObservableCollection<ListBoxItem> fileItemList = new ObservableCollection<ListBoxItem> { };
 
+                foreach (String fileName in FileNameList)
+                {
+
+                    ListBoxItem item = new ListBoxItem();
+                    item.Content = fileName;
+
+                    if (LevelExist(fileName))
+                    {
+                        item.Background = Brushes.Red;
+                    }
+                    else
+                    {
+                        item.Background = Brushes.Green;
+
+                    }
+                    fileItemList.Add(item);
+
+                }
+                return fileItemList;
+            }
+        }
         private bool FinishedLoading = false;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -135,14 +164,8 @@ namespace UiWindows
             InitializeComponent();
             mainGrid.DataContext = this;
             FinishedLoading = true;
-           // levelListDisplay.ItemsSource = FileNameList;
-        }
-
-        private void GenerateLevelList()
-        {
-
-            String levelList = String.Empty;
-
+            SetRangeState();
+            //levelListDisplay.ItemsSource = FileNameList;
         }
 
         private String GetFileName(int index)
@@ -183,9 +206,39 @@ namespace UiWindows
 
         }
 
+        private void SetRangeState()
+        {
+            levelInstanceRangeLabel.IsEnabled = UseRange;
+            levelInstanceRangeValue.IsEnabled = UseRange;
+        }
+
+        private void CreateLevelFiles()
+        {
+            foreach (String FileName in FileNameList)
+            {
+                String path = Globals.GetSettings.projectPathLevel + FileName;
+                if (!LevelExist(FileName))
+                {
+                    File.Create(path).Dispose();
+                }
+            }
+        }
+        private bool LevelExist(String Filename)
+        {
+            if (Filename.Length > 0)
+            {
+                return File.Exists(Globals.GetSettings.projectPathLevel + Filename);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         private void UpdateLevelList()
         {
             OnPropertyChanged("FileNameList");
+            OnPropertyChanged("FileNameListBoxItems");
         }
 
         private void levelRoomValue_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -240,9 +293,16 @@ namespace UiWindows
         {
             if (FinishedLoading)
             {
+                SetRangeState();
                 UpdateLevelList();
             }
 
+        }
+
+        private void buttonSave_Click(object sender, RoutedEventArgs e)
+        {
+            CreateLevelFiles();
+            UpdateLevelList();
         }
     }
 }
