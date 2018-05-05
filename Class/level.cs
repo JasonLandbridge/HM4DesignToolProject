@@ -503,10 +503,11 @@ namespace LevelData
         public event PropertyChangedEventHandler PropertyChanged;
         #region LevelProperties
 
-        String LevelName = String.Empty;
+        public String LevelName = String.Empty;
+        public String CategoryKey = String.Empty;
         private List<String> _treatmentOptions = new List<String> { };
         private List<Patient> patientDatabase = new List<Patient> { };
-        private Dictionary<String, float> patientChancesDict = new Dictionary<String, float>();
+        //private Dictionary<String, int> patientChancesDict = new Dictionary<String, int>();
         private DesignToolData designToolData = new DesignToolData();
         private String currentLevelScript = null;
 
@@ -531,7 +532,7 @@ namespace LevelData
                 OnPropertyChanged();
             }
         }
-
+        public List<PatientChance> PatientChanceCollection = new List<PatientChance> { };
         #endregion
 
 
@@ -539,6 +540,8 @@ namespace LevelData
         {
             LevelName = levelName;
             ParseRawText(levelName);
+            CategoryKey = Globals.GetCategoryKey(GetRoomIndex);
+            PatientChanceCollection = Globals.GetSettings.GetPatientChanceList(CategoryKey);
         }
 
         #region Getters
@@ -687,20 +690,24 @@ namespace LevelData
                 output += designToolData.ToString();
                 output += Environment.NewLine;
                 //Output the patient chances
-                if (patientChancesDict.Count > 0)
+                if (PatientChanceCollection.Count > 0)
                 {
                     output += "levelDesc.patientChances = " + Environment.NewLine;
                     output += "{" + Environment.NewLine;
                     int i = 0;
-                    foreach (KeyValuePair<string, float> patientChance in patientChancesDict)
+                    foreach (PatientChance patientChance in PatientChanceCollection)
                     {
-                        output += "\t" + patientChance.Key + " \t= \t" + patientChance.Value;
-                        if (i < patientChancesDict.Count - 1)
+                        if (patientChance.Weight > 0)
                         {
-                            output += ",";
+                            output += "\t" + patientChance.PatientName + " \t= \t" + patientChance.Weight;
+                            if (i < PatientChanceCollection.Count - 1)
+                            {
+                                output += ",";
+                            }
+                            i++;
+                            output += Environment.NewLine;
                         }
-                        i++;
-                        output += Environment.NewLine;
+
 
                     }
                     output += "}" + Environment.NewLine;
@@ -788,7 +795,14 @@ namespace LevelData
                     patientsChancesRawText = patientsChancesRawText.Replace("levelDesc.patientChances=", "").Replace(",}", "}");
                     patientsChancesRawText = patientsChancesRawText.Trim(' ').Replace("=", ":");
 
-                    patientChancesDict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<String, float>>(patientsChancesRawText);
+                    //Translate to workable Dictionary
+                    Dictionary<String, int> patientChancesDict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<String, int>>(patientsChancesRawText);
+
+                    foreach (KeyValuePair<String, int> patientChance in patientChancesDict)
+                    {
+                        PatientChanceCollection.Add(new PatientChance(patientChance.Key, patientChance.Value));
+                    }
+
                 }
 
 
@@ -968,7 +982,7 @@ namespace LevelData
         {
             get
             {
-                if(ParentLevel != null)
+                if (ParentLevel != null)
                 {
                     return ParentLevel.GetTreatmentOptions;
                 }
@@ -1140,6 +1154,51 @@ namespace LevelData
         }
 
 
+        #endregion
+
+    }
+
+    public class PatientChance : INotifyPropertyChanged
+    {
+        public String PatientName = String.Empty;
+        private int _weight = 0;
+        public int Weight
+        {
+            get
+            {
+                return _weight;
+            }
+            set
+            {
+                _weight = value;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public PatientChance(String PatientName, int Weight = 0)
+        {
+            this.PatientName = PatientName;
+            this.Weight = Weight;
+        }
+
+        public override string ToString()
+        {
+            if (Weight > 0)
+            {
+                return PatientName + " = " + Weight.ToString();
+            }
+            else
+            {
+                return String.Empty;
+            }
+        }
+
+        #region Events
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         #endregion
 
     }

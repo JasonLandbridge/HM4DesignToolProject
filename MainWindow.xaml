@@ -59,6 +59,27 @@
 				<Button  Grid.Column="9" Content="Traits" MinWidth="80"/>
 			</Grid>
 		</DataTemplate>
+		<!--PatientChancesRowTemplate-->
+		<DataTemplate x:Key="PatientChancesRowTemplate">
+			<Grid Margin="0,5">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				<TextBox TextWrapping="Wrap" Text="PatientName" Grid.Column="0" Margin="5,5,0,5" Width="200" MinWidth="100" IsReadOnlyCaretVisible="True" VerticalContentAlignment="Center"/>
+				<Label Content="00" Grid.Column="2" Margin="0" Width="50" MinWidth="25" VerticalContentAlignment="Center"/>
+				<Button Content="R" Grid.Column="1" Margin="5" Width="30" MinWidth="20" Padding="5"/>
+				<Slider Grid.Column="3" Margin="5" VerticalContentAlignment="Stretch" VerticalAlignment="Center"/>
+				<Label Content="100%" Grid.Column="4" Margin="0" VerticalContentAlignment="Center" Width="100" MinWidth="100"/>
+			</Grid>
+
+		</DataTemplate>
 	</Window.Resources>
 	<Grid VerticalAlignment="Stretch" Margin="0,0,0,0">
 		<Grid.RowDefinitions>
@@ -291,12 +312,11 @@
 											<ColumnDefinition/>
 										</Grid.ColumnDefinitions>
 
-										<CheckBox x:Name="showAvailableTreatmentsCheck" Content="Show available treatments" Grid.Column="0" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,5,0,5" />
+										<CheckBox x:Name="showAvailableTreatmentsCheck" Content="Show available treatments" Grid.Column="0" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,5,0,5" IsChecked="True" />
 										<CheckBox x:Name="uniqueTreatmentsCheckBox" Content="Unique Treatments Only Per Patient" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,5,0,5" IsEnabled="False" IsChecked="True"/>
 									</Grid>
 
-									<TextBox x:Name="previewAvailableTreatments" Grid.Row="3
-											 " Margin="0,5"/>
+									<TextBox x:Name="previewAvailableTreatments" Grid.Row="3" Margin="0,5" Visibility="{Binding IsChecked, Converter={StaticResource VisibilityOfBool}, ElementName=showAvailableTreatmentsCheck}"/>
 
 									<Button x:Name="generateLevelButton" Grid.Row="5" Content="Generate Level" Margin="0,5"/>
 								</Grid>
@@ -382,7 +402,62 @@
 					</TabItem>
 					<TabItem Header="Patient Chances" IsEnabled="{Binding Path=LevelOverviewActive}">
 						<Grid Background="#FFF">
-							<DataGrid HorizontalAlignment="Stretch"  Margin="0" VerticalAlignment="Stretch" ItemsSource="{Binding Mode=OneWay, Source={StaticResource PatientRowControlTemplate}}"/>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Grid Margin="0,5" Grid.Row="0">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition/>
+									<ColumnDefinition Width="Auto"/>
+								</Grid.ColumnDefinitions>
+								<Label Content="Patient Name" Grid.Column="0" Margin="5,0,0,0" Width="200" MinWidth="100" VerticalContentAlignment="Center" FontWeight="Bold"/>
+								<Label Content=" " Grid.Column="1" Margin="10,5" Width="20" MinWidth="20"/>
+								<Label Content="Weight" Grid.Column="2" Grid.ColumnSpan="2" Margin="0" VerticalContentAlignment="Center" FontWeight="Bold"/>
+								<Label Content="Percentage" Grid.Column="4" Margin="0" VerticalContentAlignment="Center" Width="100" MinWidth="100" FontWeight="Bold"/>
+							</Grid>
+							<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+								<StackPanel Height="238" Width="1071">
+									<Grid Margin="0,5">
+										<Grid.RowDefinitions>
+											<RowDefinition Height="Auto"/>
+										</Grid.RowDefinitions>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto"/>
+											<ColumnDefinition Width="Auto"/>
+											<ColumnDefinition Width="Auto"/>
+											<ColumnDefinition/>
+											<ColumnDefinition Width="Auto"/>
+										</Grid.ColumnDefinitions>
+										<TextBox TextWrapping="Wrap" Text="PatientName" Grid.Column="0" Margin="5,5,0,5" Width="200" MinWidth="100" IsReadOnlyCaretVisible="True" VerticalContentAlignment="Center"/>
+										<Label Content="00" Grid.Column="2" Margin="0" Width="50" MinWidth="25" VerticalContentAlignment="Center"/>
+										<Button Content="R" Grid.Column="1" Margin="5" Width="30" MinWidth="20" Padding="5"/>
+										<Slider Grid.Column="3" Margin="5" VerticalContentAlignment="Stretch" VerticalAlignment="Center"/>
+										<Label Content="100%" Grid.Column="4" Margin="0" VerticalContentAlignment="Center" Width="100" MinWidth="100"/>
+									</Grid>
+								</StackPanel>
+
+							</ScrollViewer>
+
+							<Grid Grid.Row="2">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition/>
+								</Grid.ColumnDefinitions>
+								<Button Content="Randomize Weight" Margin="5" Padding="5" />
+							</Grid>
+
+
+
+
+
 						</Grid>
 					</TabItem>
 				</TabControl>

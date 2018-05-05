@@ -7,6 +7,8 @@ using System.Linq;
 using System.Windows.Media;
 using DataNameSpace;
 using System.IO;
+using LevelData;
+
 
 namespace SettingsNamespace
 {   //Storing settings in JSON: https://github.com/Nucs/JsonSettings
@@ -115,7 +117,6 @@ namespace SettingsNamespace
                 pSettings.ProjectDirectoryPath = value;
             }
         }
-
         public String projectPathScript
         {
             get
@@ -123,7 +124,6 @@ namespace SettingsNamespace
                 return projectPathData + "\\script\\";
             }
         }
-
         public String projectPathLevel
         {
             get
@@ -163,6 +163,35 @@ namespace SettingsNamespace
             {
                 return patientTypeCategoriesDict;
             }
+        }
+
+        public List<String> GetPatientTypeList(String categoryKey)
+        {
+            Dictionary<String, List<String>> patientTypeDict = GetPatientTypes(categoryKey);  // Room[N] -> List with only checked patientTypes
+
+            if (patientTypeDict.ContainsKey(categoryKey))
+            {
+                return patientTypeDict[categoryKey];
+            }
+            else
+            {
+                return new List<String> { };
+            }
+        }
+
+        public List<PatientChance> GetPatientChanceList(String categoryKey)
+        {
+            List<String> patientTypeList = GetPatientTypeList(categoryKey);  // Room[N] -> List with only checked patientTypes
+
+            List<PatientChance> patientChanceList = new List<PatientChance> { };
+
+            foreach (String patientType in patientTypeList)
+            {
+                patientChanceList.Add(new PatientChance(patientType));
+            }
+
+            return patientChanceList;
+
         }
         public Dictionary<String, List<Treatment>> GetTreatmentDictionary(String categoryKey = null)
         {
