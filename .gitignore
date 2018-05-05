@@ -9,3 +9,13 @@ bin/Debug/HM4DesignTool\.exe
 bin/Debug/HM4DesignTool\.exe\.config
 
 bin/Debug/HM4DesignTool\.pdb
+
+bin/Release/
+
+bin/Debug/x64/
+
+bin/Debug/x86/
+
+bin/Debug/KeraLua\.dll
+
+bin/Debug/NLua\.dll
