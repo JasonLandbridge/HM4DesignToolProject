@@ -12,7 +12,7 @@
 	<Window.Resources>
 		<!-- PatientRowTreatmentTemplate -->
 		<DataTemplate x:Key="PatientRowTreatmentTemplate">
-			<ComboBox  SelectedIndex="0" Margin="5,0" SelectedValue="{Binding TreatmentName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, PresentationTraceSources.TraceLevel=High}" ItemsSource="{Binding Mode=OneWay, ElementName=patientRow, Path=DataContext.TreatmentOptions}" Width="125"/>
+			<ComboBox  SelectedIndex="0" Margin="5,0" SelectedValue="{Binding TreatmentName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Mode=OneWay, ElementName=patientRow, Path=DataContext.TreatmentOptions}" Width="125"/>
 		</DataTemplate>
 		<!--PatientRowControlTemplate-->
 		<DataTemplate x:Key="PatientRowControlTemplate" >
@@ -72,13 +72,12 @@
 					<ColumnDefinition/>
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
-				<TextBox TextWrapping="Wrap" Text="PatientName" Grid.Column="0" Margin="5,5,0,5" Width="200" MinWidth="100" IsReadOnlyCaretVisible="True" VerticalContentAlignment="Center"/>
-				<Label Content="00" Grid.Column="2" Margin="0" Width="50" MinWidth="25" VerticalContentAlignment="Center"/>
-				<Button Content="R" Grid.Column="1" Margin="5" Width="30" MinWidth="20" Padding="5"/>
-				<Slider Grid.Column="3" Margin="5" VerticalContentAlignment="Stretch" VerticalAlignment="Center"/>
-				<Label Content="100%" Grid.Column="4" Margin="0" VerticalContentAlignment="Center" Width="100" MinWidth="100"/>
+				<TextBox TextWrapping="Wrap" Text="{Binding PatientName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Margin="5,5,0,5" Width="200" MinWidth="100" IsReadOnlyCaretVisible="False" VerticalContentAlignment="Center" IsEnabled="True" IsReadOnly="True"/>
+				<Label Content="{Binding Weight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="2" Margin="0" Width="50" MinWidth="25" VerticalContentAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"/>
+				<Button Content="R" Grid.Column="1" Margin="5" Width="30" MinWidth="20" Padding="5" Command="{Binding RandomizeWeightCommand}" CommandParameter="{Binding}"/>
+				<Slider Grid.Column="3" Margin="5" VerticalContentAlignment="Stretch" VerticalAlignment="Center" Value="{Binding Weight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Maximum="100" LargeChange="5" SmallChange="1" Cursor="None"/>
+				<Label Content="{Binding PercentageString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="4" Margin="0" VerticalContentAlignment="Center" Width="100" HorizontalAlignment="Left"/>
 			</Grid>
-
 		</DataTemplate>
 	</Window.Resources>
 	<Grid VerticalAlignment="Stretch" Margin="0,0,0,0">
@@ -87,7 +86,8 @@
 			<RowDefinition/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
-		<DockPanel>
+		<!-- Menu Items -->
+		<DockPanel Grid.Row="0">
 			<Menu DockPanel.Dock="Top">
 				<MenuItem Header="_File">
 					<MenuItem  x:Name="menuItemNewLevel" Header="_New Levels" Click="menuItemNewLevel_Click"/>
@@ -102,7 +102,7 @@
 			<StackPanel></StackPanel>
 		</DockPanel>
 
-
+		<!-- Main Layout -->
 		<Grid x:Name="mainLayout" Grid.Row="1">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="1*"/>
@@ -318,7 +318,7 @@
 
 									<TextBox x:Name="previewAvailableTreatments" Grid.Row="3" Margin="0,5" Visibility="{Binding IsChecked, Converter={StaticResource VisibilityOfBool}, ElementName=showAvailableTreatmentsCheck}"/>
 
-									<Button x:Name="generateLevelButton" Grid.Row="5" Content="Generate Level" Margin="0,5"/>
+									<Button x:Name="generateLevelButton" Grid.Row="5" Content="Generate Level" Margin="0,5" Padding="1,5"/>
 								</Grid>
 							</GroupBox>
 
@@ -369,24 +369,6 @@
 								<ItemsControl x:Name="patientOverviewLayout" ItemTemplate="{DynamicResource PatientRowControlTemplate}"  ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 							</ScrollViewer>
 
-							<!---<ItemsControl x:Name="patientOverviewLayout" ItemTemplate="{StaticResource PatientRowControlTemplate}"  HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch">
-								<ItemsControl.ItemsPanel>
-									<ItemsPanelTemplate>
-										<VirtualizingStackPanel Orientation="Vertical"/>
-									</ItemsPanelTemplate>
-								</ItemsControl.ItemsPanel>
-							</ItemsControl>
-														-->
-							<!-- Patient Overview Data -->
-
-							<!--	
-							<StackPanel x:Name="patientOverviewLayout" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch">
-									<ContentControl ContentTemplate="{StaticResource PatientRowControlTemplate}"/>
-									<ContentControl ContentTemplate="{StaticResource PatientRowControlTemplate}"/>
-									<ContentControl ContentTemplate="{StaticResource PatientRowControlTemplate}"/>
-							</StackPanel>
-							-->
-
 							<!-- Patient Overview Footer -->
 							<Grid HorizontalAlignment="Stretch" Margin="0" Grid.Row="2" VerticalAlignment="Stretch">
 								<Grid.ColumnDefinitions>
@@ -407,6 +389,7 @@
 								<RowDefinition/>
 								<RowDefinition Height="Auto"/>
 							</Grid.RowDefinitions>
+							<!-- Patient Chance Overview Header -->
 							<Grid Margin="0,5" Grid.Row="0">
 								<Grid.RowDefinitions>
 									<RowDefinition Height="Auto"/>
@@ -417,41 +400,24 @@
 									<ColumnDefinition Width="Auto"/>
 									<ColumnDefinition/>
 									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="18"/>
 								</Grid.ColumnDefinitions>
 								<Label Content="Patient Name" Grid.Column="0" Margin="5,0,0,0" Width="200" MinWidth="100" VerticalContentAlignment="Center" FontWeight="Bold"/>
 								<Label Content=" " Grid.Column="1" Margin="10,5" Width="20" MinWidth="20"/>
-								<Label Content="Weight" Grid.Column="2" Grid.ColumnSpan="2" Margin="0" VerticalContentAlignment="Center" FontWeight="Bold"/>
-								<Label Content="Percentage" Grid.Column="4" Margin="0" VerticalContentAlignment="Center" Width="100" MinWidth="100" FontWeight="Bold"/>
+								<Label Content="Weight" Grid.Column="2" Margin="0" VerticalContentAlignment="Center" FontWeight="Bold"/>
+								<Label Content="Chance" Grid.Column="4" Margin="0" VerticalContentAlignment="Center" Width="100" FontWeight="Bold" HorizontalAlignment="Left"/>
 							</Grid>
-							<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-								<StackPanel Height="238" Width="1071">
-									<Grid Margin="0,5">
-										<Grid.RowDefinitions>
-											<RowDefinition Height="Auto"/>
-										</Grid.RowDefinitions>
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="Auto"/>
-											<ColumnDefinition Width="Auto"/>
-											<ColumnDefinition Width="Auto"/>
-											<ColumnDefinition/>
-											<ColumnDefinition Width="Auto"/>
-										</Grid.ColumnDefinitions>
-										<TextBox TextWrapping="Wrap" Text="PatientName" Grid.Column="0" Margin="5,5,0,5" Width="200" MinWidth="100" IsReadOnlyCaretVisible="True" VerticalContentAlignment="Center"/>
-										<Label Content="00" Grid.Column="2" Margin="0" Width="50" MinWidth="25" VerticalContentAlignment="Center"/>
-										<Button Content="R" Grid.Column="1" Margin="5" Width="30" MinWidth="20" Padding="5"/>
-										<Slider Grid.Column="3" Margin="5" VerticalContentAlignment="Stretch" VerticalAlignment="Center"/>
-										<Label Content="100%" Grid.Column="4" Margin="0" VerticalContentAlignment="Center" Width="100" MinWidth="100"/>
-									</Grid>
-								</StackPanel>
-
+							<!-- Patient Chance Overview -->
+							<ScrollViewer HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" >
+								<ItemsControl x:Name="patientChanceOverviewLayout" ItemTemplate="{DynamicResource PatientChancesRowTemplate}"  ItemsSource="{Binding GetLevelLoaded.PatientChanceCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 							</ScrollViewer>
-
+							<!-- Patient Chance Overview Footer -->
 							<Grid Grid.Row="2">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="Auto"/>
 									<ColumnDefinition/>
 								</Grid.ColumnDefinitions>
-								<Button Content="Randomize Weight" Margin="5" Padding="5" />
+								<Button Content="Randomize Weights" Margin="5" Padding="5" Command="{Binding GetLevelLoaded.RandomizeAllWeightCommand}" CommandParameter="{Binding}"/>
 							</Grid>
 
 
@@ -472,11 +438,18 @@
 						<ColumnDefinition/>
 					</Grid.ColumnDefinitions>
 					<Label x:Name="currentPreviewLabel" Grid.Column="0" Grid.Row="0" Content="Current Preview"/>
-					<Label x:Name="afterPreviewLabel" Grid.Column="2" Grid.Row="0" Content="After Preview"/>
+					<Grid Grid.Column="2" Grid.Row="0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+						<Label x:Name="afterPreviewLabel" Grid.Column="0" Grid.Row="0" Content="After Preview"/>
+						<CheckBox x:Name="autoUpdateCheckbox" Grid.Column="1" Grid.Row="0" IsChecked="{Binding GetLevelLoaded.AllowLevelScriptUpdate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}" Content="Auto Update" Margin="0,0,10,0" VerticalAlignment="Center" />
+					</Grid>
 
-					<TextBox x:Name="currentPreviewTextBox" Text="{Binding Path=GetLevelLoaded.GetCurrentLevelScript, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='binding failed'}" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" />
+					<TextBox x:Name="currentPreviewTextBox" Text="{Binding Path=GetLevelLoaded.GetCurrentLevelScript, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=''}" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" />
 					<GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Width="5" Grid.RowSpan="2"/>
-					<TextBox x:Name="afterPreviewTextBox" Text="{Binding Path=GetLevelLoaded.GetNewLevelScript, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='binding failed'}" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" TextWrapping="Wrap"/>
+					<TextBox x:Name="afterPreviewTextBox" Text="{Binding Path=GetLevelLoaded.GetNewLevelScript, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=''}" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" TextWrapping="Wrap"/>
 
 				</Grid>
 			</Grid>

@@ -12,14 +12,14 @@ using NaturalSort.Extension;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Windows;
+using System.Windows.Input;
 
 namespace LevelData
 {
 
     public class DesignToolData : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private int _roomIndex = 0;
         private float _difficultyLevel = 0;
         private LevelTypeEnum _levelType = LevelTypeEnum.Unknown;
@@ -167,7 +167,9 @@ namespace LevelData
             return output;
         }
 
-        #region Events
+        #region INotifyPropertyChanged Members
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -178,7 +180,6 @@ namespace LevelData
 
     public class LevelOverview : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
 
         private Dictionary<string, Level> levelObjectData = new Dictionary<string, Level>();
         private Level _currentLevelLoaded = null;
@@ -193,8 +194,8 @@ namespace LevelData
                 if (value != _currentLevelLoaded)
                 {
                     _currentLevelLoaded = value;
-                    NotifyPropertyChanged();
-                    NotifyPropertyChanged("LevelOverviewActive");
+                    OnPropertyChanged();
+                    OnPropertyChanged("LevelOverviewActive");
                     OnPropertyChanged("DifficultyModifierList");
 
                 }
@@ -477,21 +478,13 @@ namespace LevelData
         }
         #endregion
 
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        #region INotifyPropertyChanged Members
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        #region Events
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-
         #endregion
 
 
@@ -499,18 +492,29 @@ namespace LevelData
 
     public class Level : INotifyPropertyChanged
     {
-
-        public event PropertyChangedEventHandler PropertyChanged;
         #region LevelProperties
 
         public String LevelName = String.Empty;
         public String CategoryKey = String.Empty;
+        private bool _allowLevelScriptUpdate = true;
+        public bool AllowLevelScriptUpdate
+        {
+            get
+            {
+                return _allowLevelScriptUpdate;
+            }
+            set
+            {
+                _allowLevelScriptUpdate = value;
+                UpdateLevelOutput();
+            }
+        }
         private List<String> _treatmentOptions = new List<String> { };
         private List<Patient> patientDatabase = new List<Patient> { };
         //private Dictionary<String, int> patientChancesDict = new Dictionary<String, int>();
         private DesignToolData designToolData = new DesignToolData();
         private String currentLevelScript = null;
-
+        //Patient Row Objects
         public ObservableCollection<Patient> PatientCollection
         {
             get
@@ -532,20 +536,41 @@ namespace LevelData
                 OnPropertyChanged();
             }
         }
-        public List<PatientChance> PatientChanceCollection = new List<PatientChance> { };
+        //Patient Chances Objects
+        public List<PatientChance> PatientChanceList = new List<PatientChance> { };
+        public ObservableCollection<PatientChance> PatientChanceCollection
+        {
+            get
+            {
+                return new ObservableCollection<PatientChance>(PatientChanceList);
+            }
+            set
+            {
+                PatientChanceList = value.ToList<PatientChance>();
+            }
+        }
         #endregion
 
 
         public Level(string levelName)
         {
             LevelName = levelName;
-            ParseRawText(levelName);
             CategoryKey = Globals.GetCategoryKey(GetRoomIndex);
-            PatientChanceCollection = Globals.GetSettings.GetPatientChanceList(CategoryKey);
+            //Ensure all possible PatientTypeChances are set in PatientChanceList from the Settings.
+            PatientChanceList = Globals.GetSettings.GetPatientChanceList(CategoryKey);
+            foreach (PatientChance patientChance in PatientChanceList)
+            {
+                patientChance.ParentLevel = this;
+            } //Set ParentLevel
+
+            //Translate the levelScript into workable variables.
+            ParseRawText(levelName);
+            _canExecute = true;
         }
 
         #region Getters
 
+        //Design Tool Data
         public String GetDesignToolData
         {
             get
@@ -606,7 +631,7 @@ namespace LevelData
             {
                 designToolData.Roomindex = value;
                 OnPropertyChanged("GetDesignToolData");
-                OnPropertyChanged("GetNewLevelScript");
+                UpdateLevelOutput();
 
             }
         }
@@ -630,10 +655,10 @@ namespace LevelData
             set
             {
                 GetDifficultyModifier = float.Parse(value, CultureInfo.InvariantCulture.NumberFormat);
-                OnPropertyChanged("GetNewLevelScript");
-
+                UpdateLevelOutput();
             }
         }
+        //Level Script output
         public String GetLevelTypeString
         {
             get
@@ -644,8 +669,7 @@ namespace LevelData
             {
                 designToolData.LevelTypeString = value;
                 OnPropertyChanged("GetDesignToolData");
-                OnPropertyChanged("GetNewLevelScript");
-
+                UpdateLevelOutput();
             }
         }
         public ObservableCollection<String> GetTreatmentOptions
@@ -690,17 +714,17 @@ namespace LevelData
                 output += designToolData.ToString();
                 output += Environment.NewLine;
                 //Output the patient chances
-                if (PatientChanceCollection.Count > 0)
+                if (PatientChanceList.Count > 0)
                 {
                     output += "levelDesc.patientChances = " + Environment.NewLine;
                     output += "{" + Environment.NewLine;
                     int i = 0;
-                    foreach (PatientChance patientChance in PatientChanceCollection)
+                    foreach (PatientChance patientChance in PatientChanceList)
                     {
                         if (patientChance.Weight > 0)
                         {
                             output += "\t" + patientChance.PatientName + " \t= \t" + patientChance.Weight;
-                            if (i < PatientChanceCollection.Count - 1)
+                            if (i < PatientChanceList.Count - 1)
                             {
                                 output += ",";
                             }
@@ -729,7 +753,36 @@ namespace LevelData
 
             }
         }
+        //Patient Chance functions
+        public double GetPatientChancePercentage(int Weight)
+        {
+            int TotalWeight = 0;
+            foreach (PatientChance patientChance in PatientChanceList)
+            {
+                TotalWeight += patientChance.Weight;
+            }
+
+            double Percentage = Weight / (double)TotalWeight * 100;
+            Percentage = Math.Round(Percentage, 1, MidpointRounding.AwayFromZero);
+            return Percentage;
+        }
+        public void UpdatePatientChancePercentage()
+        {
+            foreach (PatientChance patientChance in PatientChanceList)
+            {
+                patientChance.UpdatePercentage();
+            }
+            UpdateLevelOutput();
+        }
         #endregion
+
+        public void UpdateLevelOutput()
+        {
+            if (AllowLevelScriptUpdate)
+            {
+                OnPropertyChanged("GetNewLevelScript");
+            }
+        }
 
         public void AddPatient(String patientData = null, int index = -1)
         {
@@ -800,7 +853,17 @@ namespace LevelData
 
                     foreach (KeyValuePair<String, int> patientChance in patientChancesDict)
                     {
-                        PatientChanceCollection.Add(new PatientChance(patientChance.Key, patientChance.Value));
+
+                        foreach (PatientChance patientChanceListItem in PatientChanceList)
+                        {
+                            if (patientChanceListItem.PatientName == patientChance.Key)
+                            {
+                                patientChanceListItem.Weight = patientChance.Value;
+                                break;
+                            }
+                        }
+                        //TODO Remove this if undefined PatientTypeChances in the Settings should not be added from the LevelScript. 
+                        //PatientChanceList.Add(new PatientChance(patientChance.Key, patientChance.Value));
                     }
 
                 }
@@ -868,13 +931,38 @@ namespace LevelData
 
         }
 
-        #region Events
+        private void RandomizePatientChancesWeight()
+        {
+            Random rnd = new Random();
+
+            foreach (PatientChance patientChance in PatientChanceList)
+            {
+                patientChance.RandomizeWeight(rnd.Next(1, 100));
+            } 
+
+        }
+
+        #region Commands
+        private bool _canExecute;
+        private ICommand _randomizeAllWeightCommand;
+        public ICommand RandomizeAllWeightCommand
+        {
+            get
+            {
+                return _randomizeAllWeightCommand ?? (_randomizeAllWeightCommand = new CommandHandler(() => RandomizePatientChancesWeight(), _canExecute));
+            }
+        }
+
+
+        #endregion
+
+        #region INotifyPropertyChanged Members
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-
         #endregion
 
     }
@@ -1158,9 +1246,22 @@ namespace LevelData
 
     }
 
-    public class PatientChance : INotifyPropertyChanged
+    public class PatientChance : INotifyPropertyChanged, IEquatable<PatientChance>
     {
-        public String PatientName = String.Empty;
+        public Level ParentLevel = null;
+        private String _patientName = String.Empty;
+        public String PatientName
+        {
+            get
+            {
+                return _patientName;
+            }
+            set
+            {
+                _patientName = value;
+                OnPropertyChanged("PatientName");
+            }
+        }
         private int _weight = 0;
         public int Weight
         {
@@ -1171,35 +1272,140 @@ namespace LevelData
             set
             {
                 _weight = value;
+                OnPropertyChanged("Weight");
+                if (ParentLevel != null)
+                {
+                    ParentLevel.UpdatePatientChancePercentage();
+                }
+            }
+        }
+        private double _percentage = 0;
+        public double Percentage
+        {
+            get
+            {
+                return _percentage;
+            }
+            set
+            {
+                _percentage = value;
+                OnPropertyChanged("Percentage");
+                OnPropertyChanged("PercentageString");
+
+            }
+
+        }
+
+        public String PercentageString
+        {
+            get
+            {
+                return Percentage.ToString("N1") + "%";
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public PatientChance(String PatientName, int Weight = 0)
         {
             this.PatientName = PatientName;
             this.Weight = Weight;
+            _canExecute = true;
         }
 
         public override string ToString()
         {
-            if (Weight > 0)
+            return PatientName + " = " + Weight.ToString();
+        }
+
+        public void UpdatePercentage()
+        {
+            if (ParentLevel != null)
             {
-                return PatientName + " = " + Weight.ToString();
-            }
-            else
-            {
-                return String.Empty;
+                Percentage = ParentLevel.GetPatientChancePercentage(Weight);
             }
         }
 
-        #region Events
+        public void RandomizeWeight(int randomValue = 0)
+        {
+            if (randomValue == 0)
+            {
+                Random rnd = new Random();
+                Weight = rnd.Next(1, 100);
+            }
+            else
+            {
+                Weight = randomValue;
+            }
+        }
+
+        #region Commands
+        private bool _canExecute;
+        private ICommand _randomizeWeightCommand;
+        public ICommand RandomizeWeightCommand
+        {
+            get
+            {
+                return _randomizeWeightCommand ?? (_randomizeWeightCommand = new CommandHandler(() => RandomizeWeight(), _canExecute));
+            }
+        }
+
+
+        #endregion
+
+
+        #region Operators
+        public bool Equals(PatientChance other)
+        {
+            return this.PatientName == other.PatientName;
+        }
+
+        public override int GetHashCode()
+        {
+            return -140387131 + EqualityComparer<string>.Default.GetHashCode(PatientName);
+        }
+
+        public static bool operator ==(PatientChance patientChance1, PatientChance patientChance2)
+        {
+            return patientChance1.PatientName == patientChance2.PatientName;
+        }
+
+        public static bool operator !=(PatientChance patientChance1, PatientChance patientChance2)
+        {
+            return !(patientChance1 == patientChance2);
+        }
+        #endregion
+
+        #region INotifyPropertyChanged Members
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
 
+    }
+
+    public class CommandHandler : ICommand
+    {
+        private Action _action;
+        private bool _canExecute;
+        public CommandHandler(Action action, bool canExecute)
+        {
+            _action = action;
+            _canExecute = canExecute;
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return _canExecute;
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public void Execute(object parameter)
+        {
+            _action();
+        }
     }
 }

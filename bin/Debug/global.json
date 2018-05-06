@@ -7,7 +7,12 @@
       "teen2_male_casual"
     ],
     "Room 2": [],
-    "Room 3": [],
+    "Room 3": [
+      "doctor_male1",
+      "doctor_male2",
+      "doctor_female1",
+      "doctor_female2"
+    ],
     "Room 4": [],
     "Room 5": [],
     "Room 6": [
