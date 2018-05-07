@@ -241,5 +241,9 @@ namespace HM4DesignTool
 
         }
 
+        private void selectAllPatientChancesCheckbox_Click(object sender, RoutedEventArgs e)
+        {
+            Globals.GetLevelOverview.GetLevelLoaded.SelectAllPatientChances((bool)selectAllPatientChancesCheckbox.IsChecked);
+        }
     }
 }

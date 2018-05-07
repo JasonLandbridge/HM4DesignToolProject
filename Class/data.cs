@@ -110,7 +110,6 @@ namespace DataNameSpace
 
         public static String FilterToNumerical(String str)
         {
-
             return Regex.Replace(str, @"[^\d]", "");
         }
 

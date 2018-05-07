@@ -931,15 +931,28 @@ namespace LevelData
 
         }
 
+
+
         private void RandomizePatientChancesWeight()
         {
             Random rnd = new Random();
 
             foreach (PatientChance patientChance in PatientChanceList)
             {
-                patientChance.RandomizeWeight(rnd.Next(1, 100));
+                if (patientChance.IsSelected)
+                {
+                    patientChance.RandomizeWeight(rnd.Next(1, 100));
+                }
             } 
 
+        }
+
+        public void SelectAllPatientChances(bool State)
+        {
+            foreach (PatientChance patientChance in PatientChanceList)
+            {
+               patientChance.IsSelected = State;
+            }
         }
 
         #region Commands
@@ -952,7 +965,6 @@ namespace LevelData
                 return _randomizeAllWeightCommand ?? (_randomizeAllWeightCommand = new CommandHandler(() => RandomizePatientChancesWeight(), _canExecute));
             }
         }
-
 
         #endregion
 
@@ -1150,7 +1162,7 @@ namespace LevelData
         private void ParsePatientData(String patientData)
         {
             // Clean up the patientData
-            patientData = System.Text.RegularExpressions.Regex.Replace(patientData, @"\s+", "");
+            patientData = Regex.Replace(patientData, @"\s+", "");
 
             patientData = RemoveFirstComma(patientData);
             //Parse the delay
@@ -1163,13 +1175,13 @@ namespace LevelData
                 {
                     String delayString = patientData.Substring(startIndex, endIndex - startIndex);
                     delayString = Globals.FilterToNumerical(delayString);
-                    if (delayString != "None")
+                    if (delayString != String.Empty)
                     {
                         delay = Convert.ToInt32(delayString);
                     }
                     else
                     {
-                        Console.WriteLine("ERROR: Level.ParsePatientData, delayString was none!");
+                        Console.WriteLine("ERROR: Level.ParsePatientData, Failed to parse delayString, was none!");
                     }
                     patientData = patientData.Remove(startIndex - delayText.Length, endIndex);
 
@@ -1185,8 +1197,16 @@ namespace LevelData
                 if (startIndex > -1 && endIndex > 0)
                 {
                     String weightString = patientData.Substring(startIndex, endIndex - startIndex);
-                    weightString = Regex.Replace(weightString, @"[^\d]", "");
-                    weight = Convert.ToInt32(weightString);
+                    weightString = Globals.FilterToNumerical(weightString);
+                    if (weightString != String.Empty)
+                    {
+                        weight = Convert.ToInt32(weightString);
+                    }
+                    else
+                    {
+                        Console.WriteLine("ERROR: Level.ParsePatientData, Failed to parse weightString, was none!");
+                        weight = -1;
+                    }
                     patientData = patientData.Remove(startIndex - weightText.Length, endIndex);
                     weightEnabled = true;
                 }
@@ -1295,7 +1315,19 @@ namespace LevelData
             }
 
         }
-
+        private bool _isSelected = false; 
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                _isSelected = value;
+                OnPropertyChanged("IsSelected");
+            }
+        }
         public String PercentageString
         {
             get
