@@ -334,7 +334,8 @@ namespace DataNameSpace
 
     public class Treatment : Object, INotifyPropertyChanged
     {
-        private String _treatmentName;
+        private Patient ParentPatient = null;
+        private String _treatmentName = String.Empty;
         private Double _difficultyUnlocked = 0;
         private int _heartsValue = 0;
         private int _weight = 0;
@@ -342,6 +343,9 @@ namespace DataNameSpace
         private bool _alwaysLast = false;
         //private Color _colorValue;
         private String _colorValueString;
+
+        private bool _isVisible = false;
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -354,6 +358,11 @@ namespace DataNameSpace
             set
             {
                 _treatmentName = value;
+                OnPropertyChanged("TreatmentName");
+                if(ParentPatient != null && ParentPatient.ParentLevel != null) 
+                {
+                    ParentPatient.ParentLevel.UpdateLevelOutput();
+                }
             }
         }
         public Double DifficultyUnlocked
@@ -365,6 +374,8 @@ namespace DataNameSpace
             set
             {
                 _difficultyUnlocked = value;
+                OnPropertyChanged("DifficultyUnlocked");
+
             }
         }
         public int HeartsValue
@@ -376,6 +387,8 @@ namespace DataNameSpace
             set
             {
                 _heartsValue = value;
+                OnPropertyChanged("HeartsValue");
+
             }
         }
         public int Weight
@@ -387,6 +400,8 @@ namespace DataNameSpace
             set
             {
                 _weight = value;
+                OnPropertyChanged("Weight");
+
             }
         }
         public bool Gesture
@@ -398,6 +413,7 @@ namespace DataNameSpace
             set
             {
                 _gesture = value;
+                OnPropertyChanged("Gesture");
             }
         }
         public bool AlwaysLast
@@ -409,6 +425,8 @@ namespace DataNameSpace
             set
             {
                 _alwaysLast = value;
+                OnPropertyChanged("AlwaysLast");
+
             }
         }
         public String ColorValueString
@@ -423,22 +441,41 @@ namespace DataNameSpace
             }
         }
 
-        public Treatment(String treatmentName)
+        public bool IsVisible
         {
+            get
+            {
+                return _isVisible;
+            }
+            set
+            {
+                _isVisible = value;
+                OnPropertyChanged("IsVisible");
+            }
+        }
+
+        public Treatment()
+        {
+            this.TreatmentName = String.Empty;
 
         }
 
-        public Treatment(String treatmentName, Double difficultyUnlocked = 0, int heartsValue = 0, int weight = 0, bool gesture = false, bool alwaysLast = false, Color color = new Color())
+        public Treatment(String treatmentName, Patient ParentPatient = null)
         {
-            _treatmentName = treatmentName;
-            _difficultyUnlocked = difficultyUnlocked;
-            _heartsValue = heartsValue;
-            _weight = weight;
-            _gesture = gesture;
-            _alwaysLast = alwaysLast;
-            //_colorValue = color;
-            _colorValueString = "TestColorString";
+            this.TreatmentName = treatmentName;
         }
+
+        //public Treatment(String treatmentName, Double difficultyUnlocked = 0, int heartsValue = 0, int weight = 0, bool gesture = false, bool alwaysLast = false, Color color = new Color())
+        //{
+        //    _treatmentName = treatmentName;
+        //    _difficultyUnlocked = difficultyUnlocked;
+        //    _heartsValue = heartsValue;
+        //    _weight = weight;
+        //    _gesture = gesture;
+        //    _alwaysLast = alwaysLast;
+        //    //_colorValue = color;
+        //    _colorValueString = "TestColorString";
+        //}
 
         #region Overloads
         //public Treatment(DataGridViewRow dataRow)
@@ -576,6 +613,10 @@ namespace DataNameSpace
             return TreatmentName == null || TreatmentName == "";
         }
 
+        public void SetPatientParent(Patient ParentPatient)
+        {
+            this.ParentPatient = ParentPatient;
+        }
 
         #region Operators
         //public override bool Equals(Object obj)
