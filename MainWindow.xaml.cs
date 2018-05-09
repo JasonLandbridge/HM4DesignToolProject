@@ -19,9 +19,9 @@ namespace HM4DesignTool
     /// </summary>
     public partial class MainWindow : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
         private DataTemplate _patientRowDataTemplate = null;
-        public DataTemplate PatientRowDataTemplate {
+        public DataTemplate PatientRowDataTemplate
+        {
             get
             {
                 if (_patientRowDataTemplate == null)
@@ -83,7 +83,7 @@ namespace HM4DesignTool
         private void LoadLevelList()
         {
             int roomIndex = levelListFilter.SelectedIndex;
-            bool firstCategoryOpen = true; 
+            bool firstCategoryOpen = true;
             bool storyFilter = (bool)levelListStoryCheck.IsChecked;
             bool bonusFilter = (bool)levelListBonusCheck.IsChecked;
             bool unknownFilter = (bool)levelListUnknownCheck.IsChecked;
@@ -154,7 +154,7 @@ namespace HM4DesignTool
             {
                 Globals.GetSettings.LevelListFirstCategoryOpen = true;
             }
-            
+
             Globals.GetSettings.SaveSettings();
         }
 
@@ -226,14 +226,16 @@ namespace HM4DesignTool
 
         #endregion
 
-        #region Events
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-
-        #endregion
+        #endregion INotifyPropertyChanged Members
 
         private void Window_Closed(object sender, EventArgs e)
         {
@@ -244,6 +246,18 @@ namespace HM4DesignTool
         private void selectAllPatientChancesCheckbox_Click(object sender, RoutedEventArgs e)
         {
             Globals.GetLevelOverview.GetLevelLoaded.SelectAllPatientChances((bool)selectAllPatientChancesCheckbox.IsChecked);
+        }
+
+        private void customTreatmentWeightsButton_Click(object sender, RoutedEventArgs e)
+        {
+            CustomTreatmentWeightsWindow dialog = new CustomTreatmentWeightsWindow();
+            Nullable<bool> dialogResult = dialog.ShowDialog();
+
+        }
+
+        private void generateLevelButton_Click(object sender, RoutedEventArgs e)
+        {
+            Globals.GetLevelOverview.RandomizeLevel();
         }
     }
 }

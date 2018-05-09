@@ -236,6 +236,12 @@ namespace DataNameSpace
             }
         }
 
+        public int TreatmentPerPatientToInt(Double difficultyModifier)
+        {
+            double x = Math.Round(TreatmentPerPatient(difficultyModifier), MidpointRounding.AwayFromZero);
+            return Convert.ToInt32(x);
+        }
+
         public Double TimePerTreatment(Double difficultyModifier)
         {
             Double x = InitialTimePerTreatment - difficultyModifier * DecreaseTimePerTreatment;
@@ -289,6 +295,11 @@ namespace DataNameSpace
             Double x = MilliSecondsPerLevel(difficultyModifier) / AverageEntryTimePerPatient(difficultyModifier);
             return Math.Ceiling(x); //TODO Check if similair to math.ceil in python
         }
+        public int NumberOfPatientsToInt(Double difficultyModifier)
+        {
+            return Convert.ToInt32(NumberOfPatients(difficultyModifier));
+        }
+
         #endregion
 
         #region Overloads
@@ -359,7 +370,7 @@ namespace DataNameSpace
             {
                 _treatmentName = value;
                 OnPropertyChanged("TreatmentName");
-                if(ParentPatient != null && ParentPatient.ParentLevel != null) 
+                if (ParentPatient != null && ParentPatient.ParentLevel != null)
                 {
                     ParentPatient.ParentLevel.UpdateLevelOutput();
                 }
@@ -610,7 +621,7 @@ namespace DataNameSpace
 
         public bool IsEmpty()
         {
-            return TreatmentName == null || TreatmentName == "";
+            return TreatmentName == null || TreatmentName == "" || TreatmentName == String.Empty;
         }
 
         public void SetPatientParent(Patient ParentPatient)

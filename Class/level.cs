@@ -11,13 +11,14 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
+using Weighted_Randomizer;
 
 namespace LevelData
 {
     public class DesignToolData : INotifyPropertyChanged
     {
         private int _roomIndex = 0;
-        private float _difficultyLevel = 0;
+        private double _difficultyLevel = 0;
         private LevelTypeEnum _levelType = LevelTypeEnum.Unknown;
 
         public int Roomindex
@@ -32,7 +33,7 @@ namespace LevelData
             }
         }
 
-        public float DifficultyLevel
+        public double DifficultyLevel
         {
             get
             {
@@ -195,9 +196,10 @@ namespace LevelData
                 if (value != _currentLevelLoaded)
                 {
                     _currentLevelLoaded = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged("GetLevelLoaded");
                     OnPropertyChanged("LevelOverviewActive");
                     OnPropertyChanged("DifficultyModifierList");
+                    UpdateRandomRecommendations();
                 }
             }
         }
@@ -249,6 +251,204 @@ namespace LevelData
                 return new ObservableCollection<String> { };
             }
         }
+
+
+        #region RandomProperties
+        private bool _useRandomRecommendations = true;
+        public bool UseRandomRecommendations
+        {
+            get
+            {
+                return _useRandomRecommendations;
+            }
+            set
+            {
+                _useRandomRecommendations = value;
+                OnPropertyChanged("UseRandomRecommendations");
+                UpdateRandomRecommendations();
+            }
+        }
+
+
+
+        #region PatientType
+        private bool _generatePatientTypeCheck = true;
+        public bool GeneratePatientTypeCheck
+        {
+            get
+            {
+                return _generatePatientTypeCheck;
+            }
+            set
+            {
+                _generatePatientTypeCheck = value;
+                OnPropertyChanged("GeneratePatientTypeCheck");
+            }
+        }
+
+        private int _generatePatientTypeMin = 0;
+        public int GeneratePatientTypeMin
+        {
+            get
+            {
+                return _generatePatientTypeMin;
+            }
+            set
+            {
+                _generatePatientTypeMin = value;
+                OnPropertyChanged("GeneratePatientTypeMin");
+            }
+        }
+
+        private int _generatePatientTypeMax = 0;
+        public int GeneratePatientTypeMax
+        {
+            get
+            {
+                return _generatePatientTypeMax;
+            }
+            set
+            {
+                _generatePatientTypeMax = value;
+                OnPropertyChanged("GeneratePatientTypeMax");
+            }
+        }
+        #endregion
+
+        #region Patients
+        private bool _generatePatientsCheck = true;
+        public bool GeneratePatientsCheck
+        {
+            get
+            {
+                return _generatePatientsCheck;
+            }
+            set
+            {
+                _generatePatientsCheck = value;
+                OnPropertyChanged("GeneratePatientsCheck");
+            }
+        }
+
+        private int _generatePatientsMin = 0;
+        public int GeneratePatientsMin
+        {
+            get
+            {
+                return _generatePatientsMin;
+            }
+            set
+            {
+                _generatePatientsMin = value;
+                OnPropertyChanged("GeneratePatientsMin");
+            }
+        }
+
+        private int _generatePatientsMax = 0;
+        public int GeneratePatientsMax
+        {
+            get
+            {
+                return _generatePatientsMax;
+            }
+            set
+            {
+                _generatePatientsMax = value;
+                OnPropertyChanged("GeneratePatientsMax");
+            }
+        }
+        #endregion
+
+        #region PatientDelay
+        private bool _generatePatientDelayCheck = true;
+        public bool GeneratePatientDelayCheck
+        {
+            get
+            {
+                return _generatePatientDelayCheck;
+            }
+            set
+            {
+                _generatePatientDelayCheck = value;
+                OnPropertyChanged("GeneratePatientDelayCheck");
+            }
+        }
+
+        private int _generatePatientDelayMin = -1000;
+        public int GeneratePatientDelayMin
+        {
+            get
+            {
+                return _generatePatientDelayMin;
+            }
+            set
+            {
+                _generatePatientDelayMin = value;
+                OnPropertyChanged("GeneratePatientDelayMin");
+            }
+        }
+
+        private int _generatePatientDelayMax = 1000;
+        public int GeneratePatientDelayMax
+        {
+            get
+            {
+                return _generatePatientDelayMax;
+            }
+            set
+            {
+                _generatePatientDelayMax = value;
+                OnPropertyChanged("GeneratePatientDelayMax");
+            }
+        }
+        #endregion
+
+        #region Treatment
+        private bool _generateTreatmentsCheck = true;
+        public bool GenerateTreatmentsCheck
+        {
+            get
+            {
+                return _generateTreatmentsCheck;
+            }
+            set
+            {
+                _generateTreatmentsCheck = value;
+                OnPropertyChanged("GenerateTreatmentsCheck");
+            }
+        }
+
+        private int _generateTreatmentsMin = 0;
+        public int GenerateTreatmentsMin
+        {
+            get
+            {
+                return _generateTreatmentsMin;
+            }
+            set
+            {
+                _generateTreatmentsMin = value;
+                OnPropertyChanged("GenerateTreatmentsMin");
+            }
+        }
+
+        private int _generateTreatmentsMax = 0;
+        public int GenerateTreatmentsMax
+        {
+            get
+            {
+                return _generateTreatmentsMax;
+            }
+            set
+            {
+                _generateTreatmentsMax = value;
+                OnPropertyChanged("GenerateTreatmentsMax");
+            }
+        }
+
+        #endregion
+        #endregion
+
 
         public LevelOverview()
         {
@@ -446,6 +646,66 @@ namespace LevelData
             return levelName;
         }
 
+
+        internal void UpdateRandomRecommendations()
+        {
+
+            if (UseRandomRecommendations)
+            {
+                int numberOfPatients = Globals.GetGameValues.NumberOfPatientsToInt(GetLevelLoaded.GetDifficultyModifier);
+                int treatmentPerPatients = Globals.GetGameValues.TreatmentPerPatientToInt(GetLevelLoaded.GetDifficultyModifier);
+                int patientTypeCount = Globals.GetSettings.GetPatientChanceList(GetLevelLoaded.CategoryKey).Count;
+
+                GeneratePatientTypeMin = patientTypeCount;
+                GeneratePatientTypeMax = patientTypeCount;
+
+                GeneratePatientsMin = numberOfPatients - 1;
+                GeneratePatientsMax = numberOfPatients + 1;
+
+                GenerateTreatmentsMin = treatmentPerPatients - 1;
+                GenerateTreatmentsMax = treatmentPerPatients + 1;
+
+
+
+
+            }
+
+
+        }
+
+
+        public void RandomizeLevel()
+        {
+            if (GetLevelLoaded != null)
+            {
+                Random rnd = new Random();
+
+                if (GeneratePatientTypeCheck)
+                {
+
+                    foreach (PatientChance patientChance in GetLevelLoaded.PatientChanceCollection)
+                    {
+                        patientChance.RandomizeWeight(rnd.Next(1, 100));
+                    }
+
+                }
+
+
+                if (GeneratePatientsCheck)
+                {
+                    int patientAmount = rnd.Next(GeneratePatientsMin, GeneratePatientsMax);
+                    GetLevelLoaded.SetPatientAmount(patientAmount);
+                }
+
+                if (GenerateTreatmentsCheck)
+                {
+                    GetLevelLoaded.RandomizeTreatments(GenerateTreatmentsMin, GenerateTreatmentsMax);
+                }
+
+                GetLevelLoaded.UpdateLevelOutput();
+
+            }
+        }
         #region Getters
 
         public List<String> GetLevelsFromDisk(bool reload = false, bool filterExtension = false)
@@ -565,6 +825,7 @@ namespace LevelData
             set
             {
                 PatientChanceList = value.ToList<PatientChance>();
+                OnPropertyChanged("PatientChanceCollection");
             }
         }
 
@@ -650,7 +911,7 @@ namespace LevelData
             }
         }
 
-        public float GetDifficultyModifier
+        public double GetDifficultyModifier
         {
             get
             {
@@ -659,6 +920,8 @@ namespace LevelData
             set
             {
                 designToolData.DifficultyLevel = value;
+                OnPropertyChanged("GetDifficultyModifier");
+                Globals.GetLevelOverview.UpdateRandomRecommendations();
             }
         }
 
@@ -704,10 +967,10 @@ namespace LevelData
             {
                 List<String> treatmentListString = new List<String> { String.Empty };
 
-                String categoryKey = Globals.GetCategoryKey(GetRoomIndex);
-                if (GetRoomIndex > -1 && categoryKey != String.Empty)
+                //String categoryKey = Globals.GetCategoryKey(GetRoomIndex);
+                if (GetRoomIndex > -1 && CategoryKey != String.Empty)
                 {
-                    List<Treatment> treatmentList = Globals.GetSettings.GetTreatmentList(categoryKey);
+                    List<Treatment> treatmentList = Globals.GetSettings.GetTreatmentList(CategoryKey);
 
                     foreach (Treatment treatment in treatmentList)
                     {
@@ -940,7 +1203,7 @@ namespace LevelData
             }
         }
 
-        private void RandomizePatientChancesWeight()
+        internal void RandomizePatientChancesWeight()
         {
             Random rnd = new Random();
 
@@ -959,6 +1222,103 @@ namespace LevelData
             {
                 patientChance.IsSelected = State;
             }
+        }
+        internal void UpdateMaxTreatments(int value)
+        {
+
+            foreach (Patient patient in PatientCollection)
+            {
+                patient.SetMaxTreatments(value);
+            }
+
+        }
+
+
+        public void RandomizeTreatments(int treatmentMinValue, int treatmentMaxValue)
+        {
+
+            List<String> treatmentOptions = GetTreatmentOptions.ToList();
+
+            IWeightedRandomizer<int> randomizer = new DynamicWeightedRandomizer<int>();
+            //Start from 1, 0 is none
+            for (int i = 1; i < treatmentOptions.Count; i++)
+            {
+                randomizer.Add(i, Globals.GetSettings.GetTreatment(treatmentOptions[i]).Weight);
+            }
+
+            Random random = new Random();
+
+            foreach (Patient patient in PatientCollection)
+            {
+
+                //Get the number of treatments to generate. 
+                int treatmentNumber = random.Next(treatmentMinValue, treatmentMaxValue + 1);
+                bool searching = true;
+                int loop = 0;
+                List<int> RandomIndexArray = new List<int> { };
+
+                //Get random unique list of indexes. 
+                while (searching)
+                {
+                    int randomIndex = randomizer.NextWithReplacement();
+                    if (!RandomIndexArray.Contains(randomIndex))
+                    {
+                        RandomIndexArray.Add(randomIndex);
+
+                    }
+                    //Break if enough have been found
+                    if (treatmentNumber == RandomIndexArray.Count)
+                    {
+                        break;
+                    }
+                    //or when max loop have been reached. 
+                    if (loop >= 100)
+                    {
+                        if (RandomIndexArray.Count < treatmentNumber)
+                        {
+                            //TODO Fill up any remaining slots with an empty treatment. 
+                        }
+                        break;
+                    }
+                    loop++;
+                }
+
+                //Convert from Index back to String Names
+                List<String> randomTreatmentList = new List<string> { };
+                foreach (int x in RandomIndexArray)
+                {
+                    randomTreatmentList.Add(treatmentOptions[x]);
+                }
+                patient.SetTreatments(randomTreatmentList);
+            }
+        }
+
+        public void SetPatientAmount(int NewAmount)
+        {
+            int patientCount = PatientCollection.Count;
+
+            if (NewAmount < patientCount)
+            {
+                int amountToSubtract = patientCount - NewAmount;
+
+                for (int i = 1; i <= amountToSubtract; i++)
+                {
+                    int index = patientCount - i;
+
+                    PatientCollection.RemoveAt(index);
+                }
+
+            }
+            else if (NewAmount > patientCount)
+            {
+                int amountToAdd = NewAmount - patientCount;
+
+                for (int i = 0; i < amountToAdd; i++)
+                {
+                    AddPatient();
+                }
+            }
+
         }
 
         #region Commands
@@ -983,16 +1343,6 @@ namespace LevelData
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        internal void UpdateMaxTreatments(int value)
-        {
-
-            foreach(Patient patient in PatientCollection)
-            {
-                patient.SetMaxTreatments(value);
-            }
-
         }
 
         #endregion INotifyPropertyChanged Members
@@ -1167,9 +1517,20 @@ namespace LevelData
             if (TreatmentCollection != null && TreatmentCollection.Count() > 0)
             {
                 output += " todo = {";
+                int i = 0;
                 foreach (Treatment treatment in TreatmentCollection)
                 {
-                    output += "\"" + treatment.TreatmentName + "\",";
+                    if (!treatment.IsEmpty())
+                    {
+                        output += "\"" + treatment.TreatmentName + "\"";
+
+                        //Only add a comma when the element is not last in List
+                        if (i < TreatmentCollection.Count - 1)
+                        {
+                            output += ",";
+                        }
+                        i++;
+                    }
                 }
                 output += "}," + Environment.NewLine;
             }
@@ -1258,7 +1619,7 @@ namespace LevelData
                     List<String> TreatmentList = rawTreatments.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList<String>();
                     //Convert found treatments to Treatment Objects
 
-                    for(int i = 0; i < Math.Max(TreatmentList.Count, Globals.GetLevelOverview.MaxTreatmentsVisible); i++)
+                    for (int i = 0; i < Math.Max(TreatmentList.Count, Globals.GetLevelOverview.MaxTreatmentsVisible); i++)
                     {
                         if (i < TreatmentList.Count)
                         {
@@ -1320,38 +1681,63 @@ namespace LevelData
 
         public void SetMaxTreatments(int Value)
         {
-            int treatmentCount = TreatmentCollectionVisibleCount;
-
-            if (Value < treatmentCount)
+            if (Value > 0)
             {
-                int amountToSubtract = treatmentCount - Value;
+                int treatmentCount = TreatmentCollectionVisibleCount;
 
-                for (int i = 1; i <= amountToSubtract; i++)
+                if (Value < treatmentCount)
                 {
-                    int index = treatmentCount - i;
+                    int amountToSubtract = treatmentCount - Value;
 
-                    TreatmentCollection.ElementAt(index).IsVisible = false;
+                    for (int i = 1; i <= amountToSubtract; i++)
+                    {
+                        int index = treatmentCount - i;
 
+                        TreatmentCollection.ElementAt(index).IsVisible = false;
+
+                    }
+
+                }
+                else if (Value > treatmentCount)
+                {
+                    int amountToAdd = Value - treatmentCount;
+
+                    for (int i = 0; i < amountToAdd; i++)
+                    {
+                        int index = treatmentCount + i;
+                        if (index < TreatmentCollection.Count)
+                        {
+                            TreatmentCollection.ElementAt(index).IsVisible = true;
+                        }
+                        else
+                        {
+                            AddTreatment();
+                        }
+                    }
                 }
 
             }
-            else if (Value > treatmentCount)
-            {
-                int amountToAdd =  Value - treatmentCount;
+        }
 
-                for (int i = 0; i < amountToAdd; i++)
+
+        public void SetTreatments(List<String> TreatmentList)
+        {
+
+            SetMaxTreatments(Math.Max(TreatmentList.Count, TreatmentCollection.Count));
+
+
+            for (int i = 0; i < TreatmentCollection.Count;i++)
+            {
+                if (i < TreatmentList.Count)
                 {
-                    int index = treatmentCount + i;
-                    if (index < TreatmentCollection.Count)
-                    {
-                        TreatmentCollection.ElementAt(index).IsVisible = true;
-                    }
-                    else
-                    {
-                        AddTreatment();
-                    }
+                    TreatmentCollection.ElementAt<Treatment>(i).TreatmentName = TreatmentList[i];
+                }
+                else
+                {
+                    TreatmentCollection.ElementAt<Treatment>(i).TreatmentName = String.Empty;
                 }
             }
+
         }
 
         #region Events
