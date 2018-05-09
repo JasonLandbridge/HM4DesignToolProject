@@ -92,7 +92,8 @@
 		<DockPanel Grid.Row="0">
 			<Menu DockPanel.Dock="Top">
 				<MenuItem Header="_File">
-					<MenuItem  x:Name="menuItemNewLevel" Header="_New Levels" Click="menuItemNewLevel_Click"/>
+					<MenuItem  x:Name="menuItemNewLevel" Header="_Create New Levels" Click="menuItemNewLevel_Click"/>
+					<MenuItem x:Name="menuItemExportLevelList" Header="_Create Level List" Click="menuItemExportLevelList_Click"/>
 					<MenuItem Header="_Close"/>
 					<MenuItem Header="_Save"/>
 				</MenuItem>

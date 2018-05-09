@@ -1,10 +1,6 @@
 ﻿using nucs.JsonSettings;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Media;
 using DataNameSpace;
 using System.IO;
 using LevelData;
@@ -286,7 +282,7 @@ namespace SettingsNamespace
             {
                 foreach (KeyValuePair<String, List<Treatment>> category in GetTreatmentDictionary())
                 {
-                    foreach(Treatment treatment in category.Value)
+                    foreach (Treatment treatment in category.Value)
                     {
                         if (treatment.TreatmentName == TreatmentName)
                         {

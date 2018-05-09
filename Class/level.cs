@@ -945,6 +945,19 @@ namespace LevelData
             }
         }
 
+        public Dictionary<String, int> RandomTreatmentDictionary = new Dictionary<string, int> { };
+        public ObservableCollection<Treatment> RandomTreatmentList
+        {
+            get
+            {
+
+            }
+            set
+            {
+
+            }
+        }
+
         //Level Script output
         public String GetLevelTypeString
         {
@@ -1726,7 +1739,7 @@ namespace LevelData
             SetMaxTreatments(Math.Max(TreatmentList.Count, TreatmentCollection.Count));
 
 
-            for (int i = 0; i < TreatmentCollection.Count;i++)
+            for (int i = 0; i < TreatmentCollection.Count; i++)
             {
                 if (i < TreatmentList.Count)
                 {

@@ -259,5 +259,12 @@ namespace HM4DesignTool
         {
             Globals.GetLevelOverview.RandomizeLevel();
         }
+
+        private void menuItemExportLevelList_Click(object sender, RoutedEventArgs e)
+        {
+            LevelListExport dialog = new LevelListExport();
+            Nullable<bool> dialogResult = dialog.ShowDialog();
+
+        }
     }
 }
