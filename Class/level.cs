@@ -1379,6 +1379,20 @@ namespace LevelData
                 {
                     randomTreatmentList.Add(treatmentOptions[x]);
                 }
+
+                //Make sure all AtLast treatment are at the end of the list
+                int treatmentCount = randomTreatmentList.Count;
+                for (int i = 0; i < treatmentCount; i++)
+                {
+                    String treatment = randomTreatmentList[i];
+
+                    if (Globals.GetSettings.GetAlwaysLast(treatment, GetRoomIndex))
+                    {
+                        randomTreatmentList.RemoveAt(i);
+                        randomTreatmentList.Add(treatment);
+                    }
+                }
+                //Store new TreatmentList in the patient
                 patient.SetTreatments(randomTreatmentList);
             }
         }

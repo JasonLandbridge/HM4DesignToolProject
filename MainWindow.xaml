@@ -166,6 +166,7 @@
 				<Grid.RowDefinitions>
 					<RowDefinition Height=".9*"/>
 					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition MaxWidth="200"/>
@@ -191,16 +192,34 @@
 
 					</StackPanel>
 				</GroupBox>
+
+				<!--Level Controls-->
+				<Grid Grid.Row="2">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+					<Button Grid.Column="0" Grid.Row="0" Content="Reload" Margin="5" Width="70" />
+					<Button Grid.Column="2" Grid.Row="0" Content="Save" Margin="5" Width="70" />
+
+				</Grid>
+
 			</Grid>
 			<!-- Level Data -->
 			<Grid x:Name="levelDataLayout" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" >
 				<Grid.RowDefinitions>
 					<RowDefinition/>
 					<RowDefinition/>
+					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
+				<!--Level Overview Tabs-->
 				<TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
 					<TabItem Header="General">
 						<Grid Background="#FFF" IsEnabled="{Binding Path=LevelOverviewActive}">
@@ -553,6 +572,7 @@
 						</Grid>
 					</TabItem>
 				</TabControl>
+				<!-- Level Script Previews-->
 				<Grid x:Name="previewSplitContainer" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"/>
