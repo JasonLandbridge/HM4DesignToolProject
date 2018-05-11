@@ -155,5 +155,19 @@
       "29.5",
       "30.0"
     ]
+  },
+  "CustomizedTreatmentWeights": {
+    "r3_b02_bonus_01": {
+      "bodyHeight": 0,
+      "cameraLense": 0,
+      "cameraMicro": 69,
+      "donate": 38,
+      "examineBody": 76,
+      "examineOrgan": 0,
+      "fingerprint": 0,
+      "folderDental": 0,
+      "fridgeChoice": 0,
+      "organWeighing": 100
+    }
   }
 }

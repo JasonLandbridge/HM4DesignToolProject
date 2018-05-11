@@ -99,7 +99,18 @@ namespace SettingsNamespace
                 gSettings.balancingCategories = value;
             }
         }  // Room[N] -> List with String difficulty Modifiers
+        private Dictionary<String, Dictionary<String, int>> _customizedTreatmentWeights
+        {
+            get
+            {
+                return gSettings.CustomizedTreatmentWeights;
+            }
 
+            set
+            {
+                gSettings.CustomizedTreatmentWeights = value;
+            }
+        }
         #region Settings
 
         public String projectPathData
@@ -247,19 +258,41 @@ namespace SettingsNamespace
             }
 
         }
-        public List<Treatment> GetTreatmentList(String categoryKey)
+        public List<Treatment> GetTreatmentList(String categoryKey, Double difficultyModifier = 0)
         {
             if (categoryKey != null && categoryKey != String.Empty)
             {
                 Dictionary<String, List<Treatment>> treatmentDictionary = GetTreatmentDictionary(categoryKey);
                 if (treatmentDictionary.ContainsKey(categoryKey))
                 {
-                    return treatmentDictionary[categoryKey];
+                    if (difficultyModifier == 0)
+                    {
+                        return treatmentDictionary[categoryKey];
+                    }
+                    else
+                    {
+                        //Filter List by the difficulty modifier
+                        return treatmentDictionary[categoryKey].FindAll(delegate (Treatment t) { return t.DifficultyUnlocked <= difficultyModifier; });
+                    }
                 }
             }
             return new List<Treatment> { };
 
         }
+        public Dictionary<String, int> GetCustomizedTreatmentWeights(String LevelName)
+        {
+            if (_customizedTreatmentWeights.ContainsKey(LevelName))
+            {
+
+                return _customizedTreatmentWeights[LevelName];
+            }
+            else
+            {
+                return new Dictionary<String, int> { };
+            }
+        }
+
+
 
         public Treatment GetTreatment(String TreatmentName, int RoomIndex = -1)
         {
@@ -340,6 +373,22 @@ namespace SettingsNamespace
             this.balancingCategoriesDict = balancingCategoriesDict;
         }
 
+        public void SetCustomizedTreatmentWeightsDict(Dictionary<String, Dictionary<String, int>> CustomizedTreatmentWeightsDict)
+        {
+
+            foreach (KeyValuePair<String, Dictionary<String, int>> treatmentWeightsDict in CustomizedTreatmentWeightsDict)
+            {
+                if (_customizedTreatmentWeights.ContainsKey(treatmentWeightsDict.Key))
+                {
+                    _customizedTreatmentWeights[treatmentWeightsDict.Key] = treatmentWeightsDict.Value;
+                }
+                else
+                {
+                    _customizedTreatmentWeights.Add(treatmentWeightsDict.Key, treatmentWeightsDict.Value);
+                }
+            }
+
+        }
         #endregion
 
         #endregion
@@ -458,6 +507,7 @@ namespace SettingsNamespace
         public Dictionary<String, List<String>> patientTypeCategories { get; set; }
         public Dictionary<String, Dictionary<String, String>> treatmentCategories { get; set; }
         public Dictionary<String, List<String>> balancingCategories { get; set; }
+        public Dictionary<String, Dictionary<String, int>> CustomizedTreatmentWeights { get; set; } = new Dictionary<String, Dictionary<String, int>> { }; //LevelName : {TreatmentName : CustomizedWeight}
 
         public GlobalSettings()
         {

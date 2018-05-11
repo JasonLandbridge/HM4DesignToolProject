@@ -372,13 +372,16 @@ namespace DataNameSpace
     public class Treatment : Object, INotifyPropertyChanged
     {
         private Patient ParentPatient = null;
+        private Level ParentLevel = null;
         private String _treatmentName = String.Empty;
         private Double _difficultyUnlocked = 0;
         private int _heartsValue = 0;
         private int _weight = 0;
+        private int _customizedWeight = 0;
         private bool _gesture = false;
         private bool _alwaysLast = false;
         private Color _treatmentColor = Colors.White;
+        private double _weightPercentage = 0;
 
         private bool _isVisible = false;
         private bool _isSelected = false;
@@ -471,6 +474,28 @@ namespace DataNameSpace
 
             }
         }
+        public int CustomizedWeight
+        {
+            get
+            {
+                return _customizedWeight;
+            }
+            set
+            {
+                _customizedWeight = value;
+                OnPropertyChanged("CustomizedWeight");
+                if (ParentPatient != null && ParentPatient.ParentLevel != null)
+                {
+                    ParentPatient.ParentLevel.UpdateTreatmentWeightPercentage();
+                }
+                else if(ParentLevel != null)
+                {
+                    ParentLevel.UpdateTreatmentWeightPercentage();
+                }
+            }
+        }
+
+
         public bool Gesture
         {
             get
@@ -530,6 +555,21 @@ namespace DataNameSpace
             }
         }
 
+
+        public double WeightPercentage
+        {
+            get
+            {
+                return _weightPercentage;
+            }
+            set
+            {
+                _weightPercentage = value;
+                OnPropertyChanged("WeightPercentage");
+                OnPropertyChanged("WeightPercentageString");
+            }
+        }
+
         public bool IsVisible
         {
             get
@@ -567,6 +607,7 @@ namespace DataNameSpace
                 DifficultyUnlocked = newTreatment.
                 HeartsValue = newTreatment.HeartsValue;
                 Weight = newTreatment.Weight;
+                CustomizedWeight = Weight; //Default to the base weight from settings
                 Gesture = newTreatment.Gesture;
                 AlwaysLast = newTreatment.AlwaysLast;
                 TreatmentColor = newTreatment.TreatmentColor;
@@ -582,6 +623,7 @@ namespace DataNameSpace
             DifficultyUnlocked = Convert.ToDouble(treatmentData[0]);
             HeartsValue = Convert.ToInt32(treatmentData[1]);
             Weight = Convert.ToInt32(treatmentData[2]);
+            CustomizedWeight = Weight;
             Gesture = Convert.ToBoolean(treatmentData[3]);
             AlwaysLast = Convert.ToBoolean(treatmentData[4]);
             TreatmentColorString = treatmentData[5].ToString();
@@ -617,6 +659,27 @@ namespace DataNameSpace
             return ToString(true);
         }
 
+        public String WeightPercentageString
+        {
+            get
+            {
+                return WeightPercentage.ToString("N1") + "%";
+            }
+        }
+
+        public void UpdatePercentage()
+        {
+            if (ParentPatient != null && ParentPatient.ParentLevel != null)
+            {
+                WeightPercentage = ParentPatient.ParentLevel.GetTreatmentWeightPercentage(CustomizedWeight);
+            }
+            else if (ParentLevel != null)
+            {
+                WeightPercentage = ParentLevel.GetTreatmentWeightPercentage(CustomizedWeight);
+            }
+
+        }
+
         public String ToString(bool includeTreatmentName = false)
         {
             return String.Join(",", ToList(includeTreatmentName));
@@ -631,6 +694,12 @@ namespace DataNameSpace
         {
             this.ParentPatient = ParentPatient;
         }
+
+        public void SetLevelParent(Level ParentLevel)
+        {
+            this.ParentLevel = ParentLevel;
+        }
+
 
         #region Operators
         public override bool Equals(object obj)

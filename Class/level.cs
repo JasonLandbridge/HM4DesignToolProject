@@ -33,6 +33,8 @@ namespace LevelData
             set
             {
                 _roomIndex = value;
+                OnPropertyChanged("Roomindex");
+
             }
         }
 
@@ -45,6 +47,8 @@ namespace LevelData
             set
             {
                 _difficultyLevel = value;
+                OnPropertyChanged("DifficultyLevel");
+
             }
         }
 
@@ -173,7 +177,7 @@ namespace LevelData
 
         #region INotifyPropertyChanged Members
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -256,6 +260,20 @@ namespace LevelData
             }
         }
 
+        private bool _showAvailableTreatmentsCheck = false;
+        public bool ShowAvailableTreatmentsCheck
+        {
+            get
+            {
+                return _showAvailableTreatmentsCheck;
+            }
+            set
+            {
+                _showAvailableTreatmentsCheck = value;
+                OnPropertyChanged("ShowAvailableTreatmentsCheck");
+                OnPropertyChanged("GetTreatmentsAvailableString");
+            }
+        }
 
         #region RandomProperties
         private bool _useRandomRecommendations = true;
@@ -272,8 +290,6 @@ namespace LevelData
                 UpdateRandomRecommendations();
             }
         }
-
-
 
         #region PatientType
         private bool _generatePatientTypeCheck = true;
@@ -811,7 +827,7 @@ namespace LevelData
 
         #region INotifyPropertyChanged Members
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -913,6 +929,8 @@ namespace LevelData
 
             //Translate the levelScript into workable variables.
             ParseRawText(levelName);
+
+            UpdateAvailableTreatmentList();
             _canExecute = true;
         }
 
@@ -990,6 +1008,9 @@ namespace LevelData
             {
                 designToolData.DifficultyLevel = value;
                 OnPropertyChanged("GetDifficultyModifier");
+                OnPropertyChanged("GetTreatmentOptions");
+                OnPropertyChanged("GetTreatmentsAvailableString");
+                UpdateAvailableTreatmentList();
                 Globals.GetLevelOverview.UpdateRandomRecommendations();
             }
         }
@@ -1015,19 +1036,7 @@ namespace LevelData
         }
 
         public Dictionary<String, int> RandomTreatmentDictionary = new Dictionary<string, int> { };
-        //public ObservableCollection<Treatment> RandomTreatmentList
-        //{
-        //    get
-        //    {
 
-        //    }
-        //    set
-        //    {
-
-        //    }
-        //}
-
-        //Level Script output
         public String GetLevelTypeString
         {
             get
@@ -1043,6 +1052,42 @@ namespace LevelData
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        private List<Treatment> _availableTreatmentList = new List<Treatment> { };
+        public List<Treatment> AvailableTreatmentList
+        {
+            get
+            {
+                return _availableTreatmentList;
+            }
+            set
+            {
+                _availableTreatmentList = value;
+                OnPropertyChanged("AvailableTreatmentList");
+            }
+        }
+
+        public void UpdateAvailableTreatmentList()
+        {
+            List<Treatment> treatmentList = Globals.GetSettings.GetTreatmentList(CategoryKey, GetDifficultyModifier);
+            Dictionary<String, int> customTreatmentWeights = Globals.GetSettings.GetCustomizedTreatmentWeights(LevelName);
+
+            foreach (Treatment treatment in treatmentList)
+            {
+                treatment.SetLevelParent(this);
+
+                if (customTreatmentWeights.ContainsKey(treatment.TreatmentName))
+                {
+                    treatment.CustomizedWeight = customTreatmentWeights[treatment.TreatmentName];
+                }
+            }
+
+            AvailableTreatmentList = treatmentList;
+            UpdateTreatmentsAvailableString();
+        }
+
         public ObservableCollection<String> GetTreatmentOptions
         {
             get
@@ -1056,7 +1101,11 @@ namespace LevelData
 
                     foreach (Treatment treatment in treatmentList)
                     {
-                        treatmentListString.Add(treatment.TreatmentName);
+                        //Only add treatments with a sufficient DifficultyModifer
+                        if (treatment.DifficultyUnlocked <= GetDifficultyModifier)
+                        {
+                            treatmentListString.Add(treatment.TreatmentName);
+                        }
                     }
                 }
 
@@ -1120,6 +1169,55 @@ namespace LevelData
                 return output;
             }
         }
+
+        public void UpdateTreatmentsAvailableString()
+        {
+            String output = String.Empty;
+            //TODO Make this function dependant whetaher ShowAvailableTreatmentsCheck is true, currently it's not working where it is assumed false.
+            if (Globals.GetLevelOverview.ShowAvailableTreatmentsCheck || true)
+            {
+                List<Treatment> treatmentList = AvailableTreatmentList;
+                if (treatmentList.Count > 0)
+                {
+                    //Calculate totalWeight
+                    int TotalWeight = 0;
+                    foreach (Treatment treatment in treatmentList)
+                    {
+                        TotalWeight += treatment.Weight;
+                    }
+
+                    foreach (Treatment treatment in treatmentList)
+                    {
+                        output += treatment.TreatmentName + " (" + Math.Round((treatment.Weight / Convert.ToDouble(TotalWeight)) * 100, 1).ToString("N1") + "%), ";
+                        if (treatment.Weight != treatment.CustomizedWeight)
+                        {
+                            output += " => CustomWeight: " + treatment.CustomizedWeight.ToString();
+                        }
+                        output += Environment.NewLine;
+                    }
+
+
+
+                }
+
+            }
+
+            TreatmentsAvailableString = output;
+        }
+
+        private String _treatmentsAvailableString = String.Empty;
+        public String TreatmentsAvailableString
+        {
+            get
+            {
+                return _treatmentsAvailableString;
+            }
+            set
+            {
+                _treatmentsAvailableString = value;
+                OnPropertyChanged("TreatmentsAvailableString");
+            }
+        }
         private DataTable _patientSimulateDataTable = new DataTable();
         public DataTable PatientSimulateDataTable
         {
@@ -1143,6 +1241,8 @@ namespace LevelData
             return Percentage;
         }
 
+
+
         public void UpdatePatientChancePercentage()
         {
             foreach (PatientChance patientChance in PatientChanceList)
@@ -1150,6 +1250,28 @@ namespace LevelData
                 patientChance.UpdatePercentage();
             }
             UpdateLevelOutput();
+        }
+
+
+        public double GetTreatmentWeightPercentage(int CustomizedWeight)
+        {
+            int TotalWeight = 0;
+            foreach (Treatment treatment in AvailableTreatmentList)
+            {
+                TotalWeight += treatment.CustomizedWeight;
+            }
+
+            double Percentage = CustomizedWeight / (double)TotalWeight * 100;
+            Percentage = Math.Round(Percentage, 1, MidpointRounding.AwayFromZero);
+            return Percentage;
+        }
+
+        public void UpdateTreatmentWeightPercentage()
+        {
+            foreach (Treatment treatment in AvailableTreatmentList)
+            {
+                treatment.UpdatePercentage();
+            }
         }
 
         #endregion Getters
@@ -1326,15 +1448,11 @@ namespace LevelData
 
         public void RandomizeTreatments(int treatmentMinValue, int treatmentMaxValue)
         {
+            //Filter List by treatments with a CustomizedWeight higher than 0
+            List<Treatment> treatmentOptions = AvailableTreatmentList.FindAll(delegate (Treatment t) { return t.CustomizedWeight > 0; });
 
-            List<String> treatmentOptions = GetTreatmentOptions.ToList();
-
-            IWeightedRandomizer<int> randomizer = new DynamicWeightedRandomizer<int>();
-            //Start from 1, 0 is none
-            for (int i = 1; i < treatmentOptions.Count; i++)
-            {
-                randomizer.Add(i, Globals.GetSettings.GetTreatment(treatmentOptions[i]).Weight);
-            }
+            //https://github.com/BlueRaja/Weighted-Item-Randomizer-for-C-Sharp/wiki/Getting-Started
+            IWeightedRandomizer<String> randomizer = new DynamicWeightedRandomizer<String>();
 
             Random random = new Random();
 
@@ -1342,51 +1460,55 @@ namespace LevelData
             {
 
                 //Get the number of treatments to generate. 
-                int treatmentNumber = random.Next(treatmentMinValue, treatmentMaxValue + 1);
-                bool searching = true;
-                int loop = 0;
-                List<int> RandomIndexArray = new List<int> { };
+                int treatmentNumber = random.Next(Math.Min(treatmentMinValue, treatmentMaxValue), treatmentMaxValue + 1);
+                //Ensure that the treatment number is not highter than the available treatments. 
+                treatmentNumber = Math.Min(treatmentOptions.Count, treatmentNumber);
+                List<String> RandomTreatmentNameList = new List<String> { };
 
-                //Get random unique list of indexes. 
-                while (searching)
+
+
+                //Create the randomizer
+                randomizer.Clear();
+                for (int i = 0; i < treatmentOptions.Count; i++)
                 {
-                    int randomIndex = randomizer.NextWithReplacement();
-                    if (!RandomIndexArray.Contains(randomIndex))
-                    {
-                        RandomIndexArray.Add(randomIndex);
-
-                    }
-                    //Break if enough have been found
-                    if (treatmentNumber == RandomIndexArray.Count)
-                    {
-                        break;
-                    }
-                    //or when max loop have been reached. 
-                    if (loop >= 100)
-                    {
-                        if (RandomIndexArray.Count < treatmentNumber)
-                        {
-                            //TODO Fill up any remaining slots with an empty treatment. 
-                        }
-                        break;
-                    }
-                    loop++;
+                    randomizer.Add(treatmentOptions[i].TreatmentName, treatmentOptions[i].CustomizedWeight);
                 }
 
-                //Convert from Index back to String Names
-                List<String> randomTreatmentList = new List<string> { };
-                foreach (int x in RandomIndexArray)
+                for (int i = 0; i < treatmentNumber; i++)
                 {
-                    randomTreatmentList.Add(treatmentOptions[x]);
+                    if (randomizer.Count == 0 || randomizer.TotalWeight == 0)
+                    {
+                        break;
+                    }
+
+                    String randomTreatmentName = randomizer.NextWithRemoval();
+
+                    RandomTreatmentNameList.Add(randomTreatmentName);
+
+                }
+
+
+                //Convert from String back to Treatments
+                List<Treatment> randomTreatmentList = new List<Treatment> { };
+                foreach (String x in RandomTreatmentNameList)
+                {
+                    foreach (Treatment treatment in treatmentOptions)
+                    {
+                        if (x == treatment.TreatmentName)
+                        {
+                            randomTreatmentList.Add(treatment);
+                            break;
+                        }
+                    }
                 }
 
                 //Make sure all AtLast treatment are at the end of the list
                 int treatmentCount = randomTreatmentList.Count;
                 for (int i = 0; i < treatmentCount; i++)
                 {
-                    String treatment = randomTreatmentList[i];
+                    Treatment treatment = randomTreatmentList[i];
 
-                    if (Globals.GetSettings.GetAlwaysLast(treatment, GetRoomIndex))
+                    if (randomTreatmentList[i].AlwaysLast)
                     {
                         randomTreatmentList.RemoveAt(i);
                         randomTreatmentList.Add(treatment);
@@ -1442,7 +1564,7 @@ namespace LevelData
 
         #region INotifyPropertyChanged Members
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -1824,22 +1946,26 @@ namespace LevelData
         }
 
 
-        public void SetTreatments(List<String> TreatmentList)
+        public void SetTreatments(List<Treatment> TreatmentList)
         {
-
+            //Make sure the maxAmount of visible treatments in visible
             SetMaxTreatments(Math.Max(TreatmentList.Count, TreatmentCollection.Count));
 
 
             for (int i = 0; i < TreatmentCollection.Count; i++)
             {
+                Treatment treatment = TreatmentCollection.ElementAt<Treatment>(i);
+
                 if (i < TreatmentList.Count)
                 {
-                    TreatmentCollection.ElementAt<Treatment>(i).TreatmentName = TreatmentList[i];
+                    treatment.TreatmentName = TreatmentList[i].TreatmentName;
                 }
                 else
                 {
-                    TreatmentCollection.ElementAt<Treatment>(i).TreatmentName = String.Empty;
+                    treatment.TreatmentName = String.Empty;
                 }
+
+                treatment.SetPatientParent(this);
             }
 
         }

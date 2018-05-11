@@ -29,7 +29,7 @@
 															<ColumnDefinition Width="*" />
 														</Grid.ColumnDefinitions>
 														<Border x:Name="Border"  Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1" />
-														<Border Grid.Column="0" Margin="1"  Background="{Binding TreatmentColorBrush, Mode=OneWay, UpdateSourceTrigger=Default, FallbackValue=White,  diag:PresentationTraceSources.TraceLevel=High}"  BorderBrush="Black" />
+														<Border Grid.Column="0" Margin="1"  Background="{Binding TreatmentColorBrush, Mode=OneWay, UpdateSourceTrigger=Default, FallbackValue=White}"  BorderBrush="Black" />
 														<Path x:Name="Arrow" Grid.Column="1"  Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
 													</Grid>
 													<ControlTemplate.Triggers>
@@ -427,12 +427,12 @@
 
 										</Grid.ColumnDefinitions>
 
-										<CheckBox x:Name="showAvailableTreatmentsCheck" Content="Show available treatments" Grid.Column="0" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,5,0,5" IsChecked="True" />
+										<CheckBox x:Name="showAvailableTreatmentsCheck" Content="Show available treatments" Grid.Column="0" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,5,0,5" IsChecked="{Binding ShowAvailableTreatmentsCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 										<CheckBox x:Name="uniqueTreatmentsCheckBox" Content="Unique Treatments Only Per Patient" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,5,0,5" IsEnabled="False" IsChecked="True" Visibility="Hidden"/>
 										<Button x:Name="customTreatmentWeightsButton" Content="Custom Treatment Weights" Grid.Column="2" Grid.Row="0" Click="customTreatmentWeightsButton_Click" />
 									</Grid>
 
-									<TextBox x:Name="previewAvailableTreatments" Grid.Row="4" Margin="0,5" Visibility="{Binding IsChecked, Converter={StaticResource VisibilityOfBool}, ElementName=showAvailableTreatmentsCheck}"/>
+									<TextBox x:Name="previewAvailableTreatments" Grid.Row="4" Margin="0,5" Text="{Binding GetLevelLoaded.TreatmentsAvailableString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding DataContext.ShowAvailableTreatmentsCheck, Mode=OneWay, Converter={StaticResource VisibilityOfBool}, RelativeSource={RelativeSource Self}}" TextWrapping="Wrap"/>
 
 									<Button x:Name="generateLevelButton" Grid.Row="6" Content="Generate Level" Margin="0,5" Padding="1,5" Click="generateLevelButton_Click"/>
 								</Grid>
