@@ -140,21 +140,13 @@ namespace UiWindows
         {
             get
             {
-                //ObservableCollection<String> treatmentDifficultyModifierList = new ObservableCollection<String> { };
-                //if (balancingCategoriesDict.ContainsKey(SelectedTreatmentRoomCategoryKey))
-                //{
-                //    foreach (String treatmentDifficultyModifier in balancingCategoriesDict[SelectedTreatmentRoomCategoryKey])
-                //    {
-                //        treatmentDifficultyModifierList.Add(treatmentDifficultyModifier);
-                //    }
-                //}
-
                 return treatmentDifficultyModifierList;
             }
             set
             {
-                OnPropertyChanged();
                 treatmentDifficultyModifierList = value;
+                OnPropertyChanged("TreatmentDifficultyModifierList");
+
             }
         }
         private Color _treatmentSelectColor = Colors.White;
@@ -278,7 +270,6 @@ namespace UiWindows
 
             SetupSettingsWindow();
             LoadSaveData();
-            SetupBinding();
 
         }
 
@@ -350,12 +341,6 @@ namespace UiWindows
             #endregion
         }
 
-        private void SetupBinding()
-        {
-            treatmentDataGridView.ItemsSource = TreatmentList;
-            difficultyUnlockedColumn.ItemsSource = TreatmentDifficultyModifierList;
-
-        }
         private void LoadSaveData()
         {
             //Changing the index will automatically load the save data in the UI
@@ -538,7 +523,6 @@ namespace UiWindows
                     treatmentDifficultyModifierList.Add(treatmentDifficultyModifier);
                 }
                 TreatmentDifficultyModifierList = treatmentDifficultyModifierList;
-                OnPropertyChanged("TreatmentDifficultyModifierList");
                 difficultyUnlockedColumn.ItemsSource = TreatmentDifficultyModifierList;
 
             }
@@ -588,14 +572,45 @@ namespace UiWindows
         #region TreatmentTabSignals
         private void treatmentRowButtonAdd_Click(object sender, RoutedEventArgs e)
         {
-            TreatmentList.Add(new Treatment("Unknown"));
+            TreatmentList.Add(new Treatment());
         }
+
+        private void treatmentRowButtonRemove_Click(object sender, RoutedEventArgs e)
+        {
+            if (TreatmentList.Count > 0)
+            {
+                bool anythingSelected = false;
+                for (int i = TreatmentList.Count - 1; 0 < i; i--)
+                {
+                    if (TreatmentList[i].IsSelected)
+                    {
+                        TreatmentList.RemoveAt(i);
+                        anythingSelected = true;
+                    }
+                }
+                if (!anythingSelected)
+                {
+                    TreatmentList.Remove(TreatmentList.Last());
+                }
+
+            }        }
 
         private void treatmentRoomList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             StoreTreatmentCategory();
             String categoryKey = treatmentRoomList.SelectedItem.ToString();
             LoadTreatmentCategory(categoryKey);
+        }
+
+        private void DataGrid_GotFocus(object sender, RoutedEventArgs e)
+        {
+            // Lookup for the source to be DataGridCell
+            if (e.OriginalSource.GetType() == typeof(DataGridCell))
+            {
+                // Starts the Edit on the row;
+                DataGrid grd = (DataGrid)sender;
+                grd.BeginEdit(e);
+            }
         }
 
         #endregion
@@ -703,10 +718,10 @@ namespace UiWindows
         }
 
 
+
+
+
         #endregion
-
-
-
 
     }
 }

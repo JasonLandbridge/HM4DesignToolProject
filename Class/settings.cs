@@ -46,9 +46,9 @@ namespace SettingsNamespace
                         //Loop over each treatment
                         foreach (KeyValuePair<String, String> treatmentRow in roomCategory.Value)
                         {
-                            Treatment treatmentStruct = new Treatment(treatmentRow.Key, treatmentRow.Value);
+                            Treatment treatment = new Treatment(treatmentRow.Key, treatmentRow.Value);
 
-                            treatmentList.Add(treatmentStruct);
+                            treatmentList.Add(treatment);
                         }
                         convertedDict.Add(roomCategory.Key, treatmentList);
                     }

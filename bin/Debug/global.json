@@ -24,13 +24,7 @@
     ]
   },
   "treatmentCategories": {
-    "Room 1": {
-      "fdfvd": "2.5,54,0,False,False,#7FFFD4",
-      "test2": "6.5,546,45645,False,True,#7FFFD4",
-      "dfvdfvd": "7.5,5456,456,False,False,#7FFFD4",
-      "fvdfvdfv": "2.5,456456,54,False,False,#00008B",
-      "dfvdfvdfvd": "11.5,4564,456,False,False,#00008B"
-    },
+    "Room 1": {},
     "Room 2": {
       "fdf536563vd": "3,54,0,False,False,#0000FF",
       "fdv45363456dfv": "0,546,45645,False,True,#0000FF",
@@ -64,18 +58,18 @@
     "Room 4": {},
     "Room 5": {},
     "Room 6": {
-      "applyAdrenaline": "21,1,20,False,False,#FFFFFF",
+      "applyAdrenaline": "23,1,20,False,False,#FFFFFF",
       "applyBandage": "21,1,20,False,False,#FFFFFF",
       "applyBandaid": "21,1,20,False,False,#FFFFFF",
-      "applyColdPack": "21,1,20,False,False,#FFFFFF",
+      "applyColdPack": "26,1,20,False,False,#FFFFFF",
       "applyDisinfectant": "21,1,20,False,False,#FFFFFF",
       "applyEyeWash": "21,1,20,False,False,#FFFFFF",
       "applyHotBalm": "21,1,20,False,False,#FFFFFF",
       "applyHotPack": "21,1,20,False,False,#FFFFFF",
       "applyLotion": "21,1,20,False,False,#FFFFFF",
-      "applySplint": "21,1,20,False,False,#FFFFFF",
+      "applySplint": "29,1,20,False,False,#FFFFFF",
       "applyTourniquet": "21,1,20,False,False,#FFFFFF",
-      "axialSlicesTreatment": "21,1,20,False,False,#FFFFFF",
+      "axialSlicesTreatment": "25,1,20,False,False,#FFFFFF",
       "cprTreatment": "21,1,20,False,False,#FFFFFF",
       "findTools": "21,1,20,False,False,#FFFFFF",
       "hookupCardiac": "21,1,20,False,False,#FFFFFF",
