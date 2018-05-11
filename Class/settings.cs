@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using DataNameSpace;
 using System.IO;
 using LevelData;
-
+using System.Windows.Media;
 
 namespace SettingsNamespace
 {   //Storing settings in JSON: https://github.com/Nucs/JsonSettings
@@ -260,6 +260,7 @@ namespace SettingsNamespace
             return new List<Treatment> { };
 
         }
+
         public Treatment GetTreatment(String TreatmentName, int RoomIndex = -1)
         {
             if (RoomIndex > -1 && Globals.GetCategoryKey(RoomIndex) != String.Empty)
@@ -295,6 +296,31 @@ namespace SettingsNamespace
 
             return new Treatment("Unknown");
         }
+        public Color GetTreatmentColor(String TreatmentName, int RoomIndex = -1)
+        {
+            return GetTreatment(TreatmentName, RoomIndex).TreatmentColor;
+        }
+        public Double GetDifficultyUnlocked(String TreatmentName, int RoomIndex = -1)
+        {
+            return GetTreatment(TreatmentName, RoomIndex).DifficultyUnlocked;
+        }
+        public int GetHeartsValue(String TreatmentName, int RoomIndex = -1)
+        {
+            return GetTreatment(TreatmentName, RoomIndex).HeartsValue;
+        }
+        public int GetWeight(String TreatmentName, int RoomIndex = -1)
+        {
+            return GetTreatment(TreatmentName, RoomIndex).Weight;
+        }
+        public bool GetGesture(String TreatmentName, int RoomIndex = -1)
+        {
+            return GetTreatment(TreatmentName, RoomIndex).Gesture;
+        }
+        public bool GetAlwaysLast(String TreatmentName, int RoomIndex = -1)
+        {
+            return GetTreatment(TreatmentName, RoomIndex).AlwaysLast;
+        }
+
         #endregion
 
         #region Setters
@@ -307,8 +333,6 @@ namespace SettingsNamespace
         public void SetTreatmentCategories(Dictionary<String, List<Treatment>> treatmentDataDict)
         {
             this.treatmentCategoriesDict = treatmentDataDict;
-            Dictionary<String, List<Treatment>> treatmentStoreDict = new Dictionary<String, List<Treatment>> { };
-
         }
 
         public void SetBalancingCategories(Dictionary<String, List<String>> balancingCategoriesDict)

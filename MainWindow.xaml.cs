@@ -11,6 +11,7 @@ using UiWindows;
 using LevelData;
 using System.Text;
 using System.Windows.Markup;
+using System.Windows.Media;
 
 namespace HM4DesignTool
 {
@@ -52,6 +53,8 @@ namespace HM4DesignTool
         public MainWindow()
         {
             InitializeComponent();
+            //Set Global reference to this Window
+            Globals.GetMainWindow = this;
 
             this.DataContext = this;
             this.levelDataLayout.DataContext = Globals.GetLevelOverview;
@@ -59,6 +62,7 @@ namespace HM4DesignTool
             OnPropertyChanged("PatientRowDataTemplate");
             //patientOverviewLayout.ItemTemplate = PatientRowDataTemplate;
             SetupWindow();
+
 
         }
 
@@ -79,6 +83,8 @@ namespace HM4DesignTool
 
             AfterLoadWindowSettings();
         }
+
+
 
         private void LoadLevelList()
         {
@@ -264,6 +270,18 @@ namespace HM4DesignTool
         {
             LevelListExport dialog = new LevelListExport();
             Nullable<bool> dialogResult = dialog.ShowDialog();
+
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            HelpWindow dialog = new HelpWindow();
+            Nullable<bool> dialogResult = dialog.ShowDialog();
+
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
 
         }
     }

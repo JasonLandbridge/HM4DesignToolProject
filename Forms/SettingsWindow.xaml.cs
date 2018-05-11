@@ -157,7 +157,20 @@ namespace UiWindows
                 treatmentDifficultyModifierList = value;
             }
         }
-
+        private Color _treatmentSelectColor = Colors.White;
+        public Color TreatmentSelectColor
+        {
+            get
+            {
+                return _treatmentSelectColor;
+            }
+            set
+            {
+                _treatmentSelectColor = value;
+                OnPropertyChanged("TreatmentSelectColor");
+                UpdateTreatmentColor();
+            }
+        }
         #endregion
 
         #region BalancingTabProperties
@@ -529,6 +542,19 @@ namespace UiWindows
                 difficultyUnlockedColumn.ItemsSource = TreatmentDifficultyModifierList;
 
             }
+        }
+
+        private void UpdateTreatmentColor()
+        {
+            foreach (Treatment treatment in TreatmentList)
+            {
+                if (treatment.IsSelected)
+                {
+                    treatment.TreatmentColor = TreatmentSelectColor;
+                }
+            }
+            
+
         }
         #region Signals
 

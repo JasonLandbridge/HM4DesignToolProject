@@ -8,11 +8,58 @@
 		xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
 		mc:Ignorable="d"
 		Title="HM4 Design Tool" Height="768" Width="1280" Closed="Window_Closed">
-
+	<!-- diag:PresentationTraceSources.TraceLevel=High-->
 	<Window.Resources>
+
 		<!-- PatientRowTreatmentTemplate -->
 		<DataTemplate x:Key="PatientRowTreatmentTemplate">
-			<ComboBox Margin="5,0" ItemsSource="{Binding Mode=OneWay, ElementName=patientRow, Path=DataContext.TreatmentOptions}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=None}" Visibility="{Binding IsVisible, Mode=TwoWay, Converter={StaticResource VisibilityOfBool}, UpdateSourceTrigger=PropertyChanged}" Width="125"/>
+			<ComboBox Margin="5,0" Style="{DynamicResource ComboBoxTest2}" ItemsSource="{Binding Mode=OneWay, ElementName=patientRow, Path=DataContext.TreatmentOptions}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=None}" Visibility="{Binding IsVisible, Mode=TwoWay, Converter={StaticResource VisibilityOfBool}, UpdateSourceTrigger=PropertyChanged}" Width="125" SelectionChanged="ComboBox_SelectionChanged">
+				<ComboBox.Resources>
+					<Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate TargetType="ComboBox">
+									<Grid>
+										<ToggleButton Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" >
+											<ToggleButton.Template>
+												<ControlTemplate>
+													<Grid>
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="5*" />
+															<ColumnDefinition Width="*" />
+														</Grid.ColumnDefinitions>
+														<Border x:Name="Border"  Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1" />
+														<Border Grid.Column="0" Margin="1"  Background="{Binding TreatmentColorBrush, Mode=OneWay, UpdateSourceTrigger=Default, FallbackValue=White,  diag:PresentationTraceSources.TraceLevel=High}"  BorderBrush="Black" />
+														<Path x:Name="Arrow" Grid.Column="1"  Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
+													</Grid>
+													<ControlTemplate.Triggers>
+														<Trigger Property="ToggleButton.IsMouseOver" Value="true">
+															<Setter TargetName="Border" Property="Background" Value="AliceBlue" />
+														</Trigger>
+													</ControlTemplate.Triggers>
+												</ControlTemplate>
+											</ToggleButton.Template>
+										</ToggleButton>
+										<ContentPresenter Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3"  />
+										<TextBox x:Name="PART_EditableTextBox" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+										<Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
+											<Grid  Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+												<Border x:Name="DropDownBorder" Background="White" />
+												<ScrollViewer SnapsToDevicePixels="True">
+													<StackPanel IsItemsHost="True" />
+												</ScrollViewer>
+											</Grid>
+										</Popup>
+									</Grid>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+						<Style.Triggers>
+						</Style.Triggers>
+					</Style>
+				</ComboBox.Resources>
+
+			</ComboBox>
 		</DataTemplate>
 		<!--PatientRowControlTemplate-->
 		<DataTemplate x:Key="PatientRowControlTemplate" >
@@ -99,7 +146,7 @@
 				</MenuItem>
 				<MenuItem x:Name="menuItemSettings" Header="_Settings" Click="menuItemSettings_Click"/>
 				<MenuItem Header="_View"/>
-				<MenuItem Header="_Help"/>
+				<MenuItem Header="_Help" Click="MenuItem_Click"/>
 
 			</Menu>
 			<StackPanel></StackPanel>
@@ -467,7 +514,7 @@
 									<ColumnDefinition Width="Auto"/>
 									<ColumnDefinition Width="18"/>
 								</Grid.ColumnDefinitions>
-								<CheckBox x:Name="selectAllPatientChancesCheckbox" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="20" Margin="5,0" Command="{Binding GetLevelLoaded.SelectAllPatientChancesCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" Click="selectAllPatientChancesCheckbox_Click"/>
+								<CheckBox x:Name="selectAllPatientChancesCheckbox" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="20" Margin="5,0" Command="{Binding GetLevelLoaded.SelectAllPatientChancesCommand}" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" Click="selectAllPatientChancesCheckbox_Click" IsChecked="True"/>
 								<Label Content="Patient Name" Grid.Column="1" Margin="5,0,0,0" Width="200" MinWidth="100" VerticalContentAlignment="Center" FontWeight="Bold"/>
 								<Label Content=" " Grid.Column="2" Margin="10,5" Width="20" MinWidth="20"/>
 								<Label Content="Weight" Grid.Column="3" Margin="0" VerticalContentAlignment="Center" FontWeight="Bold"/>
@@ -490,6 +537,19 @@
 
 
 
+						</Grid>
+					</TabItem>
+					<TabItem Header="Simulator" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" IsEnabled="{Binding Path=LevelOverviewActive}">
+						<Grid Background="#FFE5E5E5">
+							<Grid.RowDefinitions>
+								<RowDefinition/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+
+							<DataGrid x:Name="patientSimulatorGrid" Grid.Row="0"  FrozenColumnCount="1" SelectionUnit="Cell" CanUserDeleteRows="False" CanUserAddRows="False" AutoGenerateColumns="False" CanUserSortColumns="False">
+							</DataGrid>
+
+							<Slider Grid.Row="1" />
 						</Grid>
 					</TabItem>
 				</TabControl>

@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SettingsNamespace;
 using LevelData;
-using NaturalSort.Extension;
-using System.IO;
 using System.Windows.Media;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using HM4DesignTool;
 
 namespace DataNameSpace
 {
@@ -33,6 +30,7 @@ namespace DataNameSpace
         private static Data DataObject;
         private static LevelOverview LevelOverviewObject;
         private static GameValues GameValueObject = new GameValues();
+        private static MainWindow MainWindowObject;
 
         public static Settings GetSettings
         {
@@ -80,6 +78,17 @@ namespace DataNameSpace
                 return GameValueObject;
             }
         }
+        public static MainWindow GetMainWindow
+        {
+            get
+            {
+                return MainWindowObject;
+            }
+            set
+            {
+                MainWindowObject = value;
+            }
+        }
 
         public static List<String> roomCategories = new List<String> { "Room 1", "Room 2", "Room 3", "Room 4", "Room 5", "Room 6" };
         public static List<String> GetLevelTypes
@@ -124,6 +133,23 @@ namespace DataNameSpace
             else
             {
                 return String.Empty;
+            }
+        }
+
+        public static String ColorToHex(Color c)
+        {
+            return "#" + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2");
+        }
+
+        public static Color HexToColor(String hexCode)
+        {
+            if (hexCode.StartsWith("#") && hexCode.Count() == 7)
+            {
+                return (Color)ColorConverter.ConvertFromString(hexCode);
+            }
+            else
+            {
+                return Colors.White;
             }
         }
     }
@@ -352,11 +378,23 @@ namespace DataNameSpace
         private int _weight = 0;
         private bool _gesture = false;
         private bool _alwaysLast = false;
-        //private Color _colorValue;
-        private String _colorValueString;
+        private Color _treatmentColor = Colors.White;
 
         private bool _isVisible = false;
+        private bool _isSelected = false;
 
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                _isSelected = value;
+                OnPropertyChanged("IsSelected");
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -368,11 +406,16 @@ namespace DataNameSpace
             }
             set
             {
-                _treatmentName = value;
-                OnPropertyChanged("TreatmentName");
-                if (ParentPatient != null && ParentPatient.ParentLevel != null)
+                if (_treatmentName != value)
                 {
-                    ParentPatient.ParentLevel.UpdateLevelOutput();
+                    _treatmentName = value;
+                    OnPropertyChanged("TreatmentName");
+                    OnPropertyChanged("TreatmentColorBrush");
+                    ChangeTreatment();
+                    if (ParentPatient != null && ParentPatient.ParentLevel != null)
+                    {
+                        ParentPatient.ParentLevel.UpdateLevelOutput();
+                    }
                 }
             }
         }
@@ -440,15 +483,37 @@ namespace DataNameSpace
 
             }
         }
-        public String ColorValueString
+        public Color TreatmentColor
         {
             get
             {
-                return "TestColorString";
+                return _treatmentColor;
             }
             set
             {
-                _colorValueString = value;
+                _treatmentColor = value;
+                OnPropertyChanged("TreatmentColor");
+                OnPropertyChanged("TreatmentColorBrush");
+                OnPropertyChanged("TreatmentColorString");
+
+            }
+        }
+        public SolidColorBrush TreatmentColorBrush
+        {
+            get
+            {
+                return new SolidColorBrush(TreatmentColor);
+            }
+        }
+        public String TreatmentColorString
+        {
+            get
+            {
+                return Globals.ColorToHex(TreatmentColor);
+            }
+            set
+            {
+                TreatmentColor = Globals.HexToColor(value);
             }
         }
 
@@ -468,121 +533,45 @@ namespace DataNameSpace
         public Treatment()
         {
             this.TreatmentName = String.Empty;
-
         }
 
         public Treatment(String treatmentName, Patient ParentPatient = null)
         {
-            this.TreatmentName = treatmentName;
+            TreatmentName = treatmentName;
+            if (ParentPatient != null)
+            {
+                this.ParentPatient = ParentPatient;
+            }
         }
 
-        //public Treatment(String treatmentName, Double difficultyUnlocked = 0, int heartsValue = 0, int weight = 0, bool gesture = false, bool alwaysLast = false, Color color = new Color())
-        //{
-        //    _treatmentName = treatmentName;
-        //    _difficultyUnlocked = difficultyUnlocked;
-        //    _heartsValue = heartsValue;
-        //    _weight = weight;
-        //    _gesture = gesture;
-        //    _alwaysLast = alwaysLast;
-        //    //_colorValue = color;
-        //    _colorValueString = "TestColorString";
-        //}
+        private void ChangeTreatment()
+        {
+            if (TreatmentName != String.Empty && ParentPatient != null && ParentPatient.ParentLevel != null)
+            {
+                int RoomIndex = ParentPatient.RoomIndex;
+                Treatment newTreatment = Globals.GetSettings.GetTreatment(TreatmentName, RoomIndex);
 
+                DifficultyUnlocked = newTreatment.
+                HeartsValue = newTreatment.HeartsValue;
+                Weight = newTreatment.Weight;
+                Gesture = newTreatment.Gesture;
+                AlwaysLast = newTreatment.AlwaysLast;
+                TreatmentColor = newTreatment.TreatmentColor;
+
+            }
+        }
         #region Overloads
-        //public Treatment(DataGridViewRow dataRow)
-        //{
-        //    DataGridViewCheckBoxCell cell = dataRow.Cells[0] as DataGridViewCheckBoxCell;
-
-        //    //Get TreatmentName
-        //    DataGridViewTextBoxCell tmpTreatmentName = dataRow.Cells[1] as DataGridViewTextBoxCell;
-        //    if (tmpTreatmentName != null && tmpTreatmentName.Value != null)
-        //    {
-        //        TreatmentName = (String)tmpTreatmentName.Value;
-        //    }
-        //    else
-        //    {
-        //        TreatmentName = null;
-        //    }
-
-        //    //Get DifficultyUnlocked
-        //    DataGridViewComboBoxCell tmpDifficultyUnlocked = dataRow.Cells[2] as DataGridViewComboBoxCell;
-        //    if (tmpDifficultyUnlocked != null && tmpDifficultyUnlocked.Value != null)
-        //    {
-        //        DifficultyUnlocked = DataNameSpace.Globals.StringToDouble((String)tmpDifficultyUnlocked.Value);
-        //    }
-        //    else
-        //    {
-        //        DifficultyUnlocked = 0;
-        //    }
-
-        //    //Get HeartsValue
-        //    DataGridViewTextBoxCell tmpHeartsValue = dataRow.Cells[3] as DataGridViewTextBoxCell;
-        //    if (tmpHeartsValue != null && tmpHeartsValue.Value != null)
-        //    {
-        //        HeartsValue = int.Parse((String)tmpHeartsValue.Value);
-        //    }
-        //    else
-        //    {
-        //        HeartsValue = 0;
-        //    }
-
-        //    //Get Weight
-        //    DataGridViewTextBoxCell tmpWeight = dataRow.Cells[4] as DataGridViewTextBoxCell;
-        //    if (tmpWeight != null && tmpWeight.Value != null)
-        //    {
-        //        Weight = int.Parse((String)tmpWeight.Value);
-        //    }
-        //    else
-        //    {
-        //        Weight = 0;
-        //    }
-
-        //    //Get Gesture
-        //    DataGridViewCheckBoxCell tmpGesture = dataRow.Cells[5] as DataGridViewCheckBoxCell;
-        //    if (tmpGesture != null && tmpGesture.Value != null)
-        //    {
-        //        Gesture = (bool)tmpGesture.Value;
-        //    }
-        //    else
-        //    {
-        //        Gesture = false;
-        //    }
-
-        //    //Get AlwaysLast
-        //    DataGridViewCheckBoxCell tmpAlwaysLast = dataRow.Cells[6] as DataGridViewCheckBoxCell;
-        //    if (tmpAlwaysLast != null && tmpAlwaysLast.Value != null)
-        //    {
-        //        AlwaysLast = (bool)tmpAlwaysLast.Value;
-        //    }
-        //    else
-        //    {
-        //        AlwaysLast = false;
-        //    }
-
-        //    //Get Color
-        //    DataGridViewTextBoxCell tmpColor = dataRow.Cells[7] as DataGridViewTextBoxCell;
-        //    if (tmpColor != null && tmpColor.Value != null && false) //TODO Check for correct color to string conversion
-        //    {
-        //        ColorValue = (Color)tmpColor.Value;
-        //    }
-        //    else
-        //    {
-        //        ColorValue = new Color();
-        //    }
-
-        //}
 
         public Treatment(String treatmentName, String treatmentDataString)
         {
             List<String> treatmentData = treatmentDataString.Split(',').ToList<String>();
-            _treatmentName = treatmentName;
-            _difficultyUnlocked = Convert.ToDouble(treatmentData[0]);
-            _heartsValue = Convert.ToInt32(treatmentData[1]);
-            _weight = Convert.ToInt32(treatmentData[2]);
-            _gesture = Convert.ToBoolean(treatmentData[3]);
-            _alwaysLast = Convert.ToBoolean(treatmentData[4]);
-            //_colorValue = (Color)ColorConverter.ConvertFromString(treatmentData[5]);
-            _colorValueString = "TestColorString";
+            TreatmentName = treatmentName;
+            DifficultyUnlocked = Convert.ToDouble(treatmentData[0]);
+            HeartsValue = Convert.ToInt32(treatmentData[1]);
+            Weight = Convert.ToInt32(treatmentData[2]);
+            Gesture = Convert.ToBoolean(treatmentData[3]);
+            AlwaysLast = Convert.ToBoolean(treatmentData[4]);
+            TreatmentColorString = treatmentData[5].ToString();
         }
         #endregion
 
@@ -599,6 +588,7 @@ namespace DataNameSpace
             outputList.Add(Weight.ToString());
             outputList.Add(Gesture.ToString());
             outputList.Add(AlwaysLast.ToString());
+            outputList.Add(TreatmentColorString);
             return outputList;
         }
 

@@ -4,12 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using Weighted_Randomizer;
 
@@ -200,6 +203,7 @@ namespace LevelData
                     OnPropertyChanged("LevelOverviewActive");
                     OnPropertyChanged("DifficultyModifierList");
                     UpdateRandomRecommendations();
+                    UpdatePatientSimulator();
                 }
             }
         }
@@ -706,6 +710,71 @@ namespace LevelData
 
             }
         }
+
+        private void UpdatePatientSimulator()
+        {
+
+            //A DataTable is first created where an indentation is inserted to mimic a delay
+
+            DataTable treatmentDataTable = new DataTable();
+            treatmentDataTable.Columns.Add("PatientName");
+
+
+
+
+
+            DataGrid SimulatorGrid = Globals.GetMainWindow.patientSimulatorGrid;
+            //            SimulatorGrid.ItemsSource = new Binding("treatmentDataTable");    //GetLevelLoaded.PatientCollection;
+
+            //Create first column for the PatientName
+
+
+            DataGridTextColumn patientNameColumn = new DataGridTextColumn();
+            patientNameColumn.Header = "Patient Name:";
+            patientNameColumn.Binding = new Binding(treatmentDataTable.Columns[0].ToString());
+            SimulatorGrid.Columns.Add(patientNameColumn);
+
+            //Create the columns
+            for (int i = 0; i < 40; i++)
+            {
+                //Add treatment column to the treatmentDataTable
+                treatmentDataTable.Columns.Add(i.ToString());
+
+                String ColumnName = (i * 5).ToString() + " Seconds";
+                DataGridComboBoxColumn treatmentColumn = new DataGridComboBoxColumn();
+                treatmentColumn.Header = ColumnName;
+                treatmentColumn.SelectedValueBinding = new Binding(treatmentDataTable.Columns[i + 1].ToString());
+                treatmentColumn.ItemsSource = GetLevelLoaded.GetTreatmentOptions;
+                treatmentColumn.Width = 120;
+                SimulatorGrid.Columns.Add(treatmentColumn);
+
+
+            }
+
+            for (int patientIndex = 0; patientIndex < GetLevelLoaded.PatientCollection.Count; patientIndex++)
+            {
+                Patient patient = GetLevelLoaded.PatientCollection[patientIndex];
+                DataRow patientDataRow = treatmentDataTable.NewRow();
+
+                patientDataRow["PatientName"] = patient.PatientName;
+
+                for (int i = 0; i < 15; i++)
+                {
+                    if (i < patient.TreatmentCollection.Count)
+                    {
+                        patientDataRow[patientIndex + i + 1] = patient.TreatmentCollection[i].TreatmentName;
+                    }
+                }
+                treatmentDataTable.Rows.Add(patientDataRow);
+            }
+
+
+            // Set a DataGrid control's DataContext to the DataView.
+            SimulatorGrid.ItemsSource = treatmentDataTable.DefaultView;
+
+            //Globals.GetMainWindow.patientSimulatorGrid = SimulatorGrid;
+
+        }
         #region Getters
 
         public List<String> GetLevelsFromDisk(bool reload = false, bool filterExtension = false)
@@ -946,17 +1015,17 @@ namespace LevelData
         }
 
         public Dictionary<String, int> RandomTreatmentDictionary = new Dictionary<string, int> { };
-        public ObservableCollection<Treatment> RandomTreatmentList
-        {
-            get
-            {
+        //public ObservableCollection<Treatment> RandomTreatmentList
+        //{
+        //    get
+        //    {
 
-            }
-            set
-            {
+        //    }
+        //    set
+        //    {
 
-            }
-        }
+        //    }
+        //}
 
         //Level Script output
         public String GetLevelTypeString
@@ -1051,7 +1120,15 @@ namespace LevelData
                 return output;
             }
         }
+        private DataTable _patientSimulateDataTable = new DataTable();
+        public DataTable PatientSimulateDataTable
+        {
+            get
+            {
+                return _patientSimulateDataTable;
+            }
 
+        }
         //Patient Chance functions
         public double GetPatientChancePercentage(int Weight)
         {
@@ -1816,7 +1893,7 @@ namespace LevelData
             }
         }
 
-        private bool _isSelected = false;
+        private bool _isSelected = true;
 
         public bool IsSelected
         {

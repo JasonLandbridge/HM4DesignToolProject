@@ -3,11 +3,9 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:local="clr-namespace:UiWindows"
-		xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
 		xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"  x:Class="UiWindows.SettingsWindow"
 		mc:Ignorable="d"
-		Title="SettingsWindow" Height="600" Width="1000" WindowStartupLocation="CenterOwner">
+		Title="Design Tool Settings" Height="600" Width="1000" WindowStartupLocation="CenterOwner" ResizeMode="CanResizeWithGrip" ShowInTaskbar="False" Topmost="True">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition/>
@@ -165,24 +163,36 @@
 							<!-- Treatments DataGrid List -->
 							<DataGrid x:Name="treatmentDataGridView" ItemsSource="{Binding Path=TreatmentList}" Grid.Column="0" Grid.Row="0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" UseLayoutRounding="False" CanUserReorderColumns="False" CanUserResizeColumns="False" MinColumnWidth="75" ColumnHeaderHeight="30" Margin="5" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="Cell"  >
 								<DataGrid.Columns>
-									<DataGridCheckBoxColumn Binding="{x:Null}" Header="Select" MaxWidth="70" MinWidth="50"/>
+									<DataGridCheckBoxColumn Binding="{Binding IsSelected, Mode=TwoWay}" Header="Select" MaxWidth="70" MinWidth="50"/>
 									<DataGridTextColumn Binding="{Binding TreatmentName, Mode=TwoWay}" Header="Treatment Name" MinWidth="50" Width="*"/>
 									<DataGridComboBoxColumn x:Name="difficultyUnlockedColumn" TextBinding="{Binding DifficultyUnlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItemBinding="{Binding Path=DifficultyUnlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Difficulty Unlocked" Width="*"/>
 									<mah:DataGridNumericUpDownColumn Binding="{Binding HeartsValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Hearts Value" Width="*"/>
 									<mah:DataGridNumericUpDownColumn Binding="{Binding Weight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Base Weight" Width="*" MaxWidth="80"/>
 									<DataGridCheckBoxColumn Binding="{Binding Gesture, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Gesture" Width="*" MaxWidth="60"/>
 									<DataGridCheckBoxColumn Binding="{Binding AlwaysLast, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Always Last" Width="*" MaxWidth="80"/>
-									<DataGridTextColumn Binding="{Binding ColorValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Color Value" Width="*"/>
+									<DataGridTextColumn Binding="{Binding TreatmentColorString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Header="Color Value" Width="*">
+										<DataGridTextColumn.ElementStyle>
+											<Style TargetType="{x:Type TextBlock}">
+												<Setter Property="Background" Value="{Binding TreatmentColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+											</Style>
+										</DataGridTextColumn.ElementStyle>
+									</DataGridTextColumn>
 								</DataGrid.Columns>
 							</DataGrid>
 							<Grid Grid.Column="0" Grid.Row="1">
 								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto"/>
 									<ColumnDefinition/>
 									<ColumnDefinition Width="Auto"/>
 									<ColumnDefinition Width="Auto"/>
 								</Grid.ColumnDefinitions>
-								<Button x:Name="treatmentRowButtonAdd" Grid.Column="1" Grid.Row="0" Content="Add Row" Width="80" Margin="5,0" Click="treatmentRowButtonAdd_Click"/>
-								<Button x:Name="treatmentRowButtonRemove" Grid.Column="2" Grid.Row="0" Content="Remove Row" Width="80" Margin="5,0"/>
+								<!--<Button x:Name="treatmentRowButtonColor" Grid.Column="0" Grid.Row="0" Width="80" Margin="5,0" Click="treatmentRowButtonAdd_Click"> -->
+
+
+								<xctk:ColorPicker  Grid.Column="0" Grid.Row="0" SelectedColor="{Binding TreatmentSelectColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=White}" UsingAlphaChannel="False" />
+								<Label Content="Select the treatments and then add the color."  Grid.Column="1" Grid.Row="0"/>
+								<Button x:Name="treatmentRowButtonAdd" Grid.Column="2" Grid.Row="0" Content="Add Row" Width="80" Margin="5,0" Click="treatmentRowButtonAdd_Click"/>
+								<Button x:Name="treatmentRowButtonRemove" Grid.Column="3" Grid.Row="0" Content="Remove Row" Width="80" Margin="5,0"/>
 							</Grid>
 
 						</Grid>

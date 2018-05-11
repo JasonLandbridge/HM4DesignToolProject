@@ -72,6 +72,7 @@
     <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249, processorArchitecture=MSIL">
       <HintPath>packages\Ookii.Dialogs.1.0\lib\net35\Ookii.Dialogs.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -119,10 +120,17 @@
     <Compile Include="Forms\CustomTreatmentWeightsWindow.xaml.cs">
       <DependentUpon>CustomTreatmentWeightsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\HelpWindow.xaml.cs">
+      <DependentUpon>HelpWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\RoomExportWindow.xaml.cs">
       <DependentUpon>RoomExportWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Forms\CustomTreatmentWeightsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\HelpWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
