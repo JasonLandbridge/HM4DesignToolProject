@@ -46,6 +46,7 @@ namespace UiWindows
             DataContext = this;
 
             CustomizedAvailableTreatmentList = Globals.GetLevelOverview.GetLevelLoaded.AvailableTreatmentList;
+            Globals.GetLevelOverview.GetLevelLoaded.UpdateTreatmentWeightPercentage();
         }
 
         private void SaveData()

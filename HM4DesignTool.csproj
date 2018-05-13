@@ -117,6 +117,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Class\LevelOverview.cs" />
+    <Compile Include="Class\Patient.cs" />
+    <Compile Include="Class\PatientChance.cs" />
     <Compile Include="Forms\CustomTreatmentWeightsWindow.xaml.cs">
       <DependentUpon>CustomTreatmentWeightsWindow.xaml</DependentUpon>
     </Compile>
@@ -126,6 +129,7 @@
     <Compile Include="Forms\RoomExportWindow.xaml.cs">
       <DependentUpon>RoomExportWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\CommandHandler.cs" />
     <Page Include="Forms\CustomTreatmentWeightsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -1,151 +1,134 @@
-﻿using DataNameSpace;
-using NaturalSort.Extension;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
+
+using DataNameSpace;
+
+using Utilities;
+
 using Weighted_Randomizer;
 
 namespace LevelData
 {
+    using System.Diagnostics;
+    using System.IO;
+
     public class DesignToolData : INotifyPropertyChanged
     {
-        private int _roomIndex = 0;
+        private const string DifficultyLevelText = "DifficultyLevel:";
+        private const string endDesignToolDataText = "--]]";
+        private const string LevelTypeText = "LevelType:";
+        private const string RoomIndexText = "RoomIndex:";
+        private const string startDesignToolDataText = "--[[HM4DesignToolData:";
         private double _difficultyLevel = 0;
         private LevelTypeEnum _levelType = LevelTypeEnum.Unknown;
-
-        public int Roomindex
-        {
-            get
-            {
-                return _roomIndex;
-            }
-            set
-            {
-                _roomIndex = value;
-                OnPropertyChanged("Roomindex");
-
-            }
-        }
-
-        public double DifficultyLevel
-        {
-            get
-            {
-                return _difficultyLevel;
-            }
-            set
-            {
-                _difficultyLevel = value;
-                OnPropertyChanged("DifficultyLevel");
-
-            }
-        }
-
-        public LevelTypeEnum LevelType
-        {
-            get
-            {
-                return _levelType;
-            }
-            set
-            {
-                _levelType = value;
-                OnPropertyChanged("LevelType");
-            }
-        }
-
-        public String LevelTypeString
-        {
-            get
-            {
-                return Enum.GetName(typeof(LevelTypeEnum), LevelType);
-            }
-            set
-            {
-                //Enum.TryParse(value, out LevelTypeEnum LevelType);
-                LevelType = (LevelTypeEnum)Enum.Parse(typeof(LevelTypeEnum), value);
-            }
-        }
-
-        private const String startDesignToolDataText = "--[[HM4DesignToolData:";
-        private const String RoomIndexText = "RoomIndex:";
-        private const String DifficultyLevelText = "DifficultyLevel:";
-        private const String LevelTypeText = "LevelType:";
-        private const String endDesignToolDataText = "--]]";
+        private int _roomIndex = 0;
 
         public DesignToolData()
         {
         }
 
-        public void ParseDesignData(String designToolData)
+        public double DifficultyLevel
         {
-            designToolData = designToolData.Replace("\t", "").Replace("\r", "").Replace(" ", "");
-            designToolData.Replace(startDesignToolDataText, "").Replace(endDesignToolDataText, "");
-            String[] delimiter = { "\n" };
-            List<String> designToolList = designToolData.Split(delimiter, StringSplitOptions.None).ToList<String>();
-
-            foreach (String entry in designToolList)
+            get => this._difficultyLevel;
+            set
             {
-                String textItem = entry;
+                this._difficultyLevel = value;
+                this.OnPropertyChanged("DifficultyLevel");
+            }
+        }
+
+        public LevelTypeEnum LevelType
+        {
+            get => this._levelType;
+            set
+            {
+                this._levelType = value;
+                this.OnPropertyChanged("LevelType");
+            }
+        }
+
+        public string LevelTypeString
+        {
+            get => Enum.GetName(typeof(LevelTypeEnum), this.LevelType);
+            set => this.LevelType = (LevelTypeEnum)Enum.Parse(typeof(LevelTypeEnum), value);
+        }
+
+        public int Roomindex
+        {
+            get => this._roomIndex;
+            set
+            {
+                this._roomIndex = value;
+                this.OnPropertyChanged("Roomindex");
+            }
+        }
+
+        public void ParseDesignData(string designToolData)
+        {
+            designToolData = designToolData.Replace("\t", string.Empty).Replace("\r", string.Empty).Replace(" ", string.Empty);
+            designToolData.Replace(startDesignToolDataText, string.Empty).Replace(endDesignToolDataText, string.Empty);
+            string[] delimiter = { "\n" };
+            List<string> designToolList = designToolData.Split(delimiter, StringSplitOptions.None).ToList<string>();
+
+            foreach (string entry in designToolList)
+            {
+                string textItem = entry;
 
                 if (textItem.Contains(RoomIndexText))
                 {
-                    textItem = textItem.Replace(RoomIndexText, "");
+                    textItem = textItem.Replace(RoomIndexText, string.Empty);
                     textItem = Globals.FilterToNumerical(textItem);
-                    Roomindex = Convert.ToInt32(textItem);
+                    this.Roomindex = Convert.ToInt32(textItem);
                 }
 
                 if (textItem.Contains(DifficultyLevelText))
                 {
-                    textItem = textItem.Replace(DifficultyLevelText, "");
-                    DifficultyLevel = (float)Convert.ToDouble(textItem);
+                    textItem = textItem.Replace(DifficultyLevelText, string.Empty);
+                    this.DifficultyLevel = (float)Convert.ToDouble(textItem);
                 }
+
                 if (textItem.Contains(LevelTypeText))
                 {
-                    textItem = textItem.Replace(LevelTypeText, "");
+                    textItem = textItem.Replace(LevelTypeText, string.Empty);
                     switch (textItem)
                     {
                         case "Bonus":
-                            LevelType = LevelTypeEnum.Bonus;
+                            this.LevelType = LevelTypeEnum.Bonus;
                             break;
 
                         case "Story":
-                            LevelType = LevelTypeEnum.Story;
+                            this.LevelType = LevelTypeEnum.Story;
                             break;
 
                         case "MiniGame":
-                            LevelType = LevelTypeEnum.MiniGame;
+                            this.LevelType = LevelTypeEnum.MiniGame;
                             break;
 
                         case "TimeTrial":
-                            LevelType = LevelTypeEnum.TimeTrial;
+                            this.LevelType = LevelTypeEnum.TimeTrial;
                             break;
 
                         case "Oliver":
-                            LevelType = LevelTypeEnum.OliverOne;
+                            this.LevelType = LevelTypeEnum.OliverOne;
                             break;
 
                         case "OliverOne":
-                            LevelType = LevelTypeEnum.OliverOne;
+                            this.LevelType = LevelTypeEnum.OliverOne;
                             break;
 
                         case "OliverAll":
-                            LevelType = LevelTypeEnum.OliverAll;
+                            this.LevelType = LevelTypeEnum.OliverAll;
                             break;
 
                         default:
-                            LevelType = LevelTypeEnum.Unknown;
+                            this.LevelType = LevelTypeEnum.Unknown;
                             break;
                     }
                 }
@@ -154,21 +137,21 @@ namespace LevelData
 
         public override string ToString()
         {
-            String output = startDesignToolDataText + Environment.NewLine;
+            string output = startDesignToolDataText + Environment.NewLine;
 
-            if (Roomindex > 0)
+            if (this.Roomindex > 0)
             {
-                output += RoomIndexText + " \t" + Roomindex.ToString() + Environment.NewLine;
+                output += RoomIndexText + " \t" + this.Roomindex.ToString() + Environment.NewLine;
             }
 
-            if (DifficultyLevel > 0)
+            if (this.DifficultyLevel > 0)
             {
-                output += DifficultyLevelText + " \t" + DifficultyLevel.ToString() + Environment.NewLine;
+                output += DifficultyLevelText + " \t" + this.DifficultyLevel.ToString() + Environment.NewLine;
             }
 
-            if (LevelType > 0)
+            if (this.LevelType > 0)
             {
-                output += LevelTypeText + " \t" + LevelType.ToString() + Environment.NewLine;
+                output += LevelTypeText + " \t" + this.LevelType.ToString() + Environment.NewLine;
             }
 
             output += endDesignToolDataText + Environment.NewLine;
@@ -181,789 +164,190 @@ namespace LevelData
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion INotifyPropertyChanged Members
     }
 
-    public class LevelOverview : INotifyPropertyChanged
-    {
-        private Dictionary<string, Level> levelObjectData = new Dictionary<string, Level>();
-        private Level _currentLevelLoaded = null;
-
-        public Level GetLevelLoaded
-        {
-            get
-            {
-                return _currentLevelLoaded;
-            }
-            set
-            {
-                if (value != _currentLevelLoaded)
-                {
-                    _currentLevelLoaded = value;
-                    OnPropertyChanged("GetLevelLoaded");
-                    OnPropertyChanged("LevelOverviewActive");
-                    OnPropertyChanged("DifficultyModifierList");
-                    UpdateRandomRecommendations();
-                    UpdatePatientSimulator();
-                }
-            }
-        }
-
-        public bool LevelOverviewActive
-        {
-            get
-            {
-                if (GetLevelLoaded != null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-
-        private int _maxTreatmentsVisible = 5;
-        public int MaxTreatmentsVisible
-        {
-            get
-            {
-                return _maxTreatmentsVisible;
-            }
-            set
-            {
-                _maxTreatmentsVisible = value;
-                OnPropertyChanged("MaxTreatmentsVisible");
-                GetLevelLoaded.UpdateMaxTreatments(value);
-            }
-        }
-
-        private List<String> levelList = new List<String> { };
-
-        public ObservableCollection<String> DifficultyModifierList
-        {
-            get
-            {
-                if (GetLevelLoaded != null)
-                {
-                    String categoryKey = Globals.GetCategoryKey(GetLevelLoaded.GetRoomIndex);
-                    if (categoryKey != String.Empty)
-                    {
-                        return new ObservableCollection<String>(Globals.GetSettings.GetDifficultyModifierList(categoryKey));
-                    }
-                }
-                return new ObservableCollection<String> { };
-            }
-        }
-
-        private bool _showAvailableTreatmentsCheck = false;
-        public bool ShowAvailableTreatmentsCheck
-        {
-            get
-            {
-                return _showAvailableTreatmentsCheck;
-            }
-            set
-            {
-                _showAvailableTreatmentsCheck = value;
-                OnPropertyChanged("ShowAvailableTreatmentsCheck");
-                OnPropertyChanged("GetTreatmentsAvailableString");
-            }
-        }
-
-        #region RandomProperties
-        private bool _useRandomRecommendations = true;
-        public bool UseRandomRecommendations
-        {
-            get
-            {
-                return _useRandomRecommendations;
-            }
-            set
-            {
-                _useRandomRecommendations = value;
-                OnPropertyChanged("UseRandomRecommendations");
-                UpdateRandomRecommendations();
-            }
-        }
-
-        #region PatientType
-        private bool _generatePatientTypeCheck = true;
-        public bool GeneratePatientTypeCheck
-        {
-            get
-            {
-                return _generatePatientTypeCheck;
-            }
-            set
-            {
-                _generatePatientTypeCheck = value;
-                OnPropertyChanged("GeneratePatientTypeCheck");
-            }
-        }
-
-        private int _generatePatientTypeMin = 0;
-        public int GeneratePatientTypeMin
-        {
-            get
-            {
-                return _generatePatientTypeMin;
-            }
-            set
-            {
-                _generatePatientTypeMin = value;
-                OnPropertyChanged("GeneratePatientTypeMin");
-            }
-        }
-
-        private int _generatePatientTypeMax = 0;
-        public int GeneratePatientTypeMax
-        {
-            get
-            {
-                return _generatePatientTypeMax;
-            }
-            set
-            {
-                _generatePatientTypeMax = value;
-                OnPropertyChanged("GeneratePatientTypeMax");
-            }
-        }
-        #endregion
-
-        #region Patients
-        private bool _generatePatientsCheck = true;
-        public bool GeneratePatientsCheck
-        {
-            get
-            {
-                return _generatePatientsCheck;
-            }
-            set
-            {
-                _generatePatientsCheck = value;
-                OnPropertyChanged("GeneratePatientsCheck");
-            }
-        }
-
-        private int _generatePatientsMin = 0;
-        public int GeneratePatientsMin
-        {
-            get
-            {
-                return _generatePatientsMin;
-            }
-            set
-            {
-                _generatePatientsMin = value;
-                OnPropertyChanged("GeneratePatientsMin");
-            }
-        }
-
-        private int _generatePatientsMax = 0;
-        public int GeneratePatientsMax
-        {
-            get
-            {
-                return _generatePatientsMax;
-            }
-            set
-            {
-                _generatePatientsMax = value;
-                OnPropertyChanged("GeneratePatientsMax");
-            }
-        }
-        #endregion
-
-        #region PatientDelay
-        private bool _generatePatientDelayCheck = true;
-        public bool GeneratePatientDelayCheck
-        {
-            get
-            {
-                return _generatePatientDelayCheck;
-            }
-            set
-            {
-                _generatePatientDelayCheck = value;
-                OnPropertyChanged("GeneratePatientDelayCheck");
-            }
-        }
-
-        private int _generatePatientDelayMin = -1000;
-        public int GeneratePatientDelayMin
-        {
-            get
-            {
-                return _generatePatientDelayMin;
-            }
-            set
-            {
-                _generatePatientDelayMin = value;
-                OnPropertyChanged("GeneratePatientDelayMin");
-            }
-        }
-
-        private int _generatePatientDelayMax = 1000;
-        public int GeneratePatientDelayMax
-        {
-            get
-            {
-                return _generatePatientDelayMax;
-            }
-            set
-            {
-                _generatePatientDelayMax = value;
-                OnPropertyChanged("GeneratePatientDelayMax");
-            }
-        }
-        #endregion
-
-        #region Treatment
-        private bool _generateTreatmentsCheck = true;
-        public bool GenerateTreatmentsCheck
-        {
-            get
-            {
-                return _generateTreatmentsCheck;
-            }
-            set
-            {
-                _generateTreatmentsCheck = value;
-                OnPropertyChanged("GenerateTreatmentsCheck");
-            }
-        }
-
-        private int _generateTreatmentsMin = 0;
-        public int GenerateTreatmentsMin
-        {
-            get
-            {
-                return _generateTreatmentsMin;
-            }
-            set
-            {
-                _generateTreatmentsMin = value;
-                OnPropertyChanged("GenerateTreatmentsMin");
-            }
-        }
-
-        private int _generateTreatmentsMax = 0;
-        public int GenerateTreatmentsMax
-        {
-            get
-            {
-                return _generateTreatmentsMax;
-            }
-            set
-            {
-                _generateTreatmentsMax = value;
-                OnPropertyChanged("GenerateTreatmentsMax");
-            }
-        }
-
-        #endregion
-        #endregion
-
-
-        public LevelOverview()
-        {
-        }
-
-        public static String ReadLevelTextFromFile(String levelName)
-        {
-            levelName = CleanLevelName(levelName);
-            if (!levelName.EndsWith(".lua"))
-            {
-                levelName += ".lua";
-            }
-
-            String levelPath = Globals.GetSettings.projectPathLevel + levelName;
-
-            if (File.Exists(levelPath))
-            {
-                string readContents;
-                using (StreamReader streamReader = new StreamReader(levelPath, Encoding.UTF8))
-                {
-                    readContents = streamReader.ReadToEnd();
-                    return readContents;
-                }
-            }
-            else
-            {
-                Console.WriteLine("ERROR: Data.ReadLevelText, Could not find " + levelPath + "!");
-                return null;
-            }
-        }
-
-        public List<String> GetFilteredLevels(int roomIndex = 0, bool storyLevels = false, bool bonusLevels = false, bool unknownLevels = false)
-        {
-            List<String> rawLevelList = GetLevelsFromDisk(false, true);
-            List<String> outputLevelList = new List<String> { };
-
-            foreach (String level in rawLevelList)
-            {
-                if (storyLevels && level.StartsWith("level"))
-                {
-                    int levelIndex = Convert.ToInt16(level.Replace("level", ""));
-                    int minIndex = (roomIndex - 1) * 10 + 1;
-                    int maxIndex = (roomIndex * 10) + 1;
-
-                    if (roomIndex == 0)
-                    {
-                        outputLevelList.Add(level);
-                    }
-                    else if (Enumerable.Range(minIndex, 10).Contains(levelIndex))
-                    {
-                        outputLevelList.Add(level);
-                    }
-                }
-                // Ensure that the second character in the level name is a number as well to be in line with naming conventions.
-                else if (bonusLevels && level.StartsWith("r") && int.TryParse(level[1].ToString(), out int n) && level[2].ToString() == "_")
-                {
-                    if (roomIndex == 0)
-                    {
-                        outputLevelList.Add(level);
-                    }
-                    else if (level.StartsWith("r" + roomIndex.ToString() + "_"))
-                    {
-                        outputLevelList.Add(level);
-                    }
-                }
-                else if (unknownLevels && !level.StartsWith("level") && !(level.StartsWith("r") && int.TryParse(level[1].ToString(), out int j) && level[2].ToString() == "_"))
-                {
-                    outputLevelList.Add(level);
-                }
-            }
-            //Naturaly sort the levelList
-            //TODO Find more efficient method of natural sorting without first converting to sequence and back
-            IEnumerable<String> LevelSequence = outputLevelList.OrderBy(x => x, StringComparer.OrdinalIgnoreCase.WithNaturalSort());
-            return LevelSequence.ToList();
-        }
-
-        public Dictionary<String, List<String>> GetCategorizedFilteredLevels(int roomIndex = 0, bool storyLevels = false, bool bonusLevels = false, bool unknownLevels = false)
-        {
-            Dictionary<String, List<String>> CategorizedFilterdLevels = new Dictionary<String, List<String>> { };
-            List<String> FilteredLevelList = GetFilteredLevels(roomIndex, storyLevels, bonusLevels, unknownLevels);
-
-            if (roomIndex == 0)
-            {
-                if (storyLevels)
-                {
-                    CategorizedFilterdLevels.Add("Story", GetFilteredLevels(0, true, false, false));
-                }
-
-                if (bonusLevels)
-                {
-                    for (int i = 1; i <= Globals.roomCategories.Count; i++)
-                    {
-                        CategorizedFilterdLevels.Add(Globals.roomCategories[i - 1], GetFilteredLevels(i, false, true, false));
-                    }
-                }
-            }
-            else
-            {
-                if (storyLevels)
-                {
-                    CategorizedFilterdLevels.Add("Story", GetFilteredLevels(roomIndex, true, false, false));
-                }
-
-                if (bonusLevels)
-                {
-                    CategorizedFilterdLevels.Add(Globals.roomCategories[roomIndex - 1], GetFilteredLevels(roomIndex, false, true, false));
-                }
-            }
-            //Add all the uncategorized rooms
-            if (unknownLevels)
-            {
-                CategorizedFilterdLevels.Add("Unknown", GetFilteredLevels(roomIndex, false, false, true));
-            }
-
-            return CategorizedFilterdLevels;
-        }
-
-        public void LoadLevel(String levelName)
-        {
-            levelName = CleanLevelName(levelName);
-
-            if (LevelExist(levelName))
-            {
-                GetLevelLoaded = levelObjectData[levelName];
-            }
-            else
-            {
-                GetLevelLoaded = AddLevelByName(levelName);
-            }
-        }
-
-        public Level GetLevel(String levelName)
-        {
-            levelName = CleanLevelName(levelName);
-
-            if (!LevelExist(levelName))
-            {
-                AddLevelByName(levelName);
-            }
-            return levelObjectData[levelName];
-        }
-
-        private Level CreateLevel(String levelName)
-        {
-            levelName = CleanLevelName(levelName);
-
-            Level newLevel = new Level(levelName);
-
-            return newLevel;
-        }
-
-        private Level AddLevelByName(String levelName)
-        {
-            levelName = CleanLevelName(levelName);
-            if (LevelExist(levelName))
-            {
-                levelObjectData.Remove(levelName);
-            }
-
-            levelObjectData.Add(levelName, CreateLevel(levelName));
-            return levelObjectData[levelName];
-        }
-
-        public void AddPatientToLoadedLevel()
-        {
-            if (GetLevelLoaded != null)
-            {
-                GetLevelLoaded.AddPatient();
-            }
-        }
-
-        private bool LevelExist(String levelName)
-        {
-            levelName = CleanLevelName(levelName);
-
-            return levelObjectData.ContainsKey(levelName);
-        }
-
-        private static String CleanLevelName(String levelName)
-        {
-            levelName = levelName.Replace(" ", "");
-            if (levelName.EndsWith(".lua"))
-            {
-                levelName = levelName.Replace(".lua", "");
-            }
-            if (levelName.Contains("(e)"))
-            {
-                levelName = levelName.Replace("(e)", "");
-            }
-            if (levelName.Contains("*"))
-            {
-                levelName = levelName.Replace("*", "");
-            }
-
-            return levelName;
-        }
-
-
-        internal void UpdateRandomRecommendations()
-        {
-
-            if (UseRandomRecommendations)
-            {
-                int numberOfPatients = Globals.GetGameValues.NumberOfPatientsToInt(GetLevelLoaded.GetDifficultyModifier);
-                int treatmentPerPatients = Globals.GetGameValues.TreatmentPerPatientToInt(GetLevelLoaded.GetDifficultyModifier);
-                int patientTypeCount = Globals.GetSettings.GetPatientChanceList(GetLevelLoaded.CategoryKey).Count;
-
-                GeneratePatientTypeMin = patientTypeCount;
-                GeneratePatientTypeMax = patientTypeCount;
-
-                GeneratePatientsMin = numberOfPatients - 1;
-                GeneratePatientsMax = numberOfPatients + 1;
-
-                GenerateTreatmentsMin = treatmentPerPatients - 1;
-                GenerateTreatmentsMax = treatmentPerPatients + 1;
-
-
-
-
-            }
-
-
-        }
-
-
-        public void RandomizeLevel()
-        {
-            if (GetLevelLoaded != null)
-            {
-                Random rnd = new Random();
-
-                if (GeneratePatientTypeCheck)
-                {
-
-                    foreach (PatientChance patientChance in GetLevelLoaded.PatientChanceCollection)
-                    {
-                        patientChance.RandomizeWeight(rnd.Next(1, 100));
-                    }
-
-                }
-
-
-                if (GeneratePatientsCheck)
-                {
-                    int patientAmount = rnd.Next(GeneratePatientsMin, GeneratePatientsMax);
-                    GetLevelLoaded.SetPatientAmount(patientAmount);
-                }
-
-                if (GenerateTreatmentsCheck)
-                {
-                    GetLevelLoaded.RandomizeTreatments(GenerateTreatmentsMin, GenerateTreatmentsMax);
-                }
-
-                GetLevelLoaded.UpdateLevelOutput();
-
-            }
-        }
-
-        private void UpdatePatientSimulator()
-        {
-
-            //A DataTable is first created where an indentation is inserted to mimic a delay
-
-            DataTable treatmentDataTable = new DataTable();
-            treatmentDataTable.Columns.Add("PatientName");
-
-
-
-
-
-            DataGrid SimulatorGrid = Globals.GetMainWindow.patientSimulatorGrid;
-            //            SimulatorGrid.ItemsSource = new Binding("treatmentDataTable");    //GetLevelLoaded.PatientCollection;
-
-            //Create first column for the PatientName
-
-
-            DataGridTextColumn patientNameColumn = new DataGridTextColumn();
-            patientNameColumn.Header = "Patient Name:";
-            patientNameColumn.Binding = new Binding(treatmentDataTable.Columns[0].ToString());
-            SimulatorGrid.Columns.Add(patientNameColumn);
-
-            //Create the columns
-            for (int i = 0; i < 40; i++)
-            {
-                //Add treatment column to the treatmentDataTable
-                treatmentDataTable.Columns.Add(i.ToString());
-
-                String ColumnName = (i * 5).ToString() + " Seconds";
-                DataGridComboBoxColumn treatmentColumn = new DataGridComboBoxColumn();
-                treatmentColumn.Header = ColumnName;
-                treatmentColumn.SelectedValueBinding = new Binding(treatmentDataTable.Columns[i + 1].ToString());
-                treatmentColumn.ItemsSource = GetLevelLoaded.GetTreatmentOptions;
-                treatmentColumn.Width = 120;
-                SimulatorGrid.Columns.Add(treatmentColumn);
-
-
-            }
-
-            for (int patientIndex = 0; patientIndex < GetLevelLoaded.PatientCollection.Count; patientIndex++)
-            {
-                Patient patient = GetLevelLoaded.PatientCollection[patientIndex];
-                DataRow patientDataRow = treatmentDataTable.NewRow();
-
-                patientDataRow["PatientName"] = patient.PatientName;
-
-                for (int i = 0; i < 15; i++)
-                {
-                    if (i < patient.TreatmentCollection.Count)
-                    {
-                        patientDataRow[patientIndex + i + 1] = patient.TreatmentCollection[i].TreatmentName;
-                    }
-                }
-                treatmentDataTable.Rows.Add(patientDataRow);
-            }
-
-
-            // Set a DataGrid control's DataContext to the DataView.
-            SimulatorGrid.ItemsSource = treatmentDataTable.DefaultView;
-
-            //Globals.GetMainWindow.patientSimulatorGrid = SimulatorGrid;
-
-        }
-        #region Getters
-
-        public List<String> GetLevelsFromDisk(bool reload = false, bool filterExtension = false)
-        {
-            if (levelList == null || levelList.Count() == 0 || reload)
-            {
-                String projectPath = Globals.GetSettings.projectPathLevel;
-                if (Directory.Exists(projectPath))
-                {
-                    List<String> rawLevelList = new List<String>(System.IO.Directory.GetFiles(projectPath));
-                    List<String> tmpLevelList = new List<String> { };
-
-                    foreach (String level in rawLevelList)
-                    {
-                        String levelName = Path.GetFileName(level);
-                        if (filterExtension)
-                        {
-                            tmpLevelList.Add(levelName.Replace(".lua", ""));
-                        }
-                        else
-                        {
-                            tmpLevelList.Add(levelName);
-                        }
-                    }
-
-                    levelList = tmpLevelList;
-                }
-            }
-
-            return levelList;
-        }
-
-        #endregion Getters
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        #endregion INotifyPropertyChanged Members
-    }
-
+    /// <inheritdoc />
+    /// <summary>
+    /// Level Object which stores all the data related to the Level.
+    /// </summary>
     public class Level : INotifyPropertyChanged
     {
         #region LevelProperties
 
-        public String LevelName = String.Empty;
-        public String CategoryKey = String.Empty;
+        public string CategoryKey;
 
-        //General Properties
-        private bool _allowLevelScriptUpdate = true;
+        /// <summary>
+        /// Gets or sets the level name.
+        /// </summary>
+        private string levelName;
+        public string LevelName { get => this.levelName; set => this.levelName = value; }
 
-        public bool AllowLevelScriptUpdate
-        {
-            get
-            {
-                return _allowLevelScriptUpdate;
-            }
-            set
-            {
-                _allowLevelScriptUpdate = value;
-                UpdateLevelOutput();
-            }
-        }
+        public string FileName => $"{this.LevelName}.lua";
 
-        public bool WeightEnabled
-        {
-            get
-            {
-                return designToolData.LevelType == LevelTypeEnum.TimeTrial;
-            }
-        }
+        public bool WeightEnabled => this.designToolData.LevelType == LevelTypeEnum.TimeTrial;
 
-        private List<String> _treatmentOptions = new List<String> { };
-        private List<Patient> patientDatabase = new List<Patient> { };
+        // Patient Chances Objects
+        public List<PatientChance> PatientChanceList = new List<PatientChance> { };
 
-        //private Dictionary<String, int> patientChancesDict = new Dictionary<String, int>();
+
+        private List<string> _treatmentOptions = new List<string> { };
+
+
         private DesignToolData designToolData = new DesignToolData();
 
-        private String currentLevelScript = null;
+        private List<Patient> patientDatabase = new List<Patient> { };
+        public ObservableCollection<PatientChance> PatientChanceCollection
+        {
+            get => new ObservableCollection<PatientChance>(this.PatientChanceList);
+            set
+            {
+                this.PatientChanceList = value.ToList<PatientChance>();
+                this.OnPropertyChanged("PatientChanceCollection");
+            }
+        }
 
-        //Patient Row Objects
+        // Patient Row Objects
         public ObservableCollection<Patient> PatientCollection
         {
             get
             {
                 ObservableCollection<Patient> patientCollection = new ObservableCollection<Patient>();
-                if (patientDatabase.Count > 0)
+                if (this.patientDatabase.Count > 0)
                 {
-                    foreach (Patient patient in patientDatabase)
+                    foreach (Patient patient in this.patientDatabase)
                     {
                         patientCollection.Add(patient);
                     }
                 }
+
                 return patientCollection;
             }
+
             set
             {
-                patientDatabase = value.ToList();
-                OnPropertyChanged();
+                this.patientDatabase = value.ToList();
+                this.OnPropertyChanged();
             }
         }
 
-        //Patient Chances Objects
-        public List<PatientChance> PatientChanceList = new List<PatientChance> { };
-
-        public ObservableCollection<PatientChance> PatientChanceCollection
-        {
-            get
-            {
-                return new ObservableCollection<PatientChance>(PatientChanceList);
-            }
-            set
-            {
-                PatientChanceList = value.ToList<PatientChance>();
-                OnPropertyChanged("PatientChanceCollection");
-            }
-        }
 
         #endregion LevelProperties
 
         public Level(string levelName)
         {
-            LevelName = levelName;
-            CategoryKey = Globals.GetCategoryKey(GetRoomIndex);
-            //Ensure all possible PatientTypeChances are set in PatientChanceList from the Settings.
-            PatientChanceList = Globals.GetSettings.GetPatientChanceList(CategoryKey);
-            foreach (PatientChance patientChance in PatientChanceList)
+            this.LevelName = levelName;
+            this.CategoryKey = Globals.GetCategoryKey(this.GetRoomIndex);
+
+            // Ensure all possible PatientTypeChances are set in PatientChanceList from the Settings.
+            this.PatientChanceList = Globals.GetSettings.GetPatientChanceList(this.CategoryKey);
+            foreach (PatientChance patientChance in this.PatientChanceList)
             {
                 patientChance.ParentLevel = this;
-            } //Set ParentLevel
+            }
+            // Set ParentLevel
 
-            //Translate the levelScript into workable variables.
-            ParseRawText(levelName);
+            // Translate the levelScript into workable variables.
+            this.ParseRawText(levelName);
 
-            UpdateAvailableTreatmentList();
-            _canExecute = true;
+            this.UpdateAvailableTreatmentList();
+            this.UpdateLevelOutput();
+            this._canExecute = true;
         }
 
         #region Getters
 
-        //Design Tool Data
-        public String GetDesignToolData
+        public Dictionary<string, int> RandomTreatmentDictionary = new Dictionary<string, int> { };
+
+
+        private List<Treatment> _availableTreatmentList = new List<Treatment> { };
+
+        private DataTable _patientSimulateDataTable = new DataTable();
+
+        private string _treatmentsAvailableString = string.Empty;
+
+        public List<Treatment> AvailableTreatmentList
         {
-            get
+            get => this._availableTreatmentList;
+            set
             {
-                return designToolData.ToString();
+                this._availableTreatmentList = value;
+                this.OnPropertyChanged("AvailableTreatmentList");
             }
         }
+
+
+
+        // Design Tool Data
+        public string GetDesignToolData => this.designToolData.ToString();
+
+        public double GetDifficultyModifier
+        {
+            get => this.designToolData.DifficultyLevel;
+            set
+            {
+                this.designToolData.DifficultyLevel = value;
+                this.OnPropertyChanged();
+                this.OnPropertyChanged("GetTreatmentOptions");
+                this.OnPropertyChanged("GetTreatmentsAvailableString");
+                this.UpdateAvailableTreatmentList();
+                Globals.GetLevelOverview.UpdateRandomRecommendations();
+            }
+        }
+
+        public string GetDifficultyModifierString
+        {
+            get => this.GetDifficultyModifier.ToString("0.0");
+            set
+            {
+                if (value != null)
+                {
+                    this.GetDifficultyModifier = float.Parse(value, CultureInfo.InvariantCulture.NumberFormat);
+                }
+                else
+                {
+                    this.GetDifficultyModifier = 1;
+                }
+
+                this.UpdateLevelOutput();
+            }
+        }
+
+        public string GetLevelTypeString
+        {
+            get => this.designToolData.LevelTypeString;
+            set
+            {
+                this.designToolData.LevelTypeString = value;
+                this.OnPropertyChanged("GetDesignToolData");
+                this.OnPropertyChanged("WeightEnabled");
+                this.UpdateLevelOutput();
+            }
+        }
+
 
         public int GetRoomIndex
         {
             get
             {
-                if (designToolData.Roomindex != 0)
+                if (this.designToolData.Roomindex != 0)
                 {
-                    return designToolData.Roomindex;
+                    return this.designToolData.Roomindex;
                 }
                 else
                 {
                     int roomIndex = -1;
 
-                    //Generate the RoomIndex based on the naming convention of the levelName
-                    if (LevelName != String.Empty)
+                    // Generate the RoomIndex based on the naming convention of the levelName
+                    if (this.LevelName != string.Empty)
                     {
-                        //Assuming the room index is in r2_b04... naming convention]
-                        if (LevelName.StartsWith("level"))
+                        // Assuming the room index is in r2_b04... naming convention]
+                        if (this.LevelName.StartsWith("level"))
                         {
-                            int levelIndex = Convert.ToInt16(LevelName.Replace("level", ""));
+                            int levelIndex = Convert.ToInt16(this.LevelName.Replace("level", string.Empty));
                             while (roomIndex < 100)
                             {
                                 int minIndex = (roomIndex - 1) * 10 + 1;
@@ -973,106 +357,102 @@ namespace LevelData
                                 {
                                     break;
                                 }
+
                                 roomIndex++;
                             }
                         }
-                        else if (LevelName.StartsWith("r"))
+                        else if (this.LevelName.StartsWith("r"))
                         {
-                            roomIndex = Convert.ToInt16(Globals.FilterToNumerical(LevelName.Substring(1, 1)));
+                            roomIndex = Convert.ToInt16(Globals.FilterToNumerical(this.LevelName.Substring(1, 1)));
                         }
                         else
                         {
                             roomIndex = -1;
                         }
                     }
-                    //Store the newly generated RoomIndex
-                    GetRoomIndex = roomIndex;
+
+                    // Store the newly generated RoomIndex
+                    this.GetRoomIndex = roomIndex;
                     return roomIndex;
                 }
             }
+
             set
             {
-                designToolData.Roomindex = value;
-                OnPropertyChanged("GetDesignToolData");
-                UpdateLevelOutput();
+                this.designToolData.Roomindex = value;
+                this.OnPropertyChanged("GetDesignToolData");
+                this.UpdateLevelOutput();
             }
         }
 
-        public double GetDifficultyModifier
+        public ObservableCollection<string> GetTreatmentOptions
         {
             get
             {
-                return designToolData.DifficultyLevel;
-            }
-            set
-            {
-                designToolData.DifficultyLevel = value;
-                OnPropertyChanged("GetDifficultyModifier");
-                OnPropertyChanged("GetTreatmentOptions");
-                OnPropertyChanged("GetTreatmentsAvailableString");
-                UpdateAvailableTreatmentList();
-                Globals.GetLevelOverview.UpdateRandomRecommendations();
-            }
-        }
+                List<string> treatmentListString = new List<string> { string.Empty };
 
-        public String GetDifficultyModifierString
-        {
-            get
-            {
-                return GetDifficultyModifier.ToString("0.0");
-            }
-            set
-            {
-                if (value != null)
+                // String categoryKey = Globals.GetCategoryKey(GetRoomIndex);
+                if (this.GetRoomIndex > -1 && this.CategoryKey != string.Empty)
                 {
-                    GetDifficultyModifier = float.Parse(value, CultureInfo.InvariantCulture.NumberFormat);
+                    List<Treatment> treatmentList = Globals.GetSettings.GetTreatmentList(this.CategoryKey);
+
+                    foreach (Treatment treatment in treatmentList)
+                    {
+                        // Only add treatments with a sufficient DifficultyModifer
+                        if (treatment.DifficultyUnlocked <= this.GetDifficultyModifier)
+                        {
+                            treatmentListString.Add(treatment.TreatmentName);
+                        }
+                    }
                 }
-                else
-                {
-                    GetDifficultyModifier = 1;
-                }
-                UpdateLevelOutput();
+
+                return new ObservableCollection<string>(treatmentListString);
             }
         }
 
-        public Dictionary<String, int> RandomTreatmentDictionary = new Dictionary<string, int> { };
+        public DataTable PatientSimulateDataTable => this._patientSimulateDataTable;
 
-        public String GetLevelTypeString
+        public string TreatmentsAvailableString
         {
-            get
-            {
-                return designToolData.LevelTypeString;
-            }
+            get => this._treatmentsAvailableString;
             set
             {
-                designToolData.LevelTypeString = value;
-                OnPropertyChanged("GetDesignToolData");
-                OnPropertyChanged("WeightEnabled");
-                UpdateLevelOutput();
+                this._treatmentsAvailableString = value;
+                this.OnPropertyChanged("TreatmentsAvailableString");
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private List<Treatment> _availableTreatmentList = new List<Treatment> { };
-        public List<Treatment> AvailableTreatmentList
+        // Patient Chance functions
+        public double GetPatientChancePercentage(int Weight)
         {
-            get
+            int TotalWeight = 0;
+            foreach (PatientChance patientChance in this.PatientChanceList)
             {
-                return _availableTreatmentList;
+                TotalWeight += patientChance.Weight;
             }
-            set
+
+            double Percentage = Weight / (double)TotalWeight * 100;
+            Percentage = Math.Round(Percentage, 1, MidpointRounding.AwayFromZero);
+            return Percentage;
+        }
+
+        public double GetTreatmentWeightPercentage(int CustomizedWeight)
+        {
+            int TotalWeight = 0;
+            foreach (Treatment treatment in this.AvailableTreatmentList)
             {
-                _availableTreatmentList = value;
-                OnPropertyChanged("AvailableTreatmentList");
+                TotalWeight += treatment.CustomizedWeight;
             }
+
+            double Percentage = CustomizedWeight / (double)TotalWeight * 100;
+            Percentage = Math.Round(Percentage, 1, MidpointRounding.AwayFromZero);
+            return Percentage;
         }
 
         public void UpdateAvailableTreatmentList()
         {
-            List<Treatment> treatmentList = Globals.GetSettings.GetTreatmentList(CategoryKey, GetDifficultyModifier);
-            Dictionary<String, int> customTreatmentWeights = Globals.GetSettings.GetCustomizedTreatmentWeights(LevelName);
+            List<Treatment> treatmentList = Globals.GetSettings.GetTreatmentList(this.CategoryKey, this.GetDifficultyModifier);
+            Dictionary<string, int> customTreatmentWeights = Globals.GetSettings.GetCustomizedTreatmentWeights(this.LevelName);
 
             foreach (Treatment treatment in treatmentList)
             {
@@ -1084,102 +464,31 @@ namespace LevelData
                 }
             }
 
-            AvailableTreatmentList = treatmentList;
-            UpdateTreatmentsAvailableString();
+            this.AvailableTreatmentList = treatmentList;
+            this.UpdateTreatmentsAvailableString();
         }
 
-        public ObservableCollection<String> GetTreatmentOptions
+        public void UpdatePatientChancePercentage()
         {
-            get
+            foreach (PatientChance patientChance in this.PatientChanceList)
             {
-                List<String> treatmentListString = new List<String> { String.Empty };
-
-                //String categoryKey = Globals.GetCategoryKey(GetRoomIndex);
-                if (GetRoomIndex > -1 && CategoryKey != String.Empty)
-                {
-                    List<Treatment> treatmentList = Globals.GetSettings.GetTreatmentList(CategoryKey);
-
-                    foreach (Treatment treatment in treatmentList)
-                    {
-                        //Only add treatments with a sufficient DifficultyModifer
-                        if (treatment.DifficultyUnlocked <= GetDifficultyModifier)
-                        {
-                            treatmentListString.Add(treatment.TreatmentName);
-                        }
-                    }
-                }
-
-                return new ObservableCollection<String>(treatmentListString);
+                patientChance.UpdatePercentage();
             }
-        }
 
-        public String GetCurrentLevelScript
-        {
-            get
-            {
-                if (currentLevelScript == null || currentLevelScript == "")
-                {
-                    currentLevelScript = LevelOverview.ReadLevelTextFromFile(LevelName);
-                }
-                return currentLevelScript;
-            }
-        }
-
-        public String GetNewLevelScript
-        {
-            get
-            {
-                string output = "";
-
-                output += designToolData.ToString();
-                output += Environment.NewLine;
-                //Output the patient chances
-                if (PatientChanceList.Count > 0)
-                {
-                    output += "levelDesc.patientChances = " + Environment.NewLine;
-                    output += "{" + Environment.NewLine;
-                    int i = 0;
-                    foreach (PatientChance patientChance in PatientChanceList)
-                    {
-                        if (patientChance.Weight > 0)
-                        {
-                            output += "\t" + patientChance.PatientName + " \t= \t" + patientChance.Weight;
-                            if (i < PatientChanceList.Count - 1)
-                            {
-                                output += ",";
-                            }
-                            i++;
-                            output += Environment.NewLine;
-                        }
-                    }
-                    output += "}" + Environment.NewLine;
-                }
-                output += Environment.NewLine;
-                //Output the patient treatments
-                if (patientDatabase.Count() > 0)
-                {
-                    output += "levelDesc.triggers = " + Environment.NewLine;
-                    output += "{" + Environment.NewLine;
-                    foreach (Patient patient in patientDatabase)
-                    {
-                        output += patient.ToString();
-                    }
-                    output += "}" + Environment.NewLine;
-                }
-                return output;
-            }
+            this.UpdateLevelOutput();
         }
 
         public void UpdateTreatmentsAvailableString()
         {
-            String output = String.Empty;
-            //TODO Make this function dependant whetaher ShowAvailableTreatmentsCheck is true, currently it's not working where it is assumed false.
+            string output = string.Empty;
+
+            // TODO Make this function dependant whetaher ShowAvailableTreatmentsCheck is true, currently it's not working where it is assumed false.
             if (Globals.GetLevelOverview.ShowAvailableTreatmentsCheck || true)
             {
-                List<Treatment> treatmentList = AvailableTreatmentList;
+                List<Treatment> treatmentList = this.AvailableTreatmentList;
                 if (treatmentList.Count > 0)
                 {
-                    //Calculate totalWeight
+                    // Calculate totalWeight
                     int TotalWeight = 0;
                     foreach (Treatment treatment in treatmentList)
                     {
@@ -1188,87 +497,25 @@ namespace LevelData
 
                     foreach (Treatment treatment in treatmentList)
                     {
-                        output += treatment.TreatmentName + " (" + Math.Round((treatment.Weight / Convert.ToDouble(TotalWeight)) * 100, 1).ToString("N1") + "%), ";
+                        output += treatment.TreatmentName + " (" + Math.Round(
+                                      (treatment.Weight / Convert.ToDouble(TotalWeight)) * 100,
+                                      1).ToString("N1") + "%), ";
                         if (treatment.Weight != treatment.CustomizedWeight)
                         {
                             output += " => CustomWeight: " + treatment.CustomizedWeight.ToString();
                         }
+
                         output += Environment.NewLine;
                     }
-
-
-
                 }
-
             }
 
-            TreatmentsAvailableString = output;
-        }
-
-        private String _treatmentsAvailableString = String.Empty;
-        public String TreatmentsAvailableString
-        {
-            get
-            {
-                return _treatmentsAvailableString;
-            }
-            set
-            {
-                _treatmentsAvailableString = value;
-                OnPropertyChanged("TreatmentsAvailableString");
-            }
-        }
-        private DataTable _patientSimulateDataTable = new DataTable();
-        public DataTable PatientSimulateDataTable
-        {
-            get
-            {
-                return _patientSimulateDataTable;
-            }
-
-        }
-        //Patient Chance functions
-        public double GetPatientChancePercentage(int Weight)
-        {
-            int TotalWeight = 0;
-            foreach (PatientChance patientChance in PatientChanceList)
-            {
-                TotalWeight += patientChance.Weight;
-            }
-
-            double Percentage = Weight / (double)TotalWeight * 100;
-            Percentage = Math.Round(Percentage, 1, MidpointRounding.AwayFromZero);
-            return Percentage;
-        }
-
-
-
-        public void UpdatePatientChancePercentage()
-        {
-            foreach (PatientChance patientChance in PatientChanceList)
-            {
-                patientChance.UpdatePercentage();
-            }
-            UpdateLevelOutput();
-        }
-
-
-        public double GetTreatmentWeightPercentage(int CustomizedWeight)
-        {
-            int TotalWeight = 0;
-            foreach (Treatment treatment in AvailableTreatmentList)
-            {
-                TotalWeight += treatment.CustomizedWeight;
-            }
-
-            double Percentage = CustomizedWeight / (double)TotalWeight * 100;
-            Percentage = Math.Round(Percentage, 1, MidpointRounding.AwayFromZero);
-            return Percentage;
+            this.TreatmentsAvailableString = output;
         }
 
         public void UpdateTreatmentWeightPercentage()
         {
-            foreach (Treatment treatment in AvailableTreatmentList)
+            foreach (Treatment treatment in this.AvailableTreatmentList)
             {
                 treatment.UpdatePercentage();
             }
@@ -1276,21 +523,14 @@ namespace LevelData
 
         #endregion Getters
 
-        public void UpdateLevelOutput()
-        {
-            if (AllowLevelScriptUpdate)
-            {
-                OnPropertyChanged("GetNewLevelScript");
-            }
-        }
-
-        public void AddPatient(String patientData = null, int index = -1)
+        public void AddPatient(string patientData = null, int index = -1)
         {
             if (index == -1)
             {
-                index = patientDatabase.Count();
+                index = this.patientDatabase.Count();
             }
-            String patientName = "Patient_" + index.ToString();
+
+            string patientName = "Patient_" + index.ToString();
             Patient patientObject = new Patient(this, patientName);
 
             if (patientData != null)
@@ -1298,56 +538,195 @@ namespace LevelData
                 patientObject.SetPatientData(patientData);
             }
 
-            patientDatabase.Insert(index, patientObject);
+            this.patientDatabase.Insert(index, patientObject);
         }
 
-        private void ParseRawText(String levelName)
+        public void RandomizeTreatments(int treatmentMinValue, int treatmentMaxValue)
         {
-            String rawLevelText = GetCurrentLevelScript;
+            // Filter List by treatments with a CustomizedWeight higher than 0
+            List<Treatment> treatmentOptions = this.AvailableTreatmentList.FindAll(delegate (Treatment t) { return t.CustomizedWeight > 0; });
+
+            // https://github.com/BlueRaja/Weighted-Item-Randomizer-for-C-Sharp/wiki/Getting-Started
+            IWeightedRandomizer<string> randomizer = new DynamicWeightedRandomizer<string>();
+
+            Random random = new Random();
+
+            foreach (Patient patient in this.PatientCollection)
+            {
+                // Get the number of treatments to generate.
+                int treatmentNumber = random.Next(
+                    Math.Min(treatmentMinValue, treatmentMaxValue),
+                    treatmentMaxValue + 1);
+
+                // Ensure that the treatment number is not highter than the available treatments.
+                treatmentNumber = Math.Min(treatmentOptions.Count, treatmentNumber);
+                List<string> RandomTreatmentNameList = new List<string> { };
+
+                // Create the randomizer
+                randomizer.Clear();
+                for (int i = 0; i < treatmentOptions.Count; i++)
+                {
+                    randomizer.Add(treatmentOptions[i].TreatmentName, treatmentOptions[i].CustomizedWeight);
+                }
+
+                for (int i = 0; i < treatmentNumber; i++)
+                {
+                    if (randomizer.Count == 0 || randomizer.TotalWeight == 0)
+                    {
+                        break;
+                    }
+
+                    string randomTreatmentName = randomizer.NextWithRemoval();
+
+                    RandomTreatmentNameList.Add(randomTreatmentName);
+                }
+
+                // Convert from String back to Treatments
+                List<Treatment> randomTreatmentList = new List<Treatment> { };
+                foreach (string x in RandomTreatmentNameList)
+                {
+                    foreach (Treatment treatment in treatmentOptions)
+                    {
+                        if (x == treatment.TreatmentName)
+                        {
+                            randomTreatmentList.Add(treatment);
+                            break;
+                        }
+                    }
+                }
+
+                // Make sure all AtLast treatment are at the end of the list
+                int treatmentCount = randomTreatmentList.Count;
+                for (int i = 0; i < treatmentCount; i++)
+                {
+                    Treatment treatment = randomTreatmentList[i];
+
+                    if (randomTreatmentList[i].AlwaysLast)
+                    {
+                        randomTreatmentList.RemoveAt(i);
+                        randomTreatmentList.Add(treatment);
+                    }
+                }
+
+                // Store new TreatmentList in the patient
+                patient.SetTreatments(randomTreatmentList);
+            }
+        }
+
+        public void SelectAllPatientChances(bool State)
+        {
+            foreach (PatientChance patientChance in this.PatientChanceList)
+            {
+                patientChance.IsSelected = State;
+            }
+        }
+
+        public void SetPatientAmount(int NewAmount)
+        {
+            int patientCount = this.PatientCollection.Count;
+
+            if (NewAmount < patientCount)
+            {
+                int amountToSubtract = patientCount - NewAmount;
+
+                for (int i = 1; i <= amountToSubtract; i++)
+                {
+                    int index = patientCount - i;
+
+                    this.PatientCollection.RemoveAt(index);
+                }
+            }
+            else if (NewAmount > patientCount)
+            {
+                int amountToAdd = NewAmount - patientCount;
+
+                for (int i = 0; i < amountToAdd; i++)
+                {
+                    this.AddPatient();
+                }
+            }
+        }
+
+
+
+        internal void RandomizePatientChancesWeight()
+        {
+            Random rnd = new Random();
+
+            foreach (PatientChance patientChance in this.PatientChanceList)
+            {
+                if (patientChance.IsSelected)
+                {
+                    patientChance.RandomizeWeight(rnd.Next(1, 100));
+                }
+            }
+        }
+
+        internal void UpdateMaxTreatments(int value)
+        {
+            foreach (Patient patient in this.PatientCollection)
+            {
+                patient.SetMaxTreatments(value);
+            }
+        }
+
+        private void ParseRawText(string levelName)
+        {
+            string rawLevelText = this.GetCurrentLevelScript;
+
             // Clean up the text by removing tabs, enters and spaces and special characters.
-            rawLevelText = rawLevelText.Replace("\t", "").Replace("\r", "").Replace("{\n", "{").Replace(" ", "").Replace("\n\n", "");
+            rawLevelText = rawLevelText.Replace("\t", string.Empty).Replace("\r", string.Empty).Replace("{\n", "{")
+                .Replace(" ", string.Empty).Replace("\n\n", string.Empty);
 
             // Parse DesignToolData embeded in file.
-            String startDesignToolData = "--[[HM4DesignToolData:";
-            String endDesignToolData = "--]]";
-            String designToolDataText;
+            string startDesignToolData = "--[[HM4DesignToolData:";
+            string endDesignToolData = "--]]";
+            string designToolDataText;
             if (rawLevelText.Contains(startDesignToolData) && rawLevelText.Contains(endDesignToolData))
             {
                 int startDesignToolDataIndex = rawLevelText.IndexOf(startDesignToolData);
                 int endDesignToolDataIndex = rawLevelText.IndexOf(endDesignToolData) + endDesignToolData.Length;
 
-                if (startDesignToolDataIndex > -1 && endDesignToolDataIndex - endDesignToolData.Length > -1 && startDesignToolDataIndex < endDesignToolDataIndex)
+                if (startDesignToolDataIndex > -1 && endDesignToolDataIndex - endDesignToolData.Length > -1
+                                                  && startDesignToolDataIndex < endDesignToolDataIndex)
                 {
-                    designToolDataText = rawLevelText.Substring(startDesignToolDataIndex, endDesignToolDataIndex - startDesignToolDataIndex);
-                    designToolData.ParseDesignData(designToolDataText);
-                    rawLevelText = rawLevelText.Replace(designToolDataText, "");
+                    designToolDataText = rawLevelText.Substring(
+                        startDesignToolDataIndex,
+                        endDesignToolDataIndex - startDesignToolDataIndex);
+                    this.designToolData.ParseDesignData(designToolDataText);
+                    rawLevelText = rawLevelText.Replace(designToolDataText, string.Empty);
                 }
             }
 
             // Parse the PatientChances section.
-            String startPatientChancesText = "levelDesc.patientChances=";
-            String endPatientChancesText = "}";
-            String patientsChancesRawText;
+            string startPatientChancesText = "levelDesc.patientChances=";
+            string endPatientChancesText = "}";
+            string patientsChancesRawText;
             if (rawLevelText.Contains(startPatientChancesText) && rawLevelText.Contains(endPatientChancesText))
             {
                 int startPatientChancesIndex = rawLevelText.IndexOf(startPatientChancesText);
                 int endPatientChancesIndex = rawLevelText.IndexOf(endPatientChancesText) + endPatientChancesText.Length;
 
-                if (startPatientChancesIndex > -1 && endPatientChancesIndex - endPatientChancesText.Length > -1 && startPatientChancesIndex < endPatientChancesIndex)
+                if (startPatientChancesIndex > -1 && endPatientChancesIndex - endPatientChancesText.Length > -1
+                                                  && startPatientChancesIndex < endPatientChancesIndex)
                 {
                     // Do some extra formatting and cleaning up.
-                    patientsChancesRawText = rawLevelText.Substring(startPatientChancesIndex, endPatientChancesIndex - startPatientChancesIndex);
+                    patientsChancesRawText = rawLevelText.Substring(
+                        startPatientChancesIndex,
+                        endPatientChancesIndex - startPatientChancesIndex);
                     rawLevelText = rawLevelText.Remove(startPatientChancesIndex, endPatientChancesIndex);
 
-                    patientsChancesRawText = patientsChancesRawText.Replace("levelDesc.patientChances=", "").Replace(",}", "}");
+                    patientsChancesRawText = patientsChancesRawText.Replace("levelDesc.patientChances=", string.Empty)
+                        .Replace(",}", "}");
                     patientsChancesRawText = patientsChancesRawText.Trim(' ').Replace("=", ":");
 
-                    //Translate to workable Dictionary
-                    Dictionary<String, int> patientChancesDict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<String, int>>(patientsChancesRawText);
+                    // Translate to workable Dictionary
+                    Dictionary<string, int> patientChancesDict =
+                        Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, int>>(patientsChancesRawText);
 
-                    foreach (KeyValuePair<String, int> patientChance in patientChancesDict)
+                    foreach (KeyValuePair<string, int> patientChance in patientChancesDict)
                     {
-                        foreach (PatientChance patientChanceListItem in PatientChanceList)
+                        foreach (PatientChance patientChanceListItem in this.PatientChanceList)
                         {
                             if (patientChanceListItem.PatientName == patientChance.Key)
                             {
@@ -1355,40 +734,46 @@ namespace LevelData
                                 break;
                             }
                         }
-                        //TODO Remove this if undefined PatientTypeChances in the Settings should not be added from the LevelScript.
-                        //PatientChanceList.Add(new PatientChance(patientChance.Key, patientChance.Value));
+
+                        // TODO Remove this if undefined PatientTypeChances in the Settings should not be added from the LevelScript.
+                        // PatientChanceList.Add(new PatientChance(patientChance.Key, patientChance.Value));
                     }
                 }
             }
 
             // Parse the PatientList with treatments
-            String startPatientTriggerText = "levelDesc.triggers=";
-            String endPatientTriggerText = "},\n}";
-            String patientsTriggersRawText;
+            string startPatientTriggerText = "levelDesc.triggers=";
+            string endPatientTriggerText = "},\n}";
+            string patientsTriggersRawText;
             if (rawLevelText.Contains(startPatientTriggerText) && rawLevelText.Contains(endPatientTriggerText))
             {
                 int startPatientTriggerIndex = rawLevelText.IndexOf(startPatientTriggerText);
                 int endPatientTriggerIndex = rawLevelText.IndexOf(endPatientTriggerText) + endPatientTriggerText.Length;
 
-                if (startPatientTriggerIndex > -1 && endPatientTriggerIndex - endPatientChancesText.Length > -1 && startPatientTriggerIndex < endPatientTriggerIndex)
+                if (startPatientTriggerIndex > -1 && endPatientTriggerIndex - endPatientChancesText.Length > -1
+                                                  && startPatientTriggerIndex < endPatientTriggerIndex)
                 {
-                    patientsTriggersRawText = rawLevelText.Substring(startPatientTriggerIndex, endPatientTriggerIndex - startPatientTriggerIndex);
+                    patientsTriggersRawText = rawLevelText.Substring(
+                        startPatientTriggerIndex,
+                        endPatientTriggerIndex - startPatientTriggerIndex);
                     rawLevelText = rawLevelText.Remove(startPatientTriggerIndex, endPatientTriggerIndex);
 
-                    patientsTriggersRawText = patientsTriggersRawText.Replace(startPatientTriggerText + "\n{", "").TrimEnd('}');
+                    patientsTriggersRawText = patientsTriggersRawText
+                        .Replace(startPatientTriggerText + "\n{", string.Empty).TrimEnd('}');
 
-                    String[] delimiter = { "},\n" };
-                    List<String> patientTriggers = patientsTriggersRawText.Split(delimiter, StringSplitOptions.None).ToList<String>();
+                    string[] delimiter = { "},\n" };
+                    List<string> patientTriggers = patientsTriggersRawText.Split(delimiter, StringSplitOptions.None)
+                        .ToList<string>();
 
-                    foreach (String patientTrigger in patientTriggers)
+                    foreach (string patientTrigger in patientTriggers)
                     {
-                        AddPatient(patientTrigger);
+                        this.AddPatient(patientTrigger);
                     }
                 }
             }
 
             // Isolate any previous comments at the start of the text
-            String startComments;
+            string startComments;
             if (rawLevelText.Contains(startDesignToolData))
             {
                 int startDesignToolDataIndex = rawLevelText.IndexOf(startPatientChancesText);
@@ -1415,150 +800,145 @@ namespace LevelData
             }
         }
 
-        internal void RandomizePatientChancesWeight()
+        /// <summary>
+        /// The save level to file.
+        /// </summary>
+        private void SaveLevelToFile()
         {
-            Random rnd = new Random();
 
-            foreach (PatientChance patientChance in PatientChanceList)
+            string levelScript = this.AllowLevelScriptUpdate ? this.GetNewLevelScript : this.LevelScriptBuffer;
+
+            string path = Globals.GetSettings.projectPathLevel + this.FileName;
+            if (File.Exists(path))
             {
-                if (patientChance.IsSelected)
-                {
-                    patientChance.RandomizeWeight(rnd.Next(1, 100));
-                }
+                File.WriteAllText(path, levelScript);
+                this.OnPropertyChanged("GetCurrentLevelScript");
             }
         }
 
-        public void SelectAllPatientChances(bool State)
+        private void OpenLevelFromFile()
         {
-            foreach (PatientChance patientChance in PatientChanceList)
+            string fileName = Globals.GetSettings.projectPathLevel + this.FileName;
+            if (File.Exists(fileName))
             {
-                patientChance.IsSelected = State;
-            }
-        }
-        internal void UpdateMaxTreatments(int value)
-        {
-
-            foreach (Patient patient in PatientCollection)
-            {
-                patient.SetMaxTreatments(value);
+                Process.Start(fileName);
             }
 
         }
 
+        #region LevelScript
+        private bool _allowLevelScriptUpdate = true;
 
-        public void RandomizeTreatments(int treatmentMinValue, int treatmentMaxValue)
+        public bool AllowLevelScriptUpdate
         {
-            //Filter List by treatments with a CustomizedWeight higher than 0
-            List<Treatment> treatmentOptions = AvailableTreatmentList.FindAll(delegate (Treatment t) { return t.CustomizedWeight > 0; });
-
-            //https://github.com/BlueRaja/Weighted-Item-Randomizer-for-C-Sharp/wiki/Getting-Started
-            IWeightedRandomizer<String> randomizer = new DynamicWeightedRandomizer<String>();
-
-            Random random = new Random();
-
-            foreach (Patient patient in PatientCollection)
+            get => this._allowLevelScriptUpdate;
+            set
             {
+                this._allowLevelScriptUpdate = value;
+                this.UpdateLevelOutput();
+            }
+        }
+        private string _currentLevelScript = null;
+        public string GetCurrentLevelScript
+        {
+            get
+            {
+                this._currentLevelScript = LevelOverview.ReadLevelTextFromFile(this.LevelName);
 
-                //Get the number of treatments to generate. 
-                int treatmentNumber = random.Next(Math.Min(treatmentMinValue, treatmentMaxValue), treatmentMaxValue + 1);
-                //Ensure that the treatment number is not highter than the available treatments. 
-                treatmentNumber = Math.Min(treatmentOptions.Count, treatmentNumber);
-                List<String> RandomTreatmentNameList = new List<String> { };
+                return this._currentLevelScript;
+            }
+        }
+        public string GetNewLevelScript
+        {
+            get
+            {
+                string output = string.Empty;
 
+                output += this.designToolData.ToString();
+                output += Environment.NewLine;
 
-
-                //Create the randomizer
-                randomizer.Clear();
-                for (int i = 0; i < treatmentOptions.Count; i++)
+                // Output the patient chances
+                if (this.PatientChanceList.Count > 0)
                 {
-                    randomizer.Add(treatmentOptions[i].TreatmentName, treatmentOptions[i].CustomizedWeight);
-                }
-
-                for (int i = 0; i < treatmentNumber; i++)
-                {
-                    if (randomizer.Count == 0 || randomizer.TotalWeight == 0)
+                    output += "levelDesc.patientChances = " + Environment.NewLine;
+                    output += "{" + Environment.NewLine;
+                    int i = 0;
+                    foreach (PatientChance patientChance in this.PatientChanceList)
                     {
-                        break;
-                    }
-
-                    String randomTreatmentName = randomizer.NextWithRemoval();
-
-                    RandomTreatmentNameList.Add(randomTreatmentName);
-
-                }
-
-
-                //Convert from String back to Treatments
-                List<Treatment> randomTreatmentList = new List<Treatment> { };
-                foreach (String x in RandomTreatmentNameList)
-                {
-                    foreach (Treatment treatment in treatmentOptions)
-                    {
-                        if (x == treatment.TreatmentName)
+                        if (patientChance.Weight > 0)
                         {
-                            randomTreatmentList.Add(treatment);
-                            break;
+                            output += "\t" + patientChance.PatientName + " \t= \t" + patientChance.Weight;
+                            if (i < this.PatientChanceList.Count - 1)
+                            {
+                                output += ",";
+                            }
+
+                            i++;
+                            output += Environment.NewLine;
                         }
                     }
+
+                    output += "}" + Environment.NewLine;
                 }
 
-                //Make sure all AtLast treatment are at the end of the list
-                int treatmentCount = randomTreatmentList.Count;
-                for (int i = 0; i < treatmentCount; i++)
-                {
-                    Treatment treatment = randomTreatmentList[i];
+                output += Environment.NewLine;
 
-                    if (randomTreatmentList[i].AlwaysLast)
+                // Output the patient treatments
+                if (this.patientDatabase.Count() > 0)
+                {
+                    output += "levelDesc.triggers = " + Environment.NewLine;
+                    output += "{" + Environment.NewLine;
+                    foreach (Patient patient in this.patientDatabase)
                     {
-                        randomTreatmentList.RemoveAt(i);
-                        randomTreatmentList.Add(treatment);
+                        output += patient.ToString();
                     }
+
+                    output += "}" + Environment.NewLine;
                 }
-                //Store new TreatmentList in the patient
-                patient.SetTreatments(randomTreatmentList);
+
+                return output;
             }
         }
 
-        public void SetPatientAmount(int NewAmount)
+
+        private string _levelScriptBuffer = string.Empty;
+        public string LevelScriptBuffer
         {
-            int patientCount = PatientCollection.Count;
-
-            if (NewAmount < patientCount)
+            get => this._levelScriptBuffer;
+            set
             {
-                int amountToSubtract = patientCount - NewAmount;
-
-                for (int i = 1; i <= amountToSubtract; i++)
-                {
-                    int index = patientCount - i;
-
-                    PatientCollection.RemoveAt(index);
-                }
-
+                this._levelScriptBuffer = value;
+                this.OnPropertyChanged(this.LevelScriptBuffer);
             }
-            else if (NewAmount > patientCount)
-            {
-                int amountToAdd = NewAmount - patientCount;
-
-                for (int i = 0; i < amountToAdd; i++)
-                {
-                    AddPatient();
-                }
-            }
-
         }
+
+        public void UpdateLevelOutput()
+        {
+            if (this.AllowLevelScriptUpdate)
+            {
+                this.LevelScriptBuffer = this.GetNewLevelScript;
+                this.OnPropertyChanged("LevelScriptBuffer");
+            }
+        }
+
+        #endregion
+
 
         #region Commands
 
         private bool _canExecute;
         private ICommand _randomizeAllWeightCommand;
+        private ICommand _openLevelFromFileCommand;
+        private ICommand _saveLevelToFile;
 
-        public ICommand RandomizeAllWeightCommand
-        {
-            get
-            {
-                return _randomizeAllWeightCommand ?? (_randomizeAllWeightCommand = new CommandHandler(() => RandomizePatientChancesWeight(), _canExecute));
-            }
-        }
+        // ReSharper disable once UnusedMember.Global
+        public ICommand RandomizeAllWeightCommand => this._randomizeAllWeightCommand ?? (this._randomizeAllWeightCommand = new CommandHandler(this.RandomizePatientChancesWeight, this._canExecute));
+
+        // ReSharper disable once UnusedMember.Global
+        public ICommand OpenLevelFromFileCommand => this._openLevelFromFileCommand ?? (this._openLevelFromFileCommand = new CommandHandler(this.OpenLevelFromFile, this._canExecute));
+
+        // ReSharper disable once UnusedMember.Global
+        public ICommand SaveLevelToFileCommand => this._saveLevelToFile ?? (this._saveLevelToFile = new CommandHandler(this.SaveLevelToFile, this._canExecute));
 
         #endregion Commands
 
@@ -1568,601 +948,9 @@ namespace LevelData
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion INotifyPropertyChanged Members
-    }
-
-    public class Patient : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public Level ParentLevel = null;
-        private bool weightEnabled = false;
-
-        private String patientName = String.Empty;
-        private int delay = 1000;
-        private int weight = 0;
-
-        private ObservableCollection<Treatment> _treatmentList = new ObservableCollection<Treatment> { };
-
-        public ObservableCollection<Treatment> TreatmentCollection
-        {
-            get
-            {
-                return _treatmentList;
-            }
-            set
-            {
-
-                _treatmentList = value;
-
-                OnPropertyChanged("TreatmentCollection");
-                if (ParentLevel != null)
-                {
-                    ParentLevel.UpdateLevelOutput();
-                }
-            }
-        }
-
-        public int TreatmentCollectionVisibleCount
-        {
-            get
-            {
-                int count = 0;
-                foreach (Treatment treatment in TreatmentCollection)
-                {
-                    if (treatment.IsVisible == true)
-                    {
-                        count++;
-                    }
-                }
-
-                return count;
-            }
-        }
-
-        public ObservableCollection<String> TreatmentOptions
-        {
-            get
-            {
-                if (ParentLevel != null)
-                {
-                    return ParentLevel.GetTreatmentOptions;
-                }
-                else
-                {
-                    return new ObservableCollection<String> { };
-                }
-            }
-        }
-
-        private Dictionary<String, String> patientTraits;
-
-        public int RoomIndex
-        {
-            get
-            {
-                if (ParentLevel != null)
-                {
-                    return ParentLevel.GetRoomIndex;
-                }
-                else
-                {
-                    return -1;
-                }
-            }
-        }
-
-        public String PatientName
-        {
-            get
-            {
-                return patientName;
-            }
-            set
-            {
-                patientName = value;
-                OnPropertyChanged("PatientName");
-                if (ParentLevel != null)
-                {
-                    ParentLevel.UpdateLevelOutput();
-                }
-            }
-        }
-
-        public int Delay
-        {
-            get
-            {
-                return delay;
-            }
-            set
-            {
-                delay = value;
-                OnPropertyChanged("Delay");
-
-                if (ParentLevel != null)
-                {
-                    ParentLevel.UpdateLevelOutput();
-                }
-            }
-        }
-
-        public int Weight
-        {
-            get
-            {
-                return weight;
-            }
-            set
-            {
-                weight = value;
-                OnPropertyChanged("Weight");
-                if (ParentLevel != null)
-                {
-                    ParentLevel.UpdateLevelOutput();
-                }
-            }
-        }
-
-        public Patient()
-        {
-        }
-
-        public Patient(Level ParentLevel, String patientName = null)
-        {
-            this.ParentLevel = ParentLevel;
-
-            if (patientName != null)
-            {
-                this.patientName = patientName;
-            }
-        }
-
-        public void SetPatientData(String patientData)
-        {
-            ParsePatientData(patientData);
-        }
-
-        public override string ToString()
-        {
-            String output = "";
-            output += "\t{";
-
-            if (delay > -1)
-            {
-                output += " delay = " + delay.ToString() + ",";
-            }
-            if (weightEnabled && weight > -1)
-            {
-                output += " weight = " + weight.ToString() + ",";
-            }
-
-            if (TreatmentCollection != null && TreatmentCollection.Count() > 0)
-            {
-                output += " todo = {";
-                int i = 0;
-                foreach (Treatment treatment in TreatmentCollection)
-                {
-                    if (!treatment.IsEmpty())
-                    {
-                        output += "\"" + treatment.TreatmentName + "\"";
-
-                        //Only add a comma when the element is not last in List
-                        if (i < TreatmentCollection.Count - 1)
-                        {
-                            output += ",";
-                        }
-                        i++;
-                    }
-                }
-                output += "}," + Environment.NewLine;
-            }
-
-            if (patientTraits != null && patientTraits.Count() > 0)
-            {
-                foreach (KeyValuePair<string, string> trait in patientTraits)
-                {
-                    output += trait.Key + " = ";
-                    if (trait.Value == "true")
-                    {
-                        output += trait.Value;
-                    }
-                    else
-                    {
-                        output += "\"" + trait.Value + "\"";
-                    }
-                }
-            }
-
-            return output;
-        }
-
-        private void ParsePatientData(String patientData)
-        {
-            // Clean up the patientData
-            patientData = Regex.Replace(patientData, @"\s+", "");
-
-            patientData = RemoveFirstComma(patientData);
-            //Parse the delay
-            String delayText = "delay=";
-            if (patientData.Contains(delayText))
-            {
-                int startIndex = patientData.IndexOf(delayText) + delayText.Length;
-                int endIndex = patientData.IndexOf(",");
-                if (startIndex > -1 && endIndex > -1)
-                {
-                    String delayString = patientData.Substring(startIndex, endIndex - startIndex);
-                    delayString = Globals.FilterToNumerical(delayString);
-                    if (delayString != String.Empty)
-                    {
-                        delay = Convert.ToInt32(delayString);
-                    }
-                    else
-                    {
-                        Console.WriteLine("ERROR: Level.ParsePatientData, Failed to parse delayString, was none!");
-                    }
-                    patientData = patientData.Remove(startIndex - delayText.Length, endIndex);
-                }
-            }
-            //Parse the weight
-            patientData = RemoveFirstComma(patientData);
-            String weightText = "weight=";
-            if (patientData.Contains(weightText))
-            {
-                int startIndex = patientData.IndexOf(weightText) + weightText.Length;
-                int endIndex = patientData.IndexOf(",");
-                if (startIndex > -1 && endIndex > 0)
-                {
-                    String weightString = patientData.Substring(startIndex, endIndex - startIndex);
-                    weightString = Globals.FilterToNumerical(weightString);
-                    if (weightString != String.Empty)
-                    {
-                        weight = Convert.ToInt32(weightString);
-                    }
-                    else
-                    {
-                        Console.WriteLine("ERROR: Level.ParsePatientData, Failed to parse weightString, was none!");
-                        weight = -1;
-                    }
-                    patientData = patientData.Remove(startIndex - weightText.Length, endIndex);
-                    weightEnabled = true;
-                }
-            }
-            //Parse the treatment list
-            patientData = RemoveFirstComma(patientData);
-            String treatmentText = "todo={";
-            if (patientData.Contains(treatmentText))
-            {
-                int startIndex = patientData.IndexOf(treatmentText) + treatmentText.Length;
-                int endIndex = patientData.IndexOf('}');
-                if (startIndex > -1 && endIndex > -1)
-                {
-                    String rawTreatments = patientData.Substring(startIndex, endIndex - startIndex);
-                    rawTreatments = rawTreatments.Replace("\"", "");
-                    List<String> TreatmentList = rawTreatments.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList<String>();
-                    //Convert found treatments to Treatment Objects
-
-                    for (int i = 0; i < Math.Max(TreatmentList.Count, Globals.GetLevelOverview.MaxTreatmentsVisible); i++)
-                    {
-                        if (i < TreatmentList.Count)
-                        {
-                            AddTreatment(TreatmentList[i]);
-                        }
-                        else
-                        {
-                            AddTreatment();
-
-                        }
-                    }
-
-                    patientData = patientData.Remove(startIndex - treatmentText.Length, endIndex);
-                }
-            }
-            // If there is remaining data then it is probably traits that have been added.
-            patientData = RemoveFirstComma(patientData);
-            if (patientData.Length > 5)
-            {
-                try
-                {
-                    patientTraits = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<String, String>>(patientData);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("ERROR: Level.ParsePatientData, failed to parse patientData: " + patientData);
-                }
-            }
-        }
-
-        private static String RemoveFirstComma(String patientString)
-        {
-            if (patientString.StartsWith(","))
-            {
-                return patientString.Substring(1, patientString.Count() - 1);
-            }
-            else
-            {
-                return patientString;
-            }
-        }
-
-        private void AddTreatment(String treatmentName = "")
-        {
-            Treatment treatment = null;
-            if (treatmentName != "")
-            {
-                treatment = Globals.GetSettings.GetTreatment(treatmentName, RoomIndex);
-            }
-            else
-            {
-                treatment = new Treatment();
-            }
-            treatment.SetPatientParent(this);
-            treatment.IsVisible = true;
-            TreatmentCollection.Add(treatment);
-
-        }
-
-        public void SetMaxTreatments(int Value)
-        {
-            if (Value > 0)
-            {
-                int treatmentCount = TreatmentCollectionVisibleCount;
-
-                if (Value < treatmentCount)
-                {
-                    int amountToSubtract = treatmentCount - Value;
-
-                    for (int i = 1; i <= amountToSubtract; i++)
-                    {
-                        int index = treatmentCount - i;
-
-                        TreatmentCollection.ElementAt(index).IsVisible = false;
-
-                    }
-
-                }
-                else if (Value > treatmentCount)
-                {
-                    int amountToAdd = Value - treatmentCount;
-
-                    for (int i = 0; i < amountToAdd; i++)
-                    {
-                        int index = treatmentCount + i;
-                        if (index < TreatmentCollection.Count)
-                        {
-                            TreatmentCollection.ElementAt(index).IsVisible = true;
-                        }
-                        else
-                        {
-                            AddTreatment();
-                        }
-                    }
-                }
-
-            }
-        }
-
-
-        public void SetTreatments(List<Treatment> TreatmentList)
-        {
-            //Make sure the maxAmount of visible treatments in visible
-            SetMaxTreatments(Math.Max(TreatmentList.Count, TreatmentCollection.Count));
-
-
-            for (int i = 0; i < TreatmentCollection.Count; i++)
-            {
-                Treatment treatment = TreatmentCollection.ElementAt<Treatment>(i);
-
-                if (i < TreatmentList.Count)
-                {
-                    treatment.TreatmentName = TreatmentList[i].TreatmentName;
-                }
-                else
-                {
-                    treatment.TreatmentName = String.Empty;
-                }
-
-                treatment.SetPatientParent(this);
-            }
-
-        }
-
-        #region Events
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        #endregion Events
-    }
-
-    public class PatientChance : INotifyPropertyChanged, IEquatable<PatientChance>
-    {
-        public Level ParentLevel = null;
-        private String _patientName = String.Empty;
-
-        public String PatientName
-        {
-            get
-            {
-                return _patientName;
-            }
-            set
-            {
-                _patientName = value;
-                OnPropertyChanged("PatientName");
-            }
-        }
-
-        private int _weight = 0;
-
-        public int Weight
-        {
-            get
-            {
-                return _weight;
-            }
-            set
-            {
-                _weight = value;
-                OnPropertyChanged("Weight");
-                if (ParentLevel != null)
-                {
-                    ParentLevel.UpdatePatientChancePercentage();
-                }
-            }
-        }
-
-        private double _percentage = 0;
-
-        public double Percentage
-        {
-            get
-            {
-                return _percentage;
-            }
-            set
-            {
-                _percentage = value;
-                OnPropertyChanged("Percentage");
-                OnPropertyChanged("PercentageString");
-            }
-        }
-
-        private bool _isSelected = true;
-
-        public bool IsSelected
-        {
-            get
-            {
-                return _isSelected;
-            }
-            set
-            {
-                _isSelected = value;
-                OnPropertyChanged("IsSelected");
-            }
-        }
-
-
-
-        public String PercentageString
-        {
-            get
-            {
-                return Percentage.ToString("N1") + "%";
-            }
-        }
-
-        public PatientChance(String PatientName, int Weight = 0)
-        {
-            this.PatientName = PatientName;
-            this.Weight = Weight;
-            _canExecute = true;
-        }
-
-        public override string ToString()
-        {
-            return PatientName + " = " + Weight.ToString();
-        }
-
-        public void UpdatePercentage()
-        {
-            if (ParentLevel != null)
-            {
-                Percentage = ParentLevel.GetPatientChancePercentage(Weight);
-            }
-        }
-
-        public void RandomizeWeight(int randomValue = 0)
-        {
-            if (randomValue == 0)
-            {
-                Random rnd = new Random();
-                Weight = rnd.Next(1, 100);
-            }
-            else
-            {
-                Weight = randomValue;
-            }
-        }
-
-        #region Commands
-
-        private bool _canExecute;
-        private ICommand _randomizeWeightCommand;
-
-        public ICommand RandomizeWeightCommand
-        {
-            get
-            {
-                return _randomizeWeightCommand ?? (_randomizeWeightCommand = new CommandHandler(() => RandomizeWeight(), _canExecute));
-            }
-        }
-
-        #endregion Commands
-
-        #region Operators
-
-        public bool Equals(PatientChance other)
-        {
-            return this.PatientName == other.PatientName;
-        }
-
-        public override int GetHashCode()
-        {
-            return -140387131 + EqualityComparer<string>.Default.GetHashCode(PatientName);
-        }
-
-        public static bool operator ==(PatientChance patientChance1, PatientChance patientChance2)
-        {
-            return patientChance1.PatientName == patientChance2.PatientName;
-        }
-
-        public static bool operator !=(PatientChance patientChance1, PatientChance patientChance2)
-        {
-            return !(patientChance1 == patientChance2);
-        }
-
-        #endregion Operators
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        #endregion INotifyPropertyChanged Members
-    }
-
-    public class CommandHandler : ICommand
-    {
-        private Action _action;
-        private bool _canExecute;
-
-        public CommandHandler(Action action, bool canExecute)
-        {
-            _action = action;
-            _canExecute = canExecute;
-        }
-
-        public bool CanExecute(object parameter)
-        {
-            return _canExecute;
-        }
-
-        public event EventHandler CanExecuteChanged;
-
-        public void Execute(object parameter)
-        {
-            _action();
-        }
     }
 }

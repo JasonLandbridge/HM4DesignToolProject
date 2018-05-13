@@ -194,17 +194,18 @@
 				</GroupBox>
 
 				<!--Level Controls-->
-				<Grid Grid.Row="2">
+				<Grid x:Name="levelControls" Grid.Row="2" IsEnabled="{Binding Path=LevelOverviewActive}">
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto"/>
 						<ColumnDefinition/>
-						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
 					</Grid.ColumnDefinitions>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
-					<Button Grid.Column="0" Grid.Row="0" Content="Reload" Margin="5" Width="70" />
-					<Button Grid.Column="2" Grid.Row="0" Content="Save" Margin="5" Width="70" />
+					<Button x:Name="reloadLevel" Grid.Column="0" Grid.Row="0" Content="Reload" Margin="5" Width="50" />
+					<Button x:Name="buttonOpenLevelScript" Grid.Column="1" Grid.Row="0" Content="Open" Margin="5" Width="50" Command="{Binding GetLevelLoaded.OpenLevelFromFileCommand}"/>
+					<Button x:Name="buttonSaveLevelScript" Grid.Column="2" Grid.Row="0" Content="Save" Margin="5" Width="50" Command="{Binding GetLevelLoaded.SaveLevelToFileCommand}" />
 
 				</Grid>
 
@@ -595,7 +596,7 @@
 
 					<TextBox x:Name="currentPreviewTextBox" Text="{Binding Path=GetLevelLoaded.GetCurrentLevelScript, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=''}" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" />
 					<GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Width="5" Grid.RowSpan="2"/>
-					<TextBox x:Name="afterPreviewTextBox" Text="{Binding Path=GetLevelLoaded.GetNewLevelScript, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=''}" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" TextWrapping="Wrap"/>
+					<TextBox x:Name="afterPreviewTextBox" Text="{Binding Path=GetLevelLoaded.LevelScriptBuffer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=''}" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" TextWrapping="Wrap"/>
 
 				</Grid>
 			</Grid>

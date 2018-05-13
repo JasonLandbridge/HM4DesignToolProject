@@ -58,6 +58,7 @@ namespace HM4DesignTool
 
             this.DataContext = this;
             this.levelDataLayout.DataContext = Globals.GetLevelOverview;
+            this.levelControls.DataContext = Globals.GetLevelOverview;
             levelTypeDropDown.ItemsSource = GetLevelTypes;
             OnPropertyChanged("PatientRowDataTemplate");
             //patientOverviewLayout.ItemTemplate = PatientRowDataTemplate;
@@ -281,6 +282,11 @@ namespace HM4DesignTool
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void buttonSaveLevelScript_Click(object sender, RoutedEventArgs e)
         {
 
         }
