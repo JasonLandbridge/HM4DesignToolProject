@@ -288,7 +288,7 @@
 										</Grid.ColumnDefinitions>
 										<Label MinWidth="100" Grid.Column="0" Grid.Row="0" Content="HM4 Design Tool Data: " />
 										<CheckBox Grid.Column="1" Grid.Row="0" Content="Insert Data" VerticalContentAlignment="Center"/>
-										<TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Text="{Binding GetLevelLoaded.GetDesignToolData, Mode=OneWay}"/>
+										<TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Text="{Binding GetLevelLoaded.DesignToolDataString, Mode=OneWay}"/>
 									</Grid>
 								</Grid>
 							</GroupBox>
@@ -542,7 +542,7 @@
 							</Grid>
 							<!-- Patient Chance Overview -->
 							<ScrollViewer HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" >
-								<ItemsControl x:Name="patientChanceOverviewLayout" ItemTemplate="{DynamicResource PatientChancesRowTemplate}"  ItemsSource="{Binding GetLevelLoaded.PatientChanceCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+								<ItemsControl x:Name="patientChanceOverviewLayout" ItemTemplate="{DynamicResource PatientChancesRowTemplate}"  ItemsSource="{Binding GetLevelLoaded.PatientChanceCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, diag:PresentationTraceSources.TraceLevel=High}" />
 							</ScrollViewer>
 							<!-- Patient Chance Overview Footer -->
 							<Grid Grid.Row="2">
@@ -591,7 +591,7 @@
 							<ColumnDefinition Width="Auto"/>
 						</Grid.ColumnDefinitions>
 						<Label x:Name="afterPreviewLabel" Grid.Column="0" Grid.Row="0" Content="After Preview"/>
-						<CheckBox x:Name="autoUpdateCheckbox" Grid.Column="1" Grid.Row="0" IsChecked="{Binding GetLevelLoaded.AllowLevelScriptUpdate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}" Content="Auto Update" Margin="0,0,10,0" VerticalAlignment="Center" />
+						<CheckBox x:Name="autoUpdateCheckbox" Grid.Column="1" Grid.Row="0" IsChecked="{Binding AllowLevelScriptUpdate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}" Content="Auto Update" Margin="0,0,10,0" VerticalAlignment="Center" />
 					</Grid>
 
 					<TextBox x:Name="currentPreviewTextBox" Text="{Binding Path=GetLevelLoaded.GetCurrentLevelScript, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=''}" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" />

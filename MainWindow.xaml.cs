@@ -59,6 +59,8 @@ namespace HM4DesignTool
             this.DataContext = this;
             this.levelDataLayout.DataContext = Globals.GetLevelOverview;
             this.levelControls.DataContext = Globals.GetLevelOverview;
+            this.autoUpdateCheckbox.DataContext = Globals.GetLevelOverview;
+
             levelTypeDropDown.ItemsSource = GetLevelTypes;
             OnPropertyChanged("PatientRowDataTemplate");
             //patientOverviewLayout.ItemTemplate = PatientRowDataTemplate;

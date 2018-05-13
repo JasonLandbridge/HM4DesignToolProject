@@ -7,7 +7,10 @@ using LevelData;
 using System.Windows.Media;
 
 namespace SettingsNamespace
-{   //Storing settings in JSON: https://github.com/Nucs/JsonSettings
+{
+    using HM4DesignTool.Level;
+
+    //Storing settings in JSON: https://github.com/Nucs/JsonSettings
     public class Settings
     {
 
@@ -192,9 +195,13 @@ namespace SettingsNamespace
 
             List<PatientChance> patientChanceList = new List<PatientChance> { };
 
-            foreach (String patientType in patientTypeList)
+            if (patientChanceList.Count > 0)
             {
-                patientChanceList.Add(new PatientChance(patientType));
+                foreach (String patientType in patientTypeList)
+                {
+                    patientChanceList.Add(new PatientChance(patientType));
+                }
+
             }
 
             return patientChanceList;

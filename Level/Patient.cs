@@ -14,6 +14,8 @@ using System.Windows.Data;
 
 namespace LevelData
 {
+    using HM4DesignTool.Level;
+
     public class Patient : INotifyPropertyChanged
     {
         public Level ParentLevel = null;
@@ -45,6 +47,7 @@ namespace LevelData
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         public int Delay
         {
             get
@@ -137,7 +140,7 @@ namespace LevelData
             {
                 if (ParentLevel != null)
                 {
-                    return ParentLevel.GetTreatmentOptions;
+                    return new ObservableCollection<String>(ParentLevel.AvailableTreatmentStringList);
                 }
                 else
                 {
@@ -145,6 +148,7 @@ namespace LevelData
                 }
             }
         }
+
         public int Weight
         {
             get
@@ -161,6 +165,25 @@ namespace LevelData
                 }
             }
         }
+
+        public int GetTreatmentCount
+        {
+            get
+            {
+                int count = 0;
+                foreach (Treatment treatment in TreatmentCollection)
+                {
+                    if (!treatment.IsEmpty)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+
+            }
+        }
+
         public void SetMaxTreatments(int Value)
         {
             if (Value > 0)
@@ -250,7 +273,7 @@ namespace LevelData
                 int i = 0;
                 foreach (Treatment treatment in TreatmentCollection)
                 {
-                    if (!treatment.IsEmpty())
+                    if (!treatment.IsEmpty)
                     {
                         output += "\"" + treatment.TreatmentName + "\"";
 
@@ -404,7 +427,7 @@ namespace LevelData
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine($"ERROR: Level.ParsePatientData, failed to parse patientData: {patientData}" );
+                    Console.WriteLine($"ERROR: Level.ParsePatientData, failed to parse patientData: {patientData}");
                 }
             }
         }

@@ -14,11 +14,24 @@ using System.Windows.Data;
 
 namespace LevelData
 {
+    using HM4DesignTool.Level;
+
     public class LevelOverview : INotifyPropertyChanged
     {
         private Dictionary<string, Level> levelObjectData = new Dictionary<string, Level>();
         private Level _currentLevelLoaded = null;
 
+        private bool _allowLevelScriptUpdate = true;
+
+        public bool AllowLevelScriptUpdate
+        {
+            get => this._allowLevelScriptUpdate;
+            set
+            {
+                this._allowLevelScriptUpdate = value;
+                this.GetLevelLoaded.UpdateLevelOutput();
+            }
+        }
         public Level GetLevelLoaded
         {
             get
@@ -525,28 +538,29 @@ namespace LevelData
         {
             if (GetLevelLoaded != null)
             {
-                Random rnd = new Random();
-
                 if (GeneratePatientTypeCheck)
                 {
-
                     foreach (PatientChance patientChance in GetLevelLoaded.PatientChanceCollection)
                     {
-                        patientChance.RandomizeWeight(rnd.Next(1, 100));
+                        patientChance.RandomizeWeight(Globals.GetRandom.Next(1, 100));
                     }
-
                 }
 
 
                 if (GeneratePatientsCheck)
                 {
-                    int patientAmount = rnd.Next(GeneratePatientsMin, GeneratePatientsMax);
+                    int patientAmount = Globals.GetRandom.Next(Math.Min(GeneratePatientsMin, GeneratePatientsMax), GeneratePatientsMax);
                     GetLevelLoaded.SetPatientAmount(patientAmount);
                 }
 
                 if (GenerateTreatmentsCheck)
                 {
-                    GetLevelLoaded.RandomizeTreatments(GenerateTreatmentsMin, GenerateTreatmentsMax);
+                    GetLevelLoaded.RandomizeTreatments(Math.Min(GenerateTreatmentsMin, GenerateTreatmentsMax), GenerateTreatmentsMax);
+                }
+
+                if (GeneratePatientDelayCheck)
+                {
+                    GetLevelLoaded.RandomizeDelay();
                 }
 
                 GetLevelLoaded.UpdateLevelOutput();
@@ -590,7 +604,7 @@ namespace LevelData
                 DataGridComboBoxColumn treatmentColumn = new DataGridComboBoxColumn();
                 treatmentColumn.Header = ColumnName;
                 treatmentColumn.SelectedValueBinding = new Binding(treatmentDataTable.Columns[i + 1].ToString());
-                treatmentColumn.ItemsSource = GetLevelLoaded.GetTreatmentOptions;
+                treatmentColumn.ItemsSource = GetLevelLoaded.AvailableTreatmentList;
                 treatmentColumn.Width = 120;
                 SimulatorGrid.Columns.Add(treatmentColumn);
 

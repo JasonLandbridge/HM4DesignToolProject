@@ -11,6 +11,7 @@ using HM4DesignTool;
 
 namespace DataNameSpace
 {
+    using HM4DesignTool.Level;
 
     public enum LevelTypeEnum
     {
@@ -31,6 +32,7 @@ namespace DataNameSpace
         private static LevelOverview LevelOverviewObject;
         private static GameValues GameValueObject = new GameValues();
         private static MainWindow MainWindowObject;
+        private static Random random;
 
         public static Settings GetSettings
         {
@@ -88,6 +90,20 @@ namespace DataNameSpace
             {
                 MainWindowObject = value;
             }
+        }
+
+        public static Random GetRandom
+        {
+            get
+            {
+                if (random == null)
+                {
+                    random = new Random();
+                }
+
+                return random;
+            }
+
         }
 
         public static List<String> roomCategories = new List<String> { "Room 1", "Room 2", "Room 3", "Room 4", "Room 5", "Room 6" };
@@ -685,10 +701,7 @@ namespace DataNameSpace
             return String.Join(",", ToList(includeTreatmentName));
         }
 
-        public bool IsEmpty()
-        {
-            return TreatmentName == null || TreatmentName == "" || TreatmentName == String.Empty;
-        }
+        public bool IsEmpty => TreatmentName == null || TreatmentName == "" || TreatmentName == String.Empty;
 
         public void SetPatientParent(Patient ParentPatient)
         {

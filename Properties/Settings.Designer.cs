@@ -22,16 +22,5 @@ namespace HM4DesignTool.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::SettingsNamespace.Settings SettingsObject {
-            get {
-                return ((global::SettingsNamespace.Settings)(this["SettingsObject"]));
-            }
-            set {
-                this["SettingsObject"] = value;
-            }
-        }
     }
 }
