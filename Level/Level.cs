@@ -18,7 +18,6 @@ namespace HM4DesignTool.Level
     using System.Globalization;
     using System.IO;
     using System.Linq;
-    using System.Runtime.CompilerServices;
     using System.Windows.Input;
 
     using DataNameSpace;
@@ -829,7 +828,7 @@ namespace HM4DesignTool.Level
                     {
                         Patient patient = this.patientList[patientIndex];
                         int delayModifier = Globals.GetRandom.Next(patientDelayMin, patientDelayMax);
-                        int patientTreatmentCount = 0;
+                        int patientTreatmentCount;
 
                         if (patientIndex == 0)
                         {
@@ -846,7 +845,6 @@ namespace HM4DesignTool.Level
                             // Take the patientTreatmentCount from two patients ago. 
                             patientTreatmentCount = this.patientList[patientIndex - 2].GetTreatmentCount;
                         }
-
 
                         if (patientTreatmentCount > -1)
                         {
@@ -866,12 +864,10 @@ namespace HM4DesignTool.Level
                         {
                             patient.Delay = -1;
                         }
-
                     }
                 }
 
                 this.UpdateLevelOutput();
-
             }
         }
 
@@ -998,33 +994,33 @@ namespace HM4DesignTool.Level
 
             rawLevelText = this.ParsePatientChances(rawLevelText);
 
-            rawLevelText = this.ParsePatientTriggers(rawLevelText);
+           this.ParsePatientTriggers(rawLevelText);
 
             // Isolate any previous comments at the start of the text
-            //if (rawLevelText.Contains(startDesignToolData))
-            //{
+            // if (rawLevelText.Contains(startDesignToolData))
+            // {
             //    int startDesignToolDataIndex = rawLevelText.IndexOf(startPatientChancesText, StringComparison.Ordinal);
             //    if (startDesignToolDataIndex > 0)
             //    {
             //        this.StartComments = rawLevelText.Substring(0, startDesignToolDataIndex);
             //    }
-            //}
-            //else if (rawLevelText.Contains(startDesignToolData))
-            //{
+            // }
+            // else if (rawLevelText.Contains(startDesignToolData))
+            // {
             //    int startPatientChancesIndex = rawLevelText.IndexOf(startPatientChancesText, StringComparison.Ordinal);
             //    if (startPatientChancesIndex > 0)
             //    {
             //        this.StartComments = rawLevelText.Substring(0, startPatientChancesIndex);
             //    }
-            //}
-            //else if (rawLevelText.Contains(startPatientTriggerText))
-            //{
+            // }
+            // else if (rawLevelText.Contains(startPatientTriggerText))
+            // {
             //    int startPatientTriggerIndex = rawLevelText.IndexOf(startPatientTriggerText, StringComparison.Ordinal);
             //    if (startPatientTriggerIndex > 0)
             //    {
             //        this.StartComments = rawLevelText.Substring(0, startPatientTriggerIndex);
             //    }
-            //}
+            // }
         }
 
         /// <summary>
@@ -1043,8 +1039,6 @@ namespace HM4DesignTool.Level
             const string EndPatientChancesText = "}";
             if (rawLevelText.Contains(StartPatientChancesText) && rawLevelText.Contains(EndPatientChancesText))
             {
-
-
                 int startPatientChancesIndex = rawLevelText.IndexOf(StartPatientChancesText, StringComparison.Ordinal);
                 int endPatientChancesIndex = rawLevelText.IndexOf(EndPatientChancesText, StringComparison.Ordinal) + EndPatientChancesText.Length;
 
@@ -1183,7 +1177,7 @@ namespace HM4DesignTool.Level
         /// <param name="propertyName">
         /// The property Name.
         /// </param>
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

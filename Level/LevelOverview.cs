@@ -9,9 +9,6 @@
 //--------------------------------------------------------------------------------------------------------------------
 namespace HM4DesignTool.Level
 {
-    using DataNameSpace;
-    using LevelData;
-    using NaturalSort.Extension;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -23,36 +20,117 @@ namespace HM4DesignTool.Level
     using System.Windows.Controls;
     using System.Windows.Data;
 
+    using DataNameSpace;
+
+    using LevelData;
+
+    using NaturalSort.Extension;
+
+    /// <inheritdoc />
+    /// <summary>
+    /// The Level Overview is used provide all the level data to the Front-End and manage all Level objects.
+    /// </summary>
     public class LevelOverview : INotifyPropertyChanged
     {
         #region Fields
 
-        private bool _allowLevelScriptUpdate = true;
-        private Level _currentLevelLoaded = null;
-        private int _maxTreatmentsVisible = 5;
-        private bool _showAvailableTreatmentsCheck = false;
-        private List<String> levelList = new List<String> { };
+        /// <summary>
+        /// The allow level script to update field.
+        /// </summary>
+        private bool allowLevelScriptUpdate = true;
+
+        /// <summary>
+        /// The current level loaded field.
+        /// </summary>
+        private Level currentLevelLoaded;
+
+        /// <summary>
+        /// The max treatments visible in the Patient Overview.
+        /// </summary>
+        private int maxTreatmentsVisible = 5;
+
+        /// <summary>
+        /// The show available treatments check in the Patient Overview.
+        /// </summary>
+        private bool showAvailableTreatmentsCheck;
+
+        /// <summary>
+        /// List of the currently loaded levels field.
+        /// </summary>
+        private List<string> levelList = new List<string>();
+
+        /// <summary>
+        /// The level object data.
+        /// </summary>
         private Dictionary<string, Level> levelObjectData = new Dictionary<string, Level>();
 
         #region LevelGeneratingFields
-        private bool _useRandomRecommendations = true;
-        private bool _generatePatientTypeCheck = true;
-        private int _generatePatientTypeMax = 0;
-        private int _generatePatientTypeMin = 0;
-        private bool _generatePatientsCheck = true;
-        private int _generatePatientsMax = 0;
-        private int _generatePatientsMin = 0;
-        private bool _generatePatientDelayCheck = true;
-        private int _generatePatientDelayMax = 1000;
-        private int _generatePatientDelayMin = -1000;
-        private bool _generateTreatmentsCheck = true;
-        private int _generateTreatmentsMax = 0;
-        private int _generateTreatmentsMin = 0;
 
+        /// <summary>
+        /// The use random recommendations field.
+        /// </summary>
+        private bool useRandomRecommendations = true;
 
+        /// <summary>
+        /// Generate the PatientChances field.
+        /// </summary>
+        private bool generatePatientTypeCheck = true;
+
+        /// <summary>
+        /// Generate the PatientChances max value field.
+        /// </summary>
+        private int generatePatientTypeMax;
+
+        /// <summary>
+        /// Generate the PatientChances min value field.
+        /// </summary>
+        private int generatePatientTypeMin;
+
+        /// <summary>
+        /// Generate the amount of patients check field.
+        /// </summary>
+        private bool generatePatientsCheck = true;
+
+        /// <summary>
+        /// Generate the amount of patients max value field.
+        /// </summary>
+        private int generatePatientsMax = 1;
+
+        /// <summary>
+        /// Generate the amount of patients min value field.
+        /// </summary>
+        private int generatePatientsMin = 1;
+
+        /// <summary>
+        /// Generate the delay of each patient field.
+        /// </summary>
+        private bool generatePatientDelayCheck = true;
+
+        /// <summary>
+        /// Generate patient delay min value field.
+        /// </summary>
+        private int generatePatientDelayMax = 1000;
+
+        /// <summary>
+        /// Generate patient delay max value field.
+        /// </summary>
+        private int generatePatientDelayMin = -1000;
+
+        /// <summary>
+        /// Generate the treatments for each patients check field.
+        /// </summary>
+        private bool generateTreatmentsCheck = true;
+
+        /// <summary>
+        /// Generate the treatments for each patients check max value field.
+        /// </summary>
+        private int generateTreatmentsMax = 1;
+
+        /// <summary>
+        /// Generate the treatments for each patients check min value field.
+        /// </summary>
+        private int generateTreatmentsMin = 1;
         #endregion
-
-
 
         #endregion
 
@@ -64,48 +142,50 @@ namespace HM4DesignTool.Level
 
         #endregion
 
+        #region Events
+
+        /// <inheritdoc />
+        /// <summary>
+        /// This is used to notify the bound XAML Control to update its value.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        #endregion 
+
         #region Properties
 
         #region Public
 
+        /// <summary>
+        /// Gets or sets a value indicating whether to allow  the level script to update.
+        /// </summary>
         public bool AllowLevelScriptUpdate
         {
-            get => this._allowLevelScriptUpdate;
+            get => this.allowLevelScriptUpdate;
             set
             {
-                this._allowLevelScriptUpdate = value;
-                this.GetLevelLoaded.UpdateLevelOutput();
+                this.allowLevelScriptUpdate = value;
+                this.GetLevelLoaded?.UpdateLevelOutput();
             }
         }
 
-        public ObservableCollection<String> DifficultyModifierList
-        {
-            get
-            {
-                if (this.GetLevelLoaded != null)
-                {
-                    String categoryKey = Globals.GetCategoryKey(this.GetLevelLoaded.GetRoomIndex);
-                    if (categoryKey != String.Empty)
-                    {
-                        return new ObservableCollection<String>(Globals.GetSettings.GetDifficultyModifierList(categoryKey));
-                    }
-                }
-                return new ObservableCollection<String> { };
-            }
-        }
+        /// <summary>
+        /// Gets a value indicating whether the level overview is active.
+        /// </summary>
+        public bool LevelOverviewActive => this.GetLevelLoaded != null;
 
+        /// <summary>
+        /// Gets or sets the current loaded level.
+        /// </summary>
         public Level GetLevelLoaded
         {
-            get
-            {
-                return this._currentLevelLoaded;
-            }
+            get => this.currentLevelLoaded;
             set
             {
-                if (value != this._currentLevelLoaded)
+                if (value != this.currentLevelLoaded)
                 {
-                    this._currentLevelLoaded = value;
-                    this.OnPropertyChanged("GetLevelLoaded");
+                    this.currentLevelLoaded = value;
+                    this.OnPropertyChanged();
                     this.OnPropertyChanged("LevelOverviewActive");
                     this.OnPropertyChanged("DifficultyModifierList");
                     this.UpdateRandomRecommendations();
@@ -114,335 +194,321 @@ namespace HM4DesignTool.Level
             }
         }
 
-        public bool LevelOverviewActive
+        /// <summary>
+        /// Gets or sets the max treatments visible in the PatientOverview
+        /// </summary>
+        public int MaxTreatmentsVisible
+        {
+            get => this.maxTreatmentsVisible;
+
+            set
+            {
+                this.maxTreatmentsVisible = value;
+                this.OnPropertyChanged();
+                this.GetLevelLoaded.UpdateMaxTreatments(value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to show available treatments in the General tab
+        /// </summary>
+        public bool ShowAvailableTreatmentsCheck
+        {
+            get => this.showAvailableTreatmentsCheck;
+
+            set
+            {
+                this.showAvailableTreatmentsCheck = value;
+                this.OnPropertyChanged();
+                this.OnPropertyChanged("GetTreatmentsAvailableString");
+            }
+        }
+
+        #region ItemCollections
+
+        /// <summary>
+        /// Gets the difficulty modifier list for the currently loaded level.
+        /// </summary>
+        public ObservableCollection<string> DifficultyModifierList
         {
             get
             {
                 if (this.GetLevelLoaded != null)
                 {
-                    return true;
+                    string categoryKey = Globals.GetCategoryKey(this.GetLevelLoaded.GetRoomIndex);
+                    if (categoryKey != string.Empty)
+                    {
+                        return new ObservableCollection<string>(Globals.GetSettings.GetDifficultyModifierList(categoryKey));
+                    }
                 }
-                else
-                {
-                    return false;
-                }
+
+                return new ObservableCollection<string>();
             }
         }
-
-        public int MaxTreatmentsVisible
-        {
-            get
-            {
-                return this._maxTreatmentsVisible;
-            }
-            set
-            {
-                this._maxTreatmentsVisible = value;
-                this.OnPropertyChanged("MaxTreatmentsVisible");
-                this.GetLevelLoaded.UpdateMaxTreatments(value);
-            }
-        }
-
-        public bool ShowAvailableTreatmentsCheck
-        {
-            get
-            {
-                return this._showAvailableTreatmentsCheck;
-            }
-            set
-            {
-                this._showAvailableTreatmentsCheck = value;
-                this.OnPropertyChanged("ShowAvailableTreatmentsCheck");
-                this.OnPropertyChanged("GetTreatmentsAvailableString");
-            }
-        }
-
-        #endregion
 
         #endregion
 
         #region LevelGeneratingFields
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use random recommendations.
+        /// </summary>
         public bool UseRandomRecommendations
         {
-            get
-            {
-                return this._useRandomRecommendations;
-            }
+            get => this.useRandomRecommendations;
+
             set
             {
-                this._useRandomRecommendations = value;
-                this.OnPropertyChanged("UseRandomRecommendations");
+                this.useRandomRecommendations = value;
+                this.OnPropertyChanged();
                 this.UpdateRandomRecommendations();
             }
         }
 
-        #region PatientType
-        public bool GeneratePatientTypeCheck
-        {
-            get
-            {
-                return this._generatePatientTypeCheck;
-            }
-            set
-            {
-                this._generatePatientTypeCheck = value;
-                this.OnPropertyChanged("GeneratePatientTypeCheck");
-            }
-        }
-
-        public int GeneratePatientTypeMax
-        {
-            get
-            {
-                return this._generatePatientTypeMax;
-            }
-            set
-            {
-                this._generatePatientTypeMax = value;
-                this.OnPropertyChanged("GeneratePatientTypeMax");
-            }
-        }
-
-        public int GeneratePatientTypeMin
-        {
-            get
-            {
-                return this._generatePatientTypeMin;
-            }
-            set
-            {
-                this._generatePatientTypeMin = value;
-                this.OnPropertyChanged("GeneratePatientTypeMin");
-            }
-        }
-
-        #endregion
-
         #region Patients
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to generate patients check.
+        /// </summary>
         public bool GeneratePatientsCheck
         {
-            get
-            {
-                return this._generatePatientsCheck;
-            }
+            get => this.generatePatientsCheck;
+
             set
             {
-                this._generatePatientsCheck = value;
-                this.OnPropertyChanged("GeneratePatientsCheck");
+                this.generatePatientsCheck = value;
+                this.OnPropertyChanged();
             }
         }
 
-        public int GeneratePatientsMax
-        {
-            get
-            {
-                return this._generatePatientsMax;
-            }
-            set
-            {
-                this._generatePatientsMax = value;
-                this.OnPropertyChanged("GeneratePatientsMax");
-            }
-        }
-
+        /// <summary>
+        /// Gets or sets the min value to generate patients.
+        /// </summary>
         public int GeneratePatientsMin
         {
-            get
-            {
-                return this._generatePatientsMin;
-            }
+            get => this.generatePatientsMin;
+
             set
             {
-                this._generatePatientsMin = value;
-                this.OnPropertyChanged("GeneratePatientsMin");
+                this.generatePatientsMin = value;
+                this.OnPropertyChanged();
             }
         }
 
+        /// <summary>
+        /// Gets or sets the max value to generate patients.
+        /// </summary>
+        public int GeneratePatientsMax
+        {
+            get => this.generatePatientsMax;
+
+            set
+            {
+                this.generatePatientsMax = value;
+                this.OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region PatientType
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to generate the patient types check.
+        /// </summary>
+        public bool GeneratePatientTypeCheck
+        {
+            get => this.generatePatientTypeCheck;
+
+            set
+            {
+                this.generatePatientTypeCheck = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the min value to generate patients.
+        /// </summary>
+        public int GeneratePatientTypeMin
+        {
+            get => this.generatePatientTypeMin;
+
+            set
+            {
+                this.generatePatientTypeMin = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the max value to generate patients types.
+        /// </summary>
+        public int GeneratePatientTypeMax
+        {
+            get => this.generatePatientTypeMax;
+
+            set
+            {
+                this.generatePatientTypeMax = value;
+                this.OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region PatientDelay
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to generate the patient delay check.
+        /// </summary>
         public bool GeneratePatientDelayCheck
         {
-            get
-            {
-                return this._generatePatientDelayCheck;
-            }
+            get => this.generatePatientDelayCheck;
+
             set
             {
-                this._generatePatientDelayCheck = value;
-                this.OnPropertyChanged("GeneratePatientDelayCheck");
+                this.generatePatientDelayCheck = value;
+                this.OnPropertyChanged();
             }
         }
 
-        public int GeneratePatientDelayMax
-        {
-            get
-            {
-                return this._generatePatientDelayMax;
-            }
-            set
-            {
-                this._generatePatientDelayMax = value;
-                this.OnPropertyChanged("GeneratePatientDelayMax");
-            }
-        }
-
+        /// <summary>
+        /// Gets or sets the generate patient delay min modifier.
+        /// </summary>
         public int GeneratePatientDelayMin
         {
-            get
-            {
-                return this._generatePatientDelayMin;
-            }
+            get => this.generatePatientDelayMin;
+
             set
             {
-                this._generatePatientDelayMin = value;
-                this.OnPropertyChanged("GeneratePatientDelayMin");
+                this.generatePatientDelayMin = value;
+                this.OnPropertyChanged();
             }
         }
 
+        /// <summary>
+        /// Gets or sets the generate patient delay max modifier.
+        /// </summary>
+        public int GeneratePatientDelayMax
+        {
+            get => this.generatePatientDelayMax;
+
+            set
+            {
+                this.generatePatientDelayMax = value;
+                this.OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region Treatment
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to generate treatments check.
+        /// </summary>
         public bool GenerateTreatmentsCheck
         {
-            get
-            {
-                return this._generateTreatmentsCheck;
-            }
+            get => this.generateTreatmentsCheck;
+
             set
             {
-                this._generateTreatmentsCheck = value;
-                this.OnPropertyChanged("GenerateTreatmentsCheck");
+                this.generateTreatmentsCheck = value;
+                this.OnPropertyChanged();
             }
         }
 
-        public int GenerateTreatmentsMax
-        {
-            get
-            {
-                return this._generateTreatmentsMax;
-            }
-            set
-            {
-                this._generateTreatmentsMax = value;
-                this.OnPropertyChanged("GenerateTreatmentsMax");
-            }
-        }
-
+        /// <summary>
+        /// Gets or sets the generate treatments min value.
+        /// </summary>
         public int GenerateTreatmentsMin
         {
-            get
-            {
-                return this._generateTreatmentsMin;
-            }
+            get => this.generateTreatmentsMin;
+
             set
             {
-                this._generateTreatmentsMin = value;
-                this.OnPropertyChanged("GenerateTreatmentsMin");
+                this.generateTreatmentsMin = value;
+                this.OnPropertyChanged();
             }
         }
+
+        /// <summary>
+        /// Gets or sets the generate treatments max value.
+        /// </summary>
+        public int GenerateTreatmentsMax
+        {
+            get => this.generateTreatmentsMax;
+
+            set
+            {
+                this.generateTreatmentsMax = value;
+                this.OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #endregion
 
         #endregion
 
         #endregion
 
-        #region LevelManagement
+        #region Methods
 
-        public void AddPatientToLoadedLevel()
+        #region Public
+        #region Static
+        /// <summary>
+        /// Read the levelscript from file.
+        /// </summary>
+        /// <param name="levelName">
+        /// The level name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        public static string ReadLevelTextFromFile(string levelName)
         {
-            if (this.GetLevelLoaded != null)
+            levelName = CleanLevelName(levelName);
+            if (!levelName.EndsWith(".lua"))
             {
-                this.GetLevelLoaded.AddPatient();
+                levelName += ".lua";
             }
-        }
 
-        public Dictionary<String, List<String>> GetCategorizedFilteredLevels(int roomIndex = 0, bool storyLevels = false, bool bonusLevels = false, bool unknownLevels = false)
-        {
-            Dictionary<String, List<String>> CategorizedFilterdLevels = new Dictionary<String, List<String>> { };
-            List<String> FilteredLevelList = this.GetFilteredLevels(roomIndex, storyLevels, bonusLevels, unknownLevels);
+            string levelPath = Globals.GetSettings.projectPathLevel + levelName;
 
-            if (roomIndex == 0)
+            if (File.Exists(levelPath))
             {
-                if (storyLevels)
+                using (StreamReader streamReader = new StreamReader(levelPath, Encoding.UTF8))
                 {
-                    CategorizedFilterdLevels.Add("Story", this.GetFilteredLevels(0, true, false, false));
-                }
-
-                if (bonusLevels)
-                {
-                    for (int i = 1; i <= Globals.roomCategories.Count; i++)
-                    {
-                        CategorizedFilterdLevels.Add(Globals.roomCategories[i - 1], this.GetFilteredLevels(i, false, true, false));
-                    }
+                    string readContents = streamReader.ReadToEnd();
+                    return readContents;
                 }
             }
             else
             {
-                if (storyLevels)
-                {
-                    CategorizedFilterdLevels.Add("Story", this.GetFilteredLevels(roomIndex, true, false, false));
-                }
-
-                if (bonusLevels)
-                {
-                    CategorizedFilterdLevels.Add(Globals.roomCategories[roomIndex - 1], this.GetFilteredLevels(roomIndex, false, true, false));
-                }
+                Console.WriteLine("ERROR: Data.ReadLevelText, Could not find " + levelPath + "!");
+                return null;
             }
-            //Add all the uncategorized rooms
-            if (unknownLevels)
-            {
-                CategorizedFilterdLevels.Add("Unknown", this.GetFilteredLevels(roomIndex, false, false, true));
-            }
-
-            return CategorizedFilterdLevels;
         }
 
-        public List<String> GetFilteredLevels(int roomIndex = 0, bool storyLevels = false, bool bonusLevels = false, bool unknownLevels = false)
+        #endregion
+        #region LevelManagement
+        /// <summary>
+        /// Add patient to the Loaded Level
+        /// </summary>
+        public void AddPatientToLoadedLevel()
         {
-            List<String> rawLevelList = this.GetLevelsFromDisk(false, true);
-            List<String> outputLevelList = new List<String> { };
-
-            foreach (String level in rawLevelList)
-            {
-                if (storyLevels && level.StartsWith("level"))
-                {
-                    int levelIndex = Convert.ToInt16(level.Replace("level", ""));
-                    int minIndex = (roomIndex - 1) * 10 + 1;
-                    int maxIndex = (roomIndex * 10) + 1;
-
-                    if (roomIndex == 0)
-                    {
-                        outputLevelList.Add(level);
-                    }
-                    else if (Enumerable.Range(minIndex, 10).Contains(levelIndex))
-                    {
-                        outputLevelList.Add(level);
-                    }
-                }
-                // Ensure that the second character in the level name is a number as well to be in line with naming conventions.
-                else if (bonusLevels && level.StartsWith("r") && int.TryParse(level[1].ToString(), out int n) && level[2].ToString() == "_")
-                {
-                    if (roomIndex == 0)
-                    {
-                        outputLevelList.Add(level);
-                    }
-                    else if (level.StartsWith("r" + roomIndex.ToString() + "_"))
-                    {
-                        outputLevelList.Add(level);
-                    }
-                }
-                else if (unknownLevels && !level.StartsWith("level") && !(level.StartsWith("r") && int.TryParse(level[1].ToString(), out int j) && level[2].ToString() == "_"))
-                {
-                    outputLevelList.Add(level);
-                }
-            }
-            //Naturaly sort the levelList
-            //TODO Find more efficient method of natural sorting without first converting to sequence and back
-            IEnumerable<String> LevelSequence = outputLevelList.OrderBy(x => x, StringComparer.OrdinalIgnoreCase.WithNaturalSort());
-            return LevelSequence.ToList();
+            this.GetLevelLoaded?.AddPatient();
         }
 
-        public Level GetLevel(String levelName)
+        /// <summary>
+        /// Returns the Level Object by name
+        /// </summary>
+        /// <param name="levelName">
+        /// The level name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Level"/>.
+        /// </returns>
+        public Level GetLevel(string levelName)
         {
             levelName = CleanLevelName(levelName);
 
@@ -450,10 +516,17 @@ namespace HM4DesignTool.Level
             {
                 this.AddLevelByName(levelName);
             }
+
             return this.levelObjectData[levelName];
         }
 
-        public void LoadLevel(String levelName)
+        /// <summary>
+        /// Load the current level in the Front-End
+        /// </summary>
+        /// <param name="levelName">
+        /// The level name to load.
+        /// </param>
+        public void LoadLevel(string levelName)
         {
             levelName = CleanLevelName(levelName);
 
@@ -467,57 +540,238 @@ namespace HM4DesignTool.Level
             }
         }
 
-        private static String CleanLevelName(String levelName)
-        {
-            levelName = levelName.Replace(" ", "");
-            if (levelName.EndsWith(".lua"))
-            {
-                levelName = levelName.Replace(".lua", "");
-            }
-            if (levelName.Contains("(e)"))
-            {
-                levelName = levelName.Replace("(e)", "");
-            }
-            if (levelName.Contains("*"))
-            {
-                levelName = levelName.Replace("*", "");
-            }
-
-            return levelName;
-        }
-
-        private Level AddLevelByName(String levelName)
-        {
-            levelName = CleanLevelName(levelName);
-            if (this.LevelExist(levelName))
-            {
-                this.levelObjectData.Remove(levelName);
-            }
-
-            this.levelObjectData.Add(levelName, this.CreateLevel(levelName));
-            return this.levelObjectData[levelName];
-        }
-
-        private Level CreateLevel(String levelName)
-        {
-            levelName = CleanLevelName(levelName);
-
-            Level newLevel = new Level(levelName);
-
-            return newLevel;
-        }
-
-        private bool LevelExist(String levelName)
+        /// <summary>
+        /// Check if the Level already exist
+        /// </summary>
+        /// <param name="levelName">
+        /// The level name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        public bool LevelExist(string levelName)
         {
             levelName = CleanLevelName(levelName);
 
             return this.levelObjectData.ContainsKey(levelName);
         }
-
         #endregion
+
+        #region LevelList
+
+        /// <summary>
+        /// Get a list with the filterd level list.
+        /// </summary>
+        /// <param name="roomIndex">
+        /// The room index.
+        /// </param>
+        /// <param name="storyLevels">
+        /// The story levels.
+        /// </param>
+        /// <param name="bonusLevels">
+        /// The bonus levels.
+        /// </param>
+        /// <param name="unknownLevels">
+        /// The unknown levels.
+        /// </param>
+        /// <returns>
+        /// The <see>
+        ///         <cref>List</cref>
+        ///     </see>
+        ///     .
+        /// </returns>
+        public List<string> GetFilteredLevels(int roomIndex = 0, bool storyLevels = false, bool bonusLevels = false, bool unknownLevels = false)
+        {
+            List<string> rawLevelList = this.GetLevelsFromDisk(false, true);
+            List<string> outputLevelList = new List<string>();
+
+            foreach (string level in rawLevelList)
+            {
+                if (storyLevels && level.StartsWith("level"))
+                {
+                    int levelIndex = Convert.ToInt16(level.Replace("level", string.Empty));
+                    int minIndex = ((roomIndex - 1) * 10) + 1;
+
+                    if (roomIndex == 0)
+                    {
+                        outputLevelList.Add(level);
+                    }
+                    else if (Enumerable.Range(minIndex, 10).Contains(levelIndex))
+                    {
+                        outputLevelList.Add(level);
+                    }
+                }
+                else if (bonusLevels && level.StartsWith("r") && int.TryParse(level[1].ToString(), out int _) && level[2].ToString() == "_")
+                {
+                    // Ensure that the second character in the level name is a number as well to be in line with naming conventions.
+                    if (roomIndex == 0)
+                    {
+                        outputLevelList.Add(level);
+                    }
+                    else if (level.StartsWith("r" + roomIndex.ToString() + "_"))
+                    {
+                        outputLevelList.Add(level);
+                    }
+                }
+                else if (unknownLevels && !level.StartsWith("level") && !(level.StartsWith("r") && int.TryParse(level[1].ToString(), out int _) && level[2].ToString() == "_"))
+                {
+                    outputLevelList.Add(level);
+                }
+            }
+
+            // Naturaly sort the levelList
+            // TODO Find more efficient method of natural sorting without first converting to sequence and back
+            IEnumerable<string> levelSequence = outputLevelList.OrderBy(
+                x => x,
+                StringComparer.OrdinalIgnoreCase.WithNaturalSort());
+            return levelSequence.ToList();
+        }
+
+        /// <summary>
+        /// Get categorized filtered level list.
+        /// </summary>
+        /// <param name="roomIndex">
+        /// The room index.
+        /// </param>
+        /// <param name="storyLevels">
+        /// Return story levels.
+        /// </param>
+        /// <param name="bonusLevels">
+        /// Return bonus levels.
+        /// </param>
+        /// <param name="unknownLevels">
+        /// Return unknown levels.
+        /// </param>
+        /// <returns>
+        /// The <see>
+        ///         <cref>Dictionary</cref>
+        ///     </see>
+        ///     .
+        /// </returns>
+        public Dictionary<string, List<string>> GetCategorizedFilteredLevels(int roomIndex = 0, bool storyLevels = false, bool bonusLevels = false, bool unknownLevels = false)
+        {
+            Dictionary<string, List<string>> categorizedFilterdLevels = new Dictionary<string, List<string>>();
+
+            // List<string> filteredLevelList = this.GetFilteredLevels(roomIndex, storyLevels, bonusLevels, unknownLevels);
+            if (roomIndex == 0)
+            {
+                if (storyLevels)
+                {
+                    categorizedFilterdLevels.Add("Story", this.GetFilteredLevels(0, true));
+                }
+
+                if (bonusLevels)
+                {
+                    for (int i = 1; i <= Globals.roomCategories.Count; i++)
+                    {
+                        categorizedFilterdLevels.Add(
+                            Globals.roomCategories[i - 1],
+                            this.GetFilteredLevels(i, false, true));
+                    }
+                }
+            }
+            else
+            {
+                if (storyLevels)
+                {
+                    categorizedFilterdLevels.Add("Story", this.GetFilteredLevels(roomIndex, true));
+                }
+
+                if (bonusLevels)
+                {
+                    categorizedFilterdLevels.Add(
+                        Globals.roomCategories[roomIndex - 1],
+                        this.GetFilteredLevels(roomIndex, false, true));
+                }
+            }
+
+            // Add all the uncategorized rooms
+            if (unknownLevels)
+            {
+                categorizedFilterdLevels.Add("Unknown", this.GetFilteredLevels(roomIndex, false, false, true));
+            }
+
+            return categorizedFilterdLevels;
+        }
+        #endregion
+
+        #region ReadWrite
+
+        /// <summary>
+        /// Get the levels from disk.
+        /// </summary>
+        /// <param name="reload">
+        /// Force reload
+        /// </param>
+        /// <param name="filterExtension">
+        /// The filter extension from strings.
+        /// </param>
+        /// <returns>
+        /// The <see>
+        ///         <cref>List</cref>
+        ///     </see>
+        ///     .
+        /// </returns>
+        public List<string> GetLevelsFromDisk(bool reload = false, bool filterExtension = false)
+        {
+            if (this.levelList == null || this.levelList.Count() == 0 || reload)
+            {
+                string projectPath = Globals.GetSettings.projectPathLevel;
+                if (Directory.Exists(projectPath))
+                {
+                    List<string> rawLevelList = new List<string>(Directory.GetFiles(projectPath));
+                    List<string> tmpLevelList = new List<string>();
+
+                    foreach (string level in rawLevelList)
+                    {
+                        string levelName = Path.GetFileName(level);
+                        if (filterExtension)
+                        {
+                            if (levelName != null)
+                            {
+                                tmpLevelList.Add(levelName.Replace(".lua", string.Empty));
+                            }
+                        }
+                        else
+                        {
+                            tmpLevelList.Add(levelName);
+                        }
+                    }
+
+                    this.levelList = tmpLevelList;
+                }
+            }
+
+            return this.levelList;
+        }
 
         #region GenerateLevel
 
+        /// <summary>
+        /// Update the random recommendations for Level Generating.
+        /// </summary>
+        public void UpdateRandomRecommendations()
+        {
+            if (this.UseRandomRecommendations)
+            {
+                int numberOfPatients = Globals.GetGameValues.NumberOfPatientsToInt(this.GetLevelLoaded.GetDifficultyModifier);
+                int treatmentPerPatients = Globals.GetGameValues.TreatmentPerPatientToInt(this.GetLevelLoaded.GetDifficultyModifier);
+                int patientTypeCount = Globals.GetSettings.GetPatientChanceList(this.GetLevelLoaded.CategoryKey).Count;
+
+                this.GeneratePatientTypeMin = patientTypeCount;
+                this.GeneratePatientTypeMax = patientTypeCount;
+
+                this.GeneratePatientsMin = numberOfPatients - 1;
+                this.GeneratePatientsMax = numberOfPatients + 1;
+
+                this.GenerateTreatmentsMin = treatmentPerPatients - 1;
+                this.GenerateTreatmentsMax = treatmentPerPatients + 1;
+            }
+        }
+
+        /// <summary>
+        /// Generate Level
+        /// </summary>
         public void RandomizeLevel()
         {
             if (this.GetLevelLoaded != null)
@@ -550,48 +804,105 @@ namespace HM4DesignTool.Level
             }
         }
 
-        internal void UpdateRandomRecommendations()
-        {
-            if (this.UseRandomRecommendations)
-            {
-                int numberOfPatients = Globals.GetGameValues.NumberOfPatientsToInt(this.GetLevelLoaded.GetDifficultyModifier);
-                int treatmentPerPatients = Globals.GetGameValues.TreatmentPerPatientToInt(this.GetLevelLoaded.GetDifficultyModifier);
-                int patientTypeCount = Globals.GetSettings.GetPatientChanceList(this.GetLevelLoaded.CategoryKey).Count;
-
-                this.GeneratePatientTypeMin = patientTypeCount;
-                this.GeneratePatientTypeMax = patientTypeCount;
-
-                this.GeneratePatientsMin = numberOfPatients - 1;
-                this.GeneratePatientsMax = numberOfPatients + 1;
-
-                this.GenerateTreatmentsMin = treatmentPerPatients - 1;
-                this.GenerateTreatmentsMax = treatmentPerPatients + 1;
-            }
-        }
+        #endregion
 
         #endregion
 
+        #endregion
+
+        #region Private
+        /// <summary>
+        /// Clean the LevelName before using it.
+        /// </summary>
+        /// <param name="levelName">
+        /// The level name.
+        /// </param>
+        /// <returns>
+        /// The cleaned level name <see cref="string"/>.
+        /// </returns>
+        private static string CleanLevelName(string levelName)
+        {
+            levelName = levelName.Replace(" ", string.Empty);
+            if (levelName.EndsWith(".lua"))
+            {
+                levelName = levelName.Replace(".lua", string.Empty);
+            }
+
+            if (levelName.Contains("(e)"))
+            {
+                levelName = levelName.Replace("(e)", string.Empty);
+            }
+
+            if (levelName.Contains("*"))
+            {
+                levelName = levelName.Replace("*", string.Empty);
+            }
+
+            return levelName;
+        }
+
+        /// <summary>
+        /// Create the level
+        /// </summary>
+        /// <param name="levelName">
+        /// The level name to create the level with.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Level"/>.
+        /// </returns>
+        private Level CreateLevel(string levelName)
+        {
+            levelName = CleanLevelName(levelName);
+
+            Level newLevel = new Level(levelName);
+
+            return newLevel;
+        }
+
+        /// <summary>
+        /// The add the level by name, if it exist then remove it and recreate it.
+        /// </summary>
+        /// <param name="levelName">
+        /// The level name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Level"/>.
+        /// </returns>
+        private Level AddLevelByName(string levelName)
+        {
+            levelName = CleanLevelName(levelName);
+            if (this.LevelExist(levelName))
+            {
+                this.levelObjectData.Remove(levelName);
+            }
+
+            this.levelObjectData.Add(levelName, this.CreateLevel(levelName));
+            return this.levelObjectData[levelName];
+        }
+        #endregion
         #region PatientSimulator
 
+        /// <summary>
+        /// Update the patient simulator in the Front-end
+        /// </summary>
         private void UpdatePatientSimulator()
         {
-            //A DataTable is first created where an indentation is inserted to mimic a delay
-
+            // A DataTable is first created where an indentation is inserted to mimic a delay
             DataTable treatmentDataTable = new DataTable();
             treatmentDataTable.Columns.Add("PatientName");
 
-            DataGrid SimulatorGrid = Globals.GetMainWindow.patientSimulatorGrid;
-            //            SimulatorGrid.ItemsSource = new Binding("treatmentDataTable");    //GetLevelLoaded.PatientCollection;
+            DataGrid simulatorGrid = Globals.GetMainWindow.patientSimulatorGrid;
 
-            //Create first column for the PatientName
+            // SimulatorGrid.ItemsSource = new Binding("treatmentDataTable");    //GetLevelLoaded.PatientCollection;
 
+            // Create first column for the PatientName
             DataGridTextColumn patientNameColumn =
                 new DataGridTextColumn
                 {
                     Header = "Patient Name:",
                     Binding = new Binding(treatmentDataTable.Columns[0].ToString())
                 };
-            SimulatorGrid.Columns.Add(patientNameColumn);
+            simulatorGrid.Columns.Add(patientNameColumn);
 
             // Create the columns
             for (int i = 0; i < 40; i++)
@@ -599,13 +910,16 @@ namespace HM4DesignTool.Level
                 // Add treatment column to the treatmentDataTable
                 treatmentDataTable.Columns.Add(i.ToString());
 
-                String ColumnName = (i * 5).ToString() + " Seconds";
-                DataGridComboBoxColumn treatmentColumn = new DataGridComboBoxColumn();
-                treatmentColumn.Header = ColumnName;
-                treatmentColumn.SelectedValueBinding = new Binding(treatmentDataTable.Columns[i + 1].ToString());
-                treatmentColumn.ItemsSource = this.GetLevelLoaded.AvailableTreatmentStringList;
-                treatmentColumn.Width = 120;
-                SimulatorGrid.Columns.Add(treatmentColumn);
+                string columnName = (i * 5).ToString() + " Seconds";
+                DataGridComboBoxColumn treatmentColumn =
+                    new DataGridComboBoxColumn
+                    {
+                        Header = columnName,
+                        SelectedValueBinding = new Binding(treatmentDataTable.Columns[i + 1].ToString()),
+                        ItemsSource = this.GetLevelLoaded.AvailableTreatmentStringList,
+                        Width = 120
+                    };
+                simulatorGrid.Columns.Add(treatmentColumn);
             }
 
             for (int patientIndex = 0; patientIndex < this.GetLevelLoaded.PatientCollection.Count; patientIndex++)
@@ -622,81 +936,27 @@ namespace HM4DesignTool.Level
                         patientDataRow[patientIndex + i + 1] = patient.TreatmentCollection[i].TreatmentName;
                     }
                 }
+
                 treatmentDataTable.Rows.Add(patientDataRow);
             }
 
             // Set a DataGrid control's DataContext to the DataView.
-            SimulatorGrid.ItemsSource = treatmentDataTable.DefaultView;
+            simulatorGrid.ItemsSource = treatmentDataTable.DefaultView;
 
             // Globals.GetMainWindow.patientSimulatorGrid = SimulatorGrid;
         }
 
         #endregion
-
-        #region ReadWrite
-
-        public static String ReadLevelTextFromFile(String levelName)
-        {
-            levelName = CleanLevelName(levelName);
-            if (!levelName.EndsWith(".lua"))
-            {
-                levelName += ".lua";
-            }
-
-            String levelPath = Globals.GetSettings.projectPathLevel + levelName;
-
-            if (File.Exists(levelPath))
-            {
-                string readContents;
-                using (StreamReader streamReader = new StreamReader(levelPath, Encoding.UTF8))
-                {
-                    readContents = streamReader.ReadToEnd();
-                    return readContents;
-                }
-            }
-            else
-            {
-                Console.WriteLine("ERROR: Data.ReadLevelText, Could not find " + levelPath + "!");
-                return null;
-            }
-        }
-
-        public List<String> GetLevelsFromDisk(bool reload = false, bool filterExtension = false)
-        {
-            if (this.levelList == null || this.levelList.Count() == 0 || reload)
-            {
-                String projectPath = Globals.GetSettings.projectPathLevel;
-                if (Directory.Exists(projectPath))
-                {
-                    List<String> rawLevelList = new List<String>(System.IO.Directory.GetFiles(projectPath));
-                    List<String> tmpLevelList = new List<String> { };
-
-                    foreach (String level in rawLevelList)
-                    {
-                        String levelName = Path.GetFileName(level);
-                        if (filterExtension)
-                        {
-                            tmpLevelList.Add(levelName.Replace(".lua", ""));
-                        }
-                        else
-                        {
-                            tmpLevelList.Add(levelName);
-                        }
-                    }
-
-                    this.levelList = tmpLevelList;
-                }
-            }
-
-            return this.levelList;
-        }
-
         #endregion
 
         #region INotifyPropertyChanged Members
 
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
+        /// <summary>
+        /// This is used to notify the bound XAML Control to update its value.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The property Name.
+        /// </param>
         private void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
