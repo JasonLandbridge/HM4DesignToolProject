@@ -6,7 +6,7 @@
 		xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
 		xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"  x:Class="UiWindows.SettingsWindow"
 		mc:Ignorable="d"
-		Title="Design Tool Settings" Height="600" Width="1000" WindowStartupLocation="CenterOwner" ResizeMode="CanResizeWithGrip">
+		Title="Design Tool Settings" Height="768" Width="1280" WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip">
 	<!-- diag:PresentationTraceSources.TraceLevel=High-->
 
 	<Grid>

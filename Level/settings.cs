@@ -76,7 +76,14 @@ namespace SettingsNamespace
                     {
                         if (treatmentRow != null && treatmentRow.TreatmentName != null)
                         {
-                            treatmentList.Add(treatmentRow.TreatmentName, treatmentRow.ToString());
+                            if (treatmentList.ContainsKey(treatmentRow.TreatmentName))
+                            {
+                                treatmentList[treatmentRow.TreatmentName] = treatmentRow.ToString();
+                            }
+                            else
+                            {
+                                treatmentList.Add(treatmentRow.TreatmentName, treatmentRow.ToString());
+                            }
                         }
                     }
                     convertedDict.Add(roomCategory.Key, treatmentList);

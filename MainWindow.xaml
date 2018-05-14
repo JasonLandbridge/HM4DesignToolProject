@@ -13,7 +13,7 @@
 
 		<!-- PatientRowTreatmentTemplate -->
 		<DataTemplate x:Key="PatientRowTreatmentTemplate">
-			<ComboBox Margin="5,0" Style="{DynamicResource ComboBoxTest2}" ItemsSource="{Binding Mode=OneWay, ElementName=patientRow, Path=DataContext.TreatmentOptions}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=None}" Visibility="{Binding IsVisible, Mode=TwoWay, Converter={StaticResource VisibilityOfBool}, UpdateSourceTrigger=PropertyChanged}" Width="125" SelectionChanged="ComboBox_SelectionChanged">
+			<ComboBox Margin="5,0" Style="{DynamicResource ComboBoxTest2}" ItemsSource="{Binding Mode=OneWay, ElementName=patientRow, Path=DataContext.TreatmentOptions}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=None}" Visibility="{Binding IsVisible, Mode=TwoWay, Converter={StaticResource VisibilityOfBool}, UpdateSourceTrigger=PropertyChanged}" Width="125">
 				<ComboBox.Resources>
 					<Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
 						<Setter Property="Template">
@@ -102,7 +102,7 @@
 						</ItemsPanelTemplate>
 					</ItemsControl.ItemsPanel>
 				</ItemsControl>
-				<Button  Grid.Column="8" Content="Treatments" MinWidth="80"/>
+				<Button  Grid.Column="8" Content="Treatments" MinWidth="80" Visibility="Hidden"/>
 				<Button  Grid.Column="9" Content="Traits" MinWidth="80"/>
 			</Grid>
 		</DataTemplate>

@@ -9,6 +9,9 @@
 //--------------------------------------------------------------------------------------------------------------------
 namespace HM4DesignTool.Level
 {
+    using DataNameSpace;
+    using LevelData;
+    using NaturalSort.Extension;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -20,18 +23,50 @@ namespace HM4DesignTool.Level
     using System.Windows.Controls;
     using System.Windows.Data;
 
-    using DataNameSpace;
-
-    using LevelData;
-
-    using NaturalSort.Extension;
-
     public class LevelOverview : INotifyPropertyChanged
     {
-        private Dictionary<string, Level> levelObjectData = new Dictionary<string, Level>();
-        private Level _currentLevelLoaded = null;
+        #region Fields
 
         private bool _allowLevelScriptUpdate = true;
+        private Level _currentLevelLoaded = null;
+        private int _maxTreatmentsVisible = 5;
+        private bool _showAvailableTreatmentsCheck = false;
+        private List<String> levelList = new List<String> { };
+        private Dictionary<string, Level> levelObjectData = new Dictionary<string, Level>();
+
+        #region LevelGeneratingFields
+        private bool _useRandomRecommendations = true;
+        private bool _generatePatientTypeCheck = true;
+        private int _generatePatientTypeMax = 0;
+        private int _generatePatientTypeMin = 0;
+        private bool _generatePatientsCheck = true;
+        private int _generatePatientsMax = 0;
+        private int _generatePatientsMin = 0;
+        private bool _generatePatientDelayCheck = true;
+        private int _generatePatientDelayMax = 1000;
+        private int _generatePatientDelayMin = -1000;
+        private bool _generateTreatmentsCheck = true;
+        private int _generateTreatmentsMax = 0;
+        private int _generateTreatmentsMin = 0;
+
+
+        #endregion
+
+
+
+        #endregion
+
+        #region Constructors
+
+        public LevelOverview()
+        {
+        }
+
+        #endregion
+
+        #region Properties
+
+        #region Public
 
         public bool AllowLevelScriptUpdate
         {
@@ -42,6 +77,23 @@ namespace HM4DesignTool.Level
                 this.GetLevelLoaded.UpdateLevelOutput();
             }
         }
+
+        public ObservableCollection<String> DifficultyModifierList
+        {
+            get
+            {
+                if (this.GetLevelLoaded != null)
+                {
+                    String categoryKey = Globals.GetCategoryKey(this.GetLevelLoaded.GetRoomIndex);
+                    if (categoryKey != String.Empty)
+                    {
+                        return new ObservableCollection<String>(Globals.GetSettings.GetDifficultyModifierList(categoryKey));
+                    }
+                }
+                return new ObservableCollection<String> { };
+            }
+        }
+
         public Level GetLevelLoaded
         {
             get
@@ -77,7 +129,6 @@ namespace HM4DesignTool.Level
             }
         }
 
-        private int _maxTreatmentsVisible = 5;
         public int MaxTreatmentsVisible
         {
             get
@@ -92,25 +143,6 @@ namespace HM4DesignTool.Level
             }
         }
 
-        private List<String> levelList = new List<String> { };
-
-        public ObservableCollection<String> DifficultyModifierList
-        {
-            get
-            {
-                if (this.GetLevelLoaded != null)
-                {
-                    String categoryKey = Globals.GetCategoryKey(this.GetLevelLoaded.GetRoomIndex);
-                    if (categoryKey != String.Empty)
-                    {
-                        return new ObservableCollection<String>(Globals.GetSettings.GetDifficultyModifierList(categoryKey));
-                    }
-                }
-                return new ObservableCollection<String> { };
-            }
-        }
-
-        private bool _showAvailableTreatmentsCheck = false;
         public bool ShowAvailableTreatmentsCheck
         {
             get
@@ -125,8 +157,11 @@ namespace HM4DesignTool.Level
             }
         }
 
-        #region RandomProperties
-        private bool _useRandomRecommendations = true;
+        #endregion
+
+        #endregion
+
+        #region LevelGeneratingFields
         public bool UseRandomRecommendations
         {
             get
@@ -142,7 +177,6 @@ namespace HM4DesignTool.Level
         }
 
         #region PatientType
-        private bool _generatePatientTypeCheck = true;
         public bool GeneratePatientTypeCheck
         {
             get
@@ -156,7 +190,19 @@ namespace HM4DesignTool.Level
             }
         }
 
-        private int _generatePatientTypeMin = 0;
+        public int GeneratePatientTypeMax
+        {
+            get
+            {
+                return this._generatePatientTypeMax;
+            }
+            set
+            {
+                this._generatePatientTypeMax = value;
+                this.OnPropertyChanged("GeneratePatientTypeMax");
+            }
+        }
+
         public int GeneratePatientTypeMin
         {
             get
@@ -170,23 +216,9 @@ namespace HM4DesignTool.Level
             }
         }
 
-        private int _generatePatientTypeMax = 0;
-        public int GeneratePatientTypeMax
-        {
-            get
-            {
-                return this._generatePatientTypeMax;
-            }
-            set
-            {
-                this._generatePatientTypeMax = value;
-                this.OnPropertyChanged("GeneratePatientTypeMax");
-            }
-        }
         #endregion
 
         #region Patients
-        private bool _generatePatientsCheck = true;
         public bool GeneratePatientsCheck
         {
             get
@@ -200,7 +232,19 @@ namespace HM4DesignTool.Level
             }
         }
 
-        private int _generatePatientsMin = 0;
+        public int GeneratePatientsMax
+        {
+            get
+            {
+                return this._generatePatientsMax;
+            }
+            set
+            {
+                this._generatePatientsMax = value;
+                this.OnPropertyChanged("GeneratePatientsMax");
+            }
+        }
+
         public int GeneratePatientsMin
         {
             get
@@ -214,23 +258,9 @@ namespace HM4DesignTool.Level
             }
         }
 
-        private int _generatePatientsMax = 0;
-        public int GeneratePatientsMax
-        {
-            get
-            {
-                return this._generatePatientsMax;
-            }
-            set
-            {
-                this._generatePatientsMax = value;
-                this.OnPropertyChanged("GeneratePatientsMax");
-            }
-        }
         #endregion
 
         #region PatientDelay
-        private bool _generatePatientDelayCheck = true;
         public bool GeneratePatientDelayCheck
         {
             get
@@ -244,7 +274,19 @@ namespace HM4DesignTool.Level
             }
         }
 
-        private int _generatePatientDelayMin = -1000;
+        public int GeneratePatientDelayMax
+        {
+            get
+            {
+                return this._generatePatientDelayMax;
+            }
+            set
+            {
+                this._generatePatientDelayMax = value;
+                this.OnPropertyChanged("GeneratePatientDelayMax");
+            }
+        }
+
         public int GeneratePatientDelayMin
         {
             get
@@ -258,23 +300,9 @@ namespace HM4DesignTool.Level
             }
         }
 
-        private int _generatePatientDelayMax = 1000;
-        public int GeneratePatientDelayMax
-        {
-            get
-            {
-                return this._generatePatientDelayMax;
-            }
-            set
-            {
-                this._generatePatientDelayMax = value;
-                this.OnPropertyChanged("GeneratePatientDelayMax");
-            }
-        }
         #endregion
 
         #region Treatment
-        private bool _generateTreatmentsCheck = true;
         public bool GenerateTreatmentsCheck
         {
             get
@@ -288,21 +316,6 @@ namespace HM4DesignTool.Level
             }
         }
 
-        private int _generateTreatmentsMin = 0;
-        public int GenerateTreatmentsMin
-        {
-            get
-            {
-                return this._generateTreatmentsMin;
-            }
-            set
-            {
-                this._generateTreatmentsMin = value;
-                this.OnPropertyChanged("GenerateTreatmentsMin");
-            }
-        }
-
-        private int _generateTreatmentsMax = 0;
         public int GenerateTreatmentsMax
         {
             get
@@ -316,38 +329,72 @@ namespace HM4DesignTool.Level
             }
         }
 
-        #endregion
-        #endregion
-
-
-        public LevelOverview()
+        public int GenerateTreatmentsMin
         {
+            get
+            {
+                return this._generateTreatmentsMin;
+            }
+            set
+            {
+                this._generateTreatmentsMin = value;
+                this.OnPropertyChanged("GenerateTreatmentsMin");
+            }
         }
 
-        public static String ReadLevelTextFromFile(String levelName)
+        #endregion
+
+        #endregion
+
+        #region LevelManagement
+
+        public void AddPatientToLoadedLevel()
         {
-            levelName = CleanLevelName(levelName);
-            if (!levelName.EndsWith(".lua"))
+            if (this.GetLevelLoaded != null)
             {
-                levelName += ".lua";
+                this.GetLevelLoaded.AddPatient();
             }
+        }
 
-            String levelPath = Globals.GetSettings.projectPathLevel + levelName;
+        public Dictionary<String, List<String>> GetCategorizedFilteredLevels(int roomIndex = 0, bool storyLevels = false, bool bonusLevels = false, bool unknownLevels = false)
+        {
+            Dictionary<String, List<String>> CategorizedFilterdLevels = new Dictionary<String, List<String>> { };
+            List<String> FilteredLevelList = this.GetFilteredLevels(roomIndex, storyLevels, bonusLevels, unknownLevels);
 
-            if (File.Exists(levelPath))
+            if (roomIndex == 0)
             {
-                string readContents;
-                using (StreamReader streamReader = new StreamReader(levelPath, Encoding.UTF8))
+                if (storyLevels)
                 {
-                    readContents = streamReader.ReadToEnd();
-                    return readContents;
+                    CategorizedFilterdLevels.Add("Story", this.GetFilteredLevels(0, true, false, false));
+                }
+
+                if (bonusLevels)
+                {
+                    for (int i = 1; i <= Globals.roomCategories.Count; i++)
+                    {
+                        CategorizedFilterdLevels.Add(Globals.roomCategories[i - 1], this.GetFilteredLevels(i, false, true, false));
+                    }
                 }
             }
             else
             {
-                Console.WriteLine("ERROR: Data.ReadLevelText, Could not find " + levelPath + "!");
-                return null;
+                if (storyLevels)
+                {
+                    CategorizedFilterdLevels.Add("Story", this.GetFilteredLevels(roomIndex, true, false, false));
+                }
+
+                if (bonusLevels)
+                {
+                    CategorizedFilterdLevels.Add(Globals.roomCategories[roomIndex - 1], this.GetFilteredLevels(roomIndex, false, true, false));
+                }
             }
+            //Add all the uncategorized rooms
+            if (unknownLevels)
+            {
+                CategorizedFilterdLevels.Add("Unknown", this.GetFilteredLevels(roomIndex, false, false, true));
+            }
+
+            return CategorizedFilterdLevels;
         }
 
         public List<String> GetFilteredLevels(int roomIndex = 0, bool storyLevels = false, bool bonusLevels = false, bool unknownLevels = false)
@@ -395,45 +442,15 @@ namespace HM4DesignTool.Level
             return LevelSequence.ToList();
         }
 
-        public Dictionary<String, List<String>> GetCategorizedFilteredLevels(int roomIndex = 0, bool storyLevels = false, bool bonusLevels = false, bool unknownLevels = false)
+        public Level GetLevel(String levelName)
         {
-            Dictionary<String, List<String>> CategorizedFilterdLevels = new Dictionary<String, List<String>> { };
-            List<String> FilteredLevelList = this.GetFilteredLevels(roomIndex, storyLevels, bonusLevels, unknownLevels);
+            levelName = CleanLevelName(levelName);
 
-            if (roomIndex == 0)
+            if (!this.LevelExist(levelName))
             {
-                if (storyLevels)
-                {
-                    CategorizedFilterdLevels.Add("Story", this.GetFilteredLevels(0, true, false, false));
-                }
-
-                if (bonusLevels)
-                {
-                    for (int i = 1; i <= Globals.roomCategories.Count; i++)
-                    {
-                        CategorizedFilterdLevels.Add(Globals.roomCategories[i - 1], this.GetFilteredLevels(i, false, true, false));
-                    }
-                }
+                this.AddLevelByName(levelName);
             }
-            else
-            {
-                if (storyLevels)
-                {
-                    CategorizedFilterdLevels.Add("Story", this.GetFilteredLevels(roomIndex, true, false, false));
-                }
-
-                if (bonusLevels)
-                {
-                    CategorizedFilterdLevels.Add(Globals.roomCategories[roomIndex - 1], this.GetFilteredLevels(roomIndex, false, true, false));
-                }
-            }
-            //Add all the uncategorized rooms
-            if (unknownLevels)
-            {
-                CategorizedFilterdLevels.Add("Unknown", this.GetFilteredLevels(roomIndex, false, false, true));
-            }
-
-            return CategorizedFilterdLevels;
+            return this.levelObjectData[levelName];
         }
 
         public void LoadLevel(String levelName)
@@ -448,53 +465,6 @@ namespace HM4DesignTool.Level
             {
                 this.GetLevelLoaded = this.AddLevelByName(levelName);
             }
-        }
-
-        public Level GetLevel(String levelName)
-        {
-            levelName = CleanLevelName(levelName);
-
-            if (!this.LevelExist(levelName))
-            {
-                this.AddLevelByName(levelName);
-            }
-            return this.levelObjectData[levelName];
-        }
-
-        private Level CreateLevel(String levelName)
-        {
-            levelName = CleanLevelName(levelName);
-
-            Level newLevel = new Level(levelName);
-
-            return newLevel;
-        }
-
-        private Level AddLevelByName(String levelName)
-        {
-            levelName = CleanLevelName(levelName);
-            if (this.LevelExist(levelName))
-            {
-                this.levelObjectData.Remove(levelName);
-            }
-
-            this.levelObjectData.Add(levelName, this.CreateLevel(levelName));
-            return this.levelObjectData[levelName];
-        }
-
-        public void AddPatientToLoadedLevel()
-        {
-            if (this.GetLevelLoaded != null)
-            {
-                this.GetLevelLoaded.AddPatient();
-            }
-        }
-
-        private bool LevelExist(String levelName)
-        {
-            levelName = CleanLevelName(levelName);
-
-            return this.levelObjectData.ContainsKey(levelName);
         }
 
         private static String CleanLevelName(String levelName)
@@ -516,33 +486,37 @@ namespace HM4DesignTool.Level
             return levelName;
         }
 
-
-        internal void UpdateRandomRecommendations()
+        private Level AddLevelByName(String levelName)
         {
-
-            if (this.UseRandomRecommendations)
+            levelName = CleanLevelName(levelName);
+            if (this.LevelExist(levelName))
             {
-                int numberOfPatients = Globals.GetGameValues.NumberOfPatientsToInt(this.GetLevelLoaded.GetDifficultyModifier);
-                int treatmentPerPatients = Globals.GetGameValues.TreatmentPerPatientToInt(this.GetLevelLoaded.GetDifficultyModifier);
-                int patientTypeCount = Globals.GetSettings.GetPatientChanceList(this.GetLevelLoaded.CategoryKey).Count;
-
-                this.GeneratePatientTypeMin = patientTypeCount;
-                this.GeneratePatientTypeMax = patientTypeCount;
-
-                this.GeneratePatientsMin = numberOfPatients - 1;
-                this.GeneratePatientsMax = numberOfPatients + 1;
-
-                this.GenerateTreatmentsMin = treatmentPerPatients - 1;
-                this.GenerateTreatmentsMax = treatmentPerPatients + 1;
-
-
-
-
+                this.levelObjectData.Remove(levelName);
             }
 
-
+            this.levelObjectData.Add(levelName, this.CreateLevel(levelName));
+            return this.levelObjectData[levelName];
         }
 
+        private Level CreateLevel(String levelName)
+        {
+            levelName = CleanLevelName(levelName);
+
+            Level newLevel = new Level(levelName);
+
+            return newLevel;
+        }
+
+        private bool LevelExist(String levelName)
+        {
+            levelName = CleanLevelName(levelName);
+
+            return this.levelObjectData.ContainsKey(levelName);
+        }
+
+        #endregion
+
+        #region GenerateLevel
 
         public void RandomizeLevel()
         {
@@ -555,7 +529,6 @@ namespace HM4DesignTool.Level
                         patientChance.RandomizeWeight(Globals.GetRandom.Next(1, 100));
                     }
                 }
-
 
                 if (this.GeneratePatientsCheck)
                 {
@@ -574,27 +547,43 @@ namespace HM4DesignTool.Level
                 }
 
                 this.GetLevelLoaded.UpdateLevelOutput();
-
             }
         }
 
+        internal void UpdateRandomRecommendations()
+        {
+            if (this.UseRandomRecommendations)
+            {
+                int numberOfPatients = Globals.GetGameValues.NumberOfPatientsToInt(this.GetLevelLoaded.GetDifficultyModifier);
+                int treatmentPerPatients = Globals.GetGameValues.TreatmentPerPatientToInt(this.GetLevelLoaded.GetDifficultyModifier);
+                int patientTypeCount = Globals.GetSettings.GetPatientChanceList(this.GetLevelLoaded.CategoryKey).Count;
+
+                this.GeneratePatientTypeMin = patientTypeCount;
+                this.GeneratePatientTypeMax = patientTypeCount;
+
+                this.GeneratePatientsMin = numberOfPatients - 1;
+                this.GeneratePatientsMax = numberOfPatients + 1;
+
+                this.GenerateTreatmentsMin = treatmentPerPatients - 1;
+                this.GenerateTreatmentsMax = treatmentPerPatients + 1;
+            }
+        }
+
+        #endregion
+
+        #region PatientSimulator
+
         private void UpdatePatientSimulator()
         {
-
             //A DataTable is first created where an indentation is inserted to mimic a delay
 
             DataTable treatmentDataTable = new DataTable();
             treatmentDataTable.Columns.Add("PatientName");
 
-
-
-
-
             DataGrid SimulatorGrid = Globals.GetMainWindow.patientSimulatorGrid;
             //            SimulatorGrid.ItemsSource = new Binding("treatmentDataTable");    //GetLevelLoaded.PatientCollection;
 
             //Create first column for the PatientName
-
 
             DataGridTextColumn patientNameColumn =
                 new DataGridTextColumn
@@ -617,8 +606,6 @@ namespace HM4DesignTool.Level
                 treatmentColumn.ItemsSource = this.GetLevelLoaded.AvailableTreatmentStringList;
                 treatmentColumn.Width = 120;
                 SimulatorGrid.Columns.Add(treatmentColumn);
-
-
             }
 
             for (int patientIndex = 0; patientIndex < this.GetLevelLoaded.PatientCollection.Count; patientIndex++)
@@ -638,14 +625,41 @@ namespace HM4DesignTool.Level
                 treatmentDataTable.Rows.Add(patientDataRow);
             }
 
-
             // Set a DataGrid control's DataContext to the DataView.
             SimulatorGrid.ItemsSource = treatmentDataTable.DefaultView;
 
             // Globals.GetMainWindow.patientSimulatorGrid = SimulatorGrid;
-
         }
-        #region Getters
+
+        #endregion
+
+        #region ReadWrite
+
+        public static String ReadLevelTextFromFile(String levelName)
+        {
+            levelName = CleanLevelName(levelName);
+            if (!levelName.EndsWith(".lua"))
+            {
+                levelName += ".lua";
+            }
+
+            String levelPath = Globals.GetSettings.projectPathLevel + levelName;
+
+            if (File.Exists(levelPath))
+            {
+                string readContents;
+                using (StreamReader streamReader = new StreamReader(levelPath, Encoding.UTF8))
+                {
+                    readContents = streamReader.ReadToEnd();
+                    return readContents;
+                }
+            }
+            else
+            {
+                Console.WriteLine("ERROR: Data.ReadLevelText, Could not find " + levelPath + "!");
+                return null;
+            }
+        }
 
         public List<String> GetLevelsFromDisk(bool reload = false, bool filterExtension = false)
         {
@@ -677,7 +691,7 @@ namespace HM4DesignTool.Level
             return this.levelList;
         }
 
-        #endregion Getters
+        #endregion
 
         #region INotifyPropertyChanged Members
 
@@ -690,5 +704,4 @@ namespace HM4DesignTool.Level
 
         #endregion INotifyPropertyChanged Members
     }
-
 }

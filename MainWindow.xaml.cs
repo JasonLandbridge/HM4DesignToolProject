@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.IO;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using DataNameSpace;
 using UiWindows;
-using LevelData;
-using System.Text;
-using System.Windows.Markup;
-using System.Windows.Media;
-using HM4DesignTool.Level;
 
 namespace HM4DesignTool
 {
@@ -224,7 +217,7 @@ namespace HM4DesignTool
         private void buttonPatientOverviewAddRow_Click(object sender, RoutedEventArgs e)
         {
             Globals.GetLevelOverview.AddPatientToLoadedLevel();
-            patientOverviewLayout.ItemsSource = Globals.GetLevelOverview.GetLevelLoaded.PatientCollection;
+            //patientOverviewLayout.ItemsSource = Globals.GetLevelOverview.GetLevelLoaded.PatientCollection;
             //ContentControl patientRow = new ContentControl();
             //patientRow.ContentTemplate = PatientRowDataTemplate;
 
@@ -284,14 +277,6 @@ namespace HM4DesignTool
 
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
 
-        }
-
-        private void buttonSaveLevelScript_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

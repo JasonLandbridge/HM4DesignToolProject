@@ -261,7 +261,7 @@ namespace HM4DesignTool.Level
                 }
                 else
                 {
-                    int roomIndex = -1;
+                    int roomIndex = 0;
 
                     // Generate the RoomIndex based on the naming convention of the levelName
                     if (this.LevelName != string.Empty)
@@ -1059,10 +1059,10 @@ namespace HM4DesignTool.Level
                     patientsChancesRawText = patientsChancesRawText.Replace(StartPatientChancesText, string.Empty).Replace(",}", "}");
                     patientsChancesRawText = patientsChancesRawText.Trim(' ').Replace("=", ":");
 
-                    // Translate to workable Dictionary
-                    Dictionary<string, int> patientChancesDict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, int>>(patientsChancesRawText);
+                    // Translate to workable Dictionary, use double because some weights have been set als float. Always save back as an integer. 
+                    Dictionary<string, double> patientChancesDict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, double>>(patientsChancesRawText);
 
-                    foreach (KeyValuePair<string, int> patientChance in patientChancesDict)
+                    foreach (KeyValuePair<string, double> patientChance in patientChancesDict)
                     {
                         bool patientChanceExist = false;
 
@@ -1071,7 +1071,7 @@ namespace HM4DesignTool.Level
                             if (patientChanceListItem.PatientName == patientChance.Key)
                             {
                                 patientChanceExist = true;
-                                patientChanceListItem.Weight = patientChance.Value;
+                                patientChanceListItem.Weight = Convert.ToInt32(patientChance.Value);
                                 break;
                             }
                         }
@@ -1079,7 +1079,7 @@ namespace HM4DesignTool.Level
                         // Create new entry if patientChance does not exist.
                         if (!patientChanceExist)
                         {
-                            PatientChance newPatientChance = new PatientChance(patientChance.Key, patientChance.Value);
+                            PatientChance newPatientChance = new PatientChance(patientChance.Key, Convert.ToInt32(patientChance.Value));
                             newPatientChance.ParentLevel = this;
                             this.PatientChanceList.Add(newPatientChance);
                         }
