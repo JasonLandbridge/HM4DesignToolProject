@@ -12,6 +12,7 @@ using LevelData;
 using System.Text;
 using System.Windows.Markup;
 using System.Windows.Media;
+using HM4DesignTool.Level;
 
 namespace HM4DesignTool
 {

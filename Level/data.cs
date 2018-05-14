@@ -159,7 +159,12 @@ namespace DataNameSpace
 
         public static Color HexToColor(String hexCode)
         {
-            if (hexCode.StartsWith("#") && hexCode.Count() == 7)
+            if (!hexCode.StartsWith("#"))
+            {
+                hexCode = $"#{hexCode}";
+            }
+
+            if (hexCode.Count() == 7)
             {
                 return (Color)ColorConverter.ConvertFromString(hexCode);
             }
@@ -504,7 +509,7 @@ namespace DataNameSpace
                 {
                     ParentPatient.ParentLevel.UpdateTreatmentWeightPercentage();
                 }
-                else if(ParentLevel != null)
+                else if (ParentLevel != null)
                 {
                     ParentLevel.UpdateTreatmentWeightPercentage();
                 }
@@ -629,6 +634,15 @@ namespace DataNameSpace
                 TreatmentColor = newTreatment.TreatmentColor;
 
             }
+            else
+            {
+                DifficultyUnlocked = 0;
+                Weight = 0;
+                Gesture = false;
+                AlwaysLast = false;
+                TreatmentColor = Colors.White;
+
+            }
         }
         #region Overloads
 
@@ -636,13 +650,55 @@ namespace DataNameSpace
         {
             List<String> treatmentData = treatmentDataString.Split(',').ToList<String>();
             TreatmentName = treatmentName;
-            DifficultyUnlocked = Convert.ToDouble(treatmentData[0]);
-            HeartsValue = Convert.ToInt32(treatmentData[1]);
-            Weight = Convert.ToInt32(treatmentData[2]);
-            CustomizedWeight = Weight;
-            Gesture = Convert.ToBoolean(treatmentData[3]);
-            AlwaysLast = Convert.ToBoolean(treatmentData[4]);
-            TreatmentColorString = treatmentData[5].ToString();
+
+            //Used to ensure only the avaliable options are set. 
+            for (int index = 0; index < treatmentData.Count; index++)
+            {
+                switch (index)
+                {
+                    case 0:
+                        {
+                            this.DifficultyUnlocked = Convert.ToDouble(treatmentData[0]);
+                            break;
+
+                        }
+                    case 1:
+                        {
+                            this.HeartsValue = Convert.ToInt32(treatmentData[1]);
+                            break;
+
+                        }
+                    case 2:
+                        {
+                            this.Weight = Convert.ToInt32(treatmentData[2]);
+                            this.CustomizedWeight = this.Weight;
+                            break;
+
+                        }
+                    case 3:
+                        {
+                            this.Gesture = Convert.ToBoolean(treatmentData[3]);
+                            break;
+
+                        }
+                    case 4:
+                        {
+                            this.AlwaysLast = Convert.ToBoolean(treatmentData[4]);
+                            break;
+
+                        }
+                    case 5:
+                        {
+                            this.TreatmentColorString = treatmentData[5].ToString();
+                            break;
+                        }
+
+                    default:
+                        break;
+                }
+
+            }
+
         }
         #endregion
 

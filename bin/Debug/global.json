@@ -33,26 +33,26 @@
       "dfv34563456dfvdfvd": "0,4564,456,False,False,#FFE4C4"
     },
     "Room 3": {
-      "bloodtype": "16,1,30,False,False,#FF0000",
-      "bodyHeight": "13,1,40,False,False,#FF0000",
-      "bodyMarks": "16,1,35,False,False,#FF0000",
-      "bodyWeight": "14,1,40,False,False,#00FFFF",
-      "cameraLense": "11,1,30,False,False,#00FFFF",
-      "cameraMicro": "11,1,30,False,False,#00FFFF",
-      "deliverCoolbox": "15,1,30,False,False,#FFFFFF",
-      "donate": "9,1,35,False,False,#FFFFFF",
-      "examineBody": "9,1,40,False,False,#FFFFFF",
-      "examineOrgan": "13,1,30,False,False,#FFFFFF",
-      "examineTissue": "17.5,1,25,False,False,#FFFFFF",
-      "fingernail": "16,1,20,False,False,#FFFFFF",
-      "fingerprint": "9,1,40,False,False,#FFFFFF",
-      "folderDental": "13,1,35,False,False,#FFFFFF",
-      "folderMedical": "17,1,30,False,False,#FFFFFF",
-      "folderXray": "16,1,30,False,False,#FFFFFF",
-      "fridgeChoice": "9,1,60,False,True,#FFFFFF",
-      "organAutopsy": "14,1,15,False,False,#FFFFFF",
-      "organWeighing": "13,1,40,False,False,#FFFFFF",
-      "removeOrgan": "15,1,30,False,False,#FFFFFF",
+      "bloodtype": "16,1,30,False,False,#FCE5CD",
+      "bodyHeight": "13,1,40,False,False,#A4C2F4",
+      "bodyMarks": "16,1,35,False,False,#0000FF",
+      "bodyWeight": "14,1,40,False,False,#C9DAF8",
+      "cameraLense": "11,1,30,False,False,#6D9EEB",
+      "cameraMicro": "11,1,30,False,False,#6D9EEB",
+      "deliverCoolbox": "15,1,30,False,False,#6D9EEB",
+      "donate": "9,1,35,False,False,#D9EAD3",
+      "examineBody": "9,1,40,False,False,#C9DAF8",
+      "examineOrgan": "13,1,30,False,False,#FCE5CD",
+      "examineTissue": "17.5,1,25,False,False,#7DB1B0",
+      "fingernail": "16,1,20,False,False,#6D9EEB",
+      "fingerprint": "9,1,40,False,False,#00FF00",
+      "folderDental": "13,1,35,False,False,#93C47D",
+      "folderMedical": "17,1,30,False,False,#93C47D",
+      "folderXray": "16,1,30,False,False,#93C47D",
+      "fridgeChoice": "9,1,60,False,True,#FF00FF",
+      "organAutopsy": "14,1,15,False,False,#F6B26B",
+      "organWeighing": "13,1,40,False,False,#FF9900",
+      "removeOrgan": "15,1,30,False,False,#3C78D8",
       "defibrilator": "21,1,20,False,False,#FFFFFF"
     },
     "Room 4": {},
@@ -153,7 +153,8 @@
       "28.5",
       "29.0",
       "29.5",
-      "30.0"
+      "30.0",
+      "31.0"
     ]
   },
   "CustomizedTreatmentWeights": {
@@ -168,6 +169,16 @@
       "folderDental": 0,
       "fridgeChoice": 0,
       "organWeighing": 100
+    },
+    "r3_b02_bonus_03": {
+      "bodyHeight": 0,
+      "cameraLense": 0,
+      "cameraMicro": 0,
+      "examineOrgan": 0,
+      "fingerprint": 0,
+      "folderDental": 0,
+      "fridgeChoice": 0,
+      "organWeighing": 0
     }
   }
 }

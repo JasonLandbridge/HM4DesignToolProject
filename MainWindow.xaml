@@ -141,8 +141,9 @@
 				<MenuItem Header="_File">
 					<MenuItem  x:Name="menuItemNewLevel" Header="_Create New Levels" Click="menuItemNewLevel_Click"/>
 					<MenuItem x:Name="menuItemExportLevelList" Header="_Create Level List" Click="menuItemExportLevelList_Click"/>
-					<MenuItem Header="_Close"/>
 					<MenuItem Header="_Save"/>
+					<MenuItem Header="_Close"/>
+
 				</MenuItem>
 				<MenuItem x:Name="menuItemSettings" Header="_Settings" Click="menuItemSettings_Click"/>
 				<MenuItem Header="_View"/>
@@ -542,7 +543,7 @@
 							</Grid>
 							<!-- Patient Chance Overview -->
 							<ScrollViewer HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" >
-								<ItemsControl x:Name="patientChanceOverviewLayout" ItemTemplate="{DynamicResource PatientChancesRowTemplate}"  ItemsSource="{Binding GetLevelLoaded.PatientChanceCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, diag:PresentationTraceSources.TraceLevel=High}" />
+								<ItemsControl x:Name="patientChanceOverviewLayout" ItemTemplate="{DynamicResource PatientChancesRowTemplate}"  ItemsSource="{Binding GetLevelLoaded.PatientChanceCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 							</ScrollViewer>
 							<!-- Patient Chance Overview Footer -->
 							<Grid Grid.Row="2">

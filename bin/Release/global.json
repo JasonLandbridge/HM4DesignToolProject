@@ -7,7 +7,12 @@
       "teen2_male_casual"
     ],
     "Room 2": [],
-    "Room 3": [],
+    "Room 3": [
+      "doctor_male1",
+      "doctor_male2",
+      "doctor_female1",
+      "doctor_female2"
+    ],
     "Room 4": [],
     "Room 5": [],
     "Room 6": [
@@ -15,67 +20,165 @@
       "normal_male",
       "senior_male1",
       "business_female",
-      "doctor_female2"
+      "business_female_casual"
     ]
   },
   "treatmentCategories": {
-    "Room 1": {
-      "fdfvd": "2.5,54,0,False,False",
-      "test2": "6.5,546,45645,False,True",
-      "dfvdfvd": "7.5,5456,456,False,False",
-      "fvdfvdfv": "2.5,456456,54,False,False",
-      "dfvdfvdfvd": "11.5,4564,456,False,False"
-    },
+    "Room 1": {},
     "Room 2": {
-      "fdf536563vd": "3,54,0,False,False",
-      "fdv45363456dfv": "0,546,45645,False,True",
-      "df34563456vdfvd": "0,5456,456,False,False",
-      "fvd34563456fvdfv": "0,456456,54,False,False",
-      "dfv34563456dfvdfvd": "0,4564,456,False,False"
+      "fdf536563vd": "3,54,0,False,False,#0000FF",
+      "fdv45363456dfv": "0,546,45645,False,True,#0000FF",
+      "df34563456vdfvd": "0,5456,456,False,False,#0000FF",
+      "fvd34563456fvdfv": "0,456456,54,False,False,#FFE4C4",
+      "dfv34563456dfvdfvd": "0,4564,456,False,False,#FFE4C4"
     },
-    "Room 3": {},
+    "Room 3": {
+      "bloodtype": "16,1,30,False,False,#FCE5CD",
+      "bodyHeight": "13,1,40,False,False,#A4C2F4",
+      "bodyMarks": "16,1,35,False,False,#0000FF",
+      "bodyWeight": "14,1,40,False,False,#C9DAF8",
+      "cameraLense": "11,1,30,False,False,#6D9EEB",
+      "cameraMicro": "11,1,30,False,False,#6D9EEB",
+      "deliverCoolbox": "15,1,30,False,False,#6D9EEB",
+      "donate": "9,1,35,False,False,#D9EAD3",
+      "examineBody": "9,1,40,False,False,#C9DAF8",
+      "examineOrgan": "13,1,30,False,False,#FCE5CD",
+      "examineTissue": "17.5,1,25,False,False,#7DB1B0",
+      "fingernail": "16,1,20,False,False,#6D9EEB",
+      "fingerprint": "9,1,40,False,False,#00FF00",
+      "folderDental": "13,1,35,False,False,#93C47D",
+      "folderMedical": "17,1,30,False,False,#93C47D",
+      "folderXray": "16,1,30,False,False,#93C47D",
+      "fridgeChoice": "9,1,60,False,True,#FF00FF",
+      "organAutopsy": "14,1,15,False,False,#F6B26B",
+      "organWeighing": "13,1,40,False,False,#FF9900",
+      "removeOrgan": "15,1,30,False,False,#3C78D8",
+      "defibrilator": "21,1,20,False,False,#FFFFFF"
+    },
     "Room 4": {},
     "Room 5": {},
-    "Room 6": {}
+    "Room 6": {
+      "applyAdrenaline": "23,1,20,False,False,#FFFFFF",
+      "applyBandage": "21,1,20,False,False,#FFFFFF",
+      "applyBandaid": "21,1,20,False,False,#FFFFFF",
+      "applyColdPack": "26,1,20,False,False,#FFFFFF",
+      "applyDisinfectant": "21,1,20,False,False,#FFFFFF",
+      "applyEyeWash": "21,1,20,False,False,#FFFFFF",
+      "applyHotBalm": "21,1,20,False,False,#FFFFFF",
+      "applyHotPack": "21,1,20,False,False,#FFFFFF",
+      "applyLotion": "21,1,20,False,False,#FFFFFF",
+      "applySplint": "29,1,20,False,False,#FFFFFF",
+      "applyTourniquet": "21,1,20,False,False,#FFFFFF",
+      "axialSlicesTreatment": "25,1,20,False,False,#FFFFFF",
+      "cprTreatment": "21,1,20,False,False,#FFFFFF",
+      "findTools": "21,1,20,False,False,#FFFFFF",
+      "hookupCardiac": "21,1,20,False,False,#FFFFFF",
+      "oxygenTreatment": "21,1,20,False,False,#FFFFFF",
+      "provideIbuprofen": "21,1,20,False,False,#FFFFFF",
+      "removeObject": "21,1,20,False,False,#FFFFFF",
+      "stitchTreatment": "21,1,20,False,False,#FFFFFF",
+      "takeBlood": "21,1,20,False,False,#FFFFFF",
+      "useThermometer": "21,1,20,False,False,#FFFFFF",
+      "xrayTreatment": "21,1,20,False,False,#FFFFFF"
+    }
   },
   "balancingCategories": {
     "Room 1": [
       "1.0",
-      "2.5",
-      "4.5",
-      "6.5",
-      "7.5",
-      "10.0",
-      "11.5"
-    ],
-    "Room 2": [
-      "10",
-      "20.5",
-      "40",
-      "50.5"
-    ],
-    "Room 3": [
-      "1.0",
-      "2.5",
-      "4.5",
-      "6.5",
-      "8.5",
-      "10.5"
-    ],
-    "Room 4": [],
-    "Room 5": [
-      "2.0",
-      "4.0",
-      "5.5",
+      "3.0",
+      "5.0",
+      "6.0",
       "7.0",
+      "8.0",
       "8.5",
+      "9.0",
+      "9.5",
       "10.0"
     ],
+    "Room 2": [
+      "5.0",
+      "7.0",
+      "9.0",
+      "10.0",
+      "11.0",
+      "12.0",
+      "12.5",
+      "13.0",
+      "13.5",
+      "14.0"
+    ],
+    "Room 3": [
+      "9.0",
+      "11.0",
+      "13.0",
+      "14.0",
+      "15.0",
+      "16.0",
+      "16.5",
+      "17.0",
+      "17.5",
+      "18.0"
+    ],
+    "Room 4": [
+      "13.0",
+      "15.0",
+      "17.0",
+      "18.0",
+      "19.0",
+      "20.0",
+      "20.5",
+      "21.0",
+      "21.5",
+      "22.0"
+    ],
+    "Room 5": [
+      "17.0",
+      "19.0",
+      "21.0",
+      "22.0",
+      "23.0",
+      "24.0",
+      "24.5",
+      "25.0",
+      "25.5",
+      "26.0"
+    ],
     "Room 6": [
-      "5",
-      "2.5",
-      "4.5",
-      "6"
+      "21.0",
+      "23.0",
+      "25.0",
+      "26.0",
+      "27.0",
+      "28.0",
+      "28.5",
+      "29.0",
+      "29.5",
+      "30.0",
+      "31.0"
     ]
+  },
+  "CustomizedTreatmentWeights": {
+    "r3_b02_bonus_01": {
+      "bodyHeight": 0,
+      "cameraLense": 0,
+      "cameraMicro": 69,
+      "donate": 38,
+      "examineBody": 76,
+      "examineOrgan": 0,
+      "fingerprint": 0,
+      "folderDental": 0,
+      "fridgeChoice": 0,
+      "organWeighing": 100
+    },
+    "r3_b02_bonus_03": {
+      "bodyHeight": 0,
+      "cameraLense": 0,
+      "cameraMicro": 0,
+      "examineOrgan": 0,
+      "fingerprint": 0,
+      "folderDental": 0,
+      "fridgeChoice": 0,
+      "organWeighing": 0
+    }
   }
 }

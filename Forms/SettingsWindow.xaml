@@ -174,7 +174,7 @@
 									<mah:DataGridNumericUpDownColumn Binding="{Binding Weight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Base Weight" Width="*" MaxWidth="80"/>
 									<DataGridCheckBoxColumn Binding="{Binding Gesture, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Gesture" Width="*" MaxWidth="60"/>
 									<DataGridCheckBoxColumn Binding="{Binding AlwaysLast, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Always Last" Width="*" MaxWidth="80"/>
-									<DataGridTextColumn Binding="{Binding TreatmentColorString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Header="Color Value" Width="*">
+									<DataGridTextColumn Binding="{Binding TreatmentColorString, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"  Header="Color Value" Width="*">
 										<DataGridTextColumn.ElementStyle>
 											<Style TargetType="{x:Type TextBlock}">
 												<Setter Property="Background" Value="{Binding TreatmentColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>

@@ -459,7 +459,7 @@ namespace HM4DesignTool.Level
                     output += "{" + Environment.NewLine;
                     foreach (Patient patient in this.PatientList)
                     {
-                        output += patient.ToString();
+                        output += patient.ToOutput();
                     }
 
                     output += "}" + Environment.NewLine;

@@ -1,6 +1,4 @@
-﻿using DataNameSpace;
-using NaturalSort.Extension;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -11,6 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Data;
+
+using DataNameSpace;
+
+using NaturalSort.Extension;
 
 namespace LevelData
 {
@@ -24,9 +26,9 @@ namespace LevelData
 
         private int delay = 1000;
 
-        private String patientName = String.Empty;
+        private string patientName = string.Empty;
 
-        private Dictionary<String, String> patientTraits;
+        private Dictionary<string, string> patientTraits;
 
         private int weight = 0;
 
@@ -36,7 +38,7 @@ namespace LevelData
         {
         }
 
-        public Patient(Level ParentLevel, String patientName = null)
+        public Patient(Level ParentLevel, string patientName = null)
         {
             this.ParentLevel = ParentLevel;
 
@@ -52,33 +54,35 @@ namespace LevelData
         {
             get
             {
-                return delay;
+                return this.delay;
             }
+
             set
             {
-                delay = value;
-                OnPropertyChanged("Delay");
+                this.delay = value;
+                this.OnPropertyChanged("Delay");
 
-                if (ParentLevel != null)
+                if (this.ParentLevel != null)
                 {
-                    ParentLevel.UpdateLevelOutput();
+                    this.ParentLevel.UpdateLevelOutput();
                 }
             }
         }
 
-        public String PatientName
+        public string PatientName
         {
             get
             {
-                return patientName;
+                return this.patientName;
             }
+
             set
             {
-                patientName = value;
-                OnPropertyChanged("PatientName");
-                if (ParentLevel != null)
+                this.patientName = value;
+                this.OnPropertyChanged("PatientName");
+                if (this.ParentLevel != null)
                 {
-                    ParentLevel.UpdateLevelOutput();
+                    this.ParentLevel.UpdateLevelOutput();
                 }
             }
         }
@@ -87,9 +91,9 @@ namespace LevelData
         {
             get
             {
-                if (ParentLevel != null)
+                if (this.ParentLevel != null)
                 {
-                    return ParentLevel.GetRoomIndex;
+                    return this.ParentLevel.GetRoomIndex;
                 }
                 else
                 {
@@ -102,17 +106,17 @@ namespace LevelData
         {
             get
             {
-                return _treatmentList;
+                return this._treatmentList;
             }
+
             set
             {
+                this._treatmentList = value;
 
-                _treatmentList = value;
-
-                OnPropertyChanged("TreatmentCollection");
-                if (ParentLevel != null)
+                this.OnPropertyChanged("TreatmentCollection");
+                if (this.ParentLevel != null)
                 {
-                    ParentLevel.UpdateLevelOutput();
+                    this.ParentLevel.UpdateLevelOutput();
                 }
             }
         }
@@ -122,7 +126,7 @@ namespace LevelData
             get
             {
                 int count = 0;
-                foreach (Treatment treatment in TreatmentCollection)
+                foreach (Treatment treatment in this.TreatmentCollection)
                 {
                     if (treatment.IsVisible == true)
                     {
@@ -134,17 +138,20 @@ namespace LevelData
             }
         }
 
-        public ObservableCollection<String> TreatmentOptions
+        public ObservableCollection<string> TreatmentOptions
         {
             get
             {
-                if (ParentLevel != null)
+                if (this.ParentLevel != null)
                 {
-                    return new ObservableCollection<String>(ParentLevel.AvailableTreatmentStringList);
+                    List<string> output = this.ParentLevel.AvailableTreatmentStringList;
+                    output.Insert(0, string.Empty);
+
+                    return new ObservableCollection<string>(output);
                 }
                 else
                 {
-                    return new ObservableCollection<String> { };
+                    return new ObservableCollection<string> { };
                 }
             }
         }
@@ -153,15 +160,16 @@ namespace LevelData
         {
             get
             {
-                return weight;
+                return this.weight;
             }
+
             set
             {
-                weight = value;
-                OnPropertyChanged("Weight");
-                if (ParentLevel != null)
+                this.weight = value;
+                this.OnPropertyChanged("Weight");
+                if (this.ParentLevel != null)
                 {
-                    ParentLevel.UpdateLevelOutput();
+                    this.ParentLevel.UpdateLevelOutput();
                 }
             }
         }
@@ -171,7 +179,7 @@ namespace LevelData
             get
             {
                 int count = 0;
-                foreach (Treatment treatment in TreatmentCollection)
+                foreach (Treatment treatment in this.TreatmentCollection)
                 {
                     if (!treatment.IsEmpty)
                     {
@@ -188,7 +196,7 @@ namespace LevelData
         {
             if (Value > 0)
             {
-                int treatmentCount = TreatmentCollectionVisibleCount;
+                int treatmentCount = this.TreatmentCollectionVisibleCount;
 
                 if (Value < treatmentCount)
                 {
@@ -198,7 +206,7 @@ namespace LevelData
                     {
                         int index = treatmentCount - i;
 
-                        TreatmentCollection.ElementAt(index).IsVisible = false;
+                        this.TreatmentCollection.ElementAt(index).IsVisible = false;
 
                     }
 
@@ -210,13 +218,13 @@ namespace LevelData
                     for (int i = 0; i < amountToAdd; i++)
                     {
                         int index = treatmentCount + i;
-                        if (index < TreatmentCollection.Count)
+                        if (index < this.TreatmentCollection.Count)
                         {
-                            TreatmentCollection.ElementAt(index).IsVisible = true;
+                            this.TreatmentCollection.ElementAt(index).IsVisible = true;
                         }
                         else
                         {
-                            AddTreatment();
+                            this.AddTreatment();
                         }
                     }
                 }
@@ -224,20 +232,46 @@ namespace LevelData
             }
         }
 
-        public void SetPatientData(String patientData)
+        public void SetPatientData(string patientData)
         {
-            ParsePatientData(patientData);
+            this.ParsePatientData(patientData);
+        }
+
+        public string TreatmentListString
+        {
+            get
+            {
+                string output = string.Empty;
+
+                foreach (Treatment treatment in this.TreatmentCollection)
+                {
+
+                    if (!treatment.IsEmpty)
+                    {
+                        output = $"{output}\"{treatment.TreatmentName}\", ";
+                    }
+
+                }
+
+                // Remove last ,
+                if (output.EndsWith(", "))
+                {
+                    output = output.Remove(output.Length - 2, 2);
+                }
+
+                return output;
+            }
         }
 
         public void SetTreatments(List<Treatment> TreatmentList)
         {
-            //Make sure the maxAmount of visible treatments in visible
-            SetMaxTreatments(Math.Max(TreatmentList.Count, TreatmentCollection.Count));
+            // Make sure the maxAmount of visible treatments in visible
+            this.SetMaxTreatments(Math.Max(TreatmentList.Count, this.TreatmentCollection.Count));
 
 
-            for (int i = 0; i < TreatmentCollection.Count; i++)
+            for (int i = 0; i < this.TreatmentCollection.Count; i++)
             {
-                Treatment treatment = TreatmentCollection.ElementAt<Treatment>(i);
+                Treatment treatment = this.TreatmentCollection.ElementAt<Treatment>(i);
 
                 if (i < TreatmentList.Count)
                 {
@@ -245,7 +279,7 @@ namespace LevelData
                 }
                 else
                 {
-                    treatment.TreatmentName = String.Empty;
+                    treatment.TreatmentName = string.Empty;
                 }
 
                 treatment.SetPatientParent(this);
@@ -255,59 +289,68 @@ namespace LevelData
 
         public override string ToString()
         {
-            String output = "";
-            output += "\t{";
+            return $"{this.PatientName}, {this.delay}, {this.TreatmentListString},";
+        }
 
-            if (delay > -1)
+        public string ToOutput()
+        {
+            if (this.GetTreatmentCount > 0)
             {
-                output += " delay = " + delay.ToString() + ",";
-            }
-            if (weightEnabled && weight > -1)
-            {
-                output += " weight = " + weight.ToString() + ",";
-            }
+                string output = "\t{";
 
-            if (TreatmentCollection != null && TreatmentCollection.Count() > 0)
-            {
-                output += " todo = {";
-                int i = 0;
-                foreach (Treatment treatment in TreatmentCollection)
+                if (this.delay > -1)
                 {
-                    if (!treatment.IsEmpty)
+                    //Add extra space to line everything up
+                    if (this.delay < 10000)
                     {
-                        output += "\"" + treatment.TreatmentName + "\"";
-
-                        //Only add a comma when the element is not last in List
-                        if (i < TreatmentCollection.Count - 1)
-                        {
-                            output += ",";
-                        }
-                        i++;
-                    }
-                }
-                output += "}," + Environment.NewLine;
-            }
-
-            if (patientTraits != null && patientTraits.Count() > 0)
-            {
-                foreach (KeyValuePair<string, string> trait in patientTraits)
-                {
-                    output += trait.Key + " = ";
-                    if (trait.Value == "true")
-                    {
-                        output += trait.Value;
+                        output = $"{output} delay =  {this.delay.ToString()}";
                     }
                     else
                     {
-                        output += "\"" + trait.Value + "\"";
+                        output = $"{output} delay = {this.delay.ToString()}";
                     }
                 }
+
+
+                if (this.weightEnabled && this.weight > -1)
+                {
+                    output = $"{output}, weight = {this.weight.ToString()}";
+                }
+
+                if (this.TreatmentCollection != null && this.TreatmentCollection.Count() > 0)
+                {
+                    output = $"{output}, todo = {{{this.TreatmentListString}}}";
+
+                }
+
+                if (this.patientTraits != null && this.patientTraits.Count() > 0)
+                {
+                    foreach (KeyValuePair<string, string> trait in this.patientTraits)
+                    {
+                        output += trait.Key + " = ";
+                        if (trait.Value == "true")
+                        {
+                            output += trait.Value;
+                        }
+                        else
+                        {
+                            output += "\"" + trait.Value + "\"";
+                        }
+                    }
+                }
+
+                output = $"{output}}},{Environment.NewLine}";
+
+                return output;
+            }
+            else
+            {
+                return string.Empty;
             }
 
-            return output;
         }
 
-        private static String RemoveFirstComma(String patientString)
+        private static string RemoveFirstComma(string patientString)
         {
             if (patientString.StartsWith(","))
             {
@@ -319,111 +362,121 @@ namespace LevelData
             }
         }
 
-        private void AddTreatment(String treatmentName = "")
+        private void AddTreatment(string treatmentName = "")
         {
             Treatment treatment = null;
-            if (treatmentName != "")
+            if (treatmentName != string.Empty)
             {
-                treatment = Globals.GetSettings.GetTreatment(treatmentName, RoomIndex);
+                treatment = Globals.GetSettings.GetTreatment(treatmentName, this.RoomIndex);
             }
             else
             {
                 treatment = new Treatment();
             }
+
             treatment.SetPatientParent(this);
             treatment.IsVisible = true;
-            TreatmentCollection.Add(treatment);
+            this.TreatmentCollection.Add(treatment);
 
         }
 
-        private void ParsePatientData(String patientData)
+        private void ParsePatientData(string patientData)
         {
             // Clean up the patientData
-            patientData = System.Text.RegularExpressions.Regex.Replace(patientData, @"\s+", "");
+            patientData = System.Text.RegularExpressions.Regex.Replace(patientData, @"\s+", string.Empty);
 
             patientData = RemoveFirstComma(patientData);
-            //Parse the delay
-            String delayText = "delay=";
+
+            // Parse the delay
+            string delayText = "delay=";
             if (patientData.Contains(delayText))
             {
                 int startIndex = patientData.IndexOf(delayText) + delayText.Length;
                 int endIndex = patientData.IndexOf(",");
                 if (startIndex > -1 && endIndex > -1)
                 {
-                    String delayString = patientData.Substring(startIndex, endIndex - startIndex);
+                    string delayString = patientData.Substring(startIndex, endIndex - startIndex);
                     delayString = Globals.FilterToNumerical(delayString);
-                    if (delayString != String.Empty)
+                    if (delayString != string.Empty)
                     {
-                        delay = Convert.ToInt32(delayString);
+                        this.delay = Convert.ToInt32(delayString);
                     }
                     else
                     {
                         Console.WriteLine("ERROR: Level.ParsePatientData, Failed to parse delayString, was none!");
                     }
+
                     patientData = patientData.Remove(startIndex - delayText.Length, endIndex);
                 }
             }
-            //Parse the weight
+
+            // Parse the weight
             patientData = RemoveFirstComma(patientData);
-            String weightText = "weight=";
+            string weightText = "weight=";
             if (patientData.Contains(weightText))
             {
                 int startIndex = patientData.IndexOf(weightText) + weightText.Length;
                 int endIndex = patientData.IndexOf(",");
                 if (startIndex > -1 && endIndex > 0)
                 {
-                    String weightString = patientData.Substring(startIndex, endIndex - startIndex);
+                    string weightString = patientData.Substring(startIndex, endIndex - startIndex);
                     weightString = Globals.FilterToNumerical(weightString);
-                    if (weightString != String.Empty)
+                    if (weightString != string.Empty)
                     {
-                        weight = Convert.ToInt32(weightString);
+                        this.weight = Convert.ToInt32(weightString);
                     }
                     else
                     {
                         Console.WriteLine("ERROR: Level.ParsePatientData, Failed to parse weightString, was none!");
-                        weight = -1;
+                        this.weight = -1;
                     }
+
                     patientData = patientData.Remove(startIndex - weightText.Length, endIndex);
-                    weightEnabled = true;
+                    this.weightEnabled = true;
                 }
             }
-            //Parse the treatment list
+
+            // Parse the treatment list
             patientData = RemoveFirstComma(patientData);
-            String treatmentText = "todo={";
+            string treatmentText = "todo={";
             if (patientData.Contains(treatmentText))
             {
                 int startIndex = patientData.IndexOf(treatmentText) + treatmentText.Length;
                 int endIndex = patientData.IndexOf('}');
                 if (startIndex > -1 && endIndex > -1)
                 {
-                    String rawTreatments = patientData.Substring(startIndex, endIndex - startIndex);
-                    rawTreatments = rawTreatments.Replace("\"", "");
-                    List<String> TreatmentList = rawTreatments.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList<String>();
-                    //Convert found treatments to Treatment Objects
+                    string rawTreatments = patientData.Substring(startIndex, endIndex - startIndex);
+                    rawTreatments = rawTreatments.Replace("\"", string.Empty);
+                    List<string> TreatmentList = rawTreatments
+                        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList<string>();
 
-                    for (int i = 0; i < Math.Max(TreatmentList.Count, Globals.GetLevelOverview.MaxTreatmentsVisible); i++)
+                    // Convert found treatments to Treatment Objects
+                    for (int i = 0;
+                         i < Math.Max(TreatmentList.Count, Globals.GetLevelOverview.MaxTreatmentsVisible);
+                         i++)
                     {
                         if (i < TreatmentList.Count)
                         {
-                            AddTreatment(TreatmentList[i]);
+                            this.AddTreatment(TreatmentList[i]);
                         }
                         else
                         {
-                            AddTreatment();
-
+                            this.AddTreatment();
                         }
                     }
 
                     patientData = patientData.Remove(startIndex - treatmentText.Length, endIndex);
                 }
             }
+
             // If there is remaining data then it is probably traits that have been added.
             patientData = RemoveFirstComma(patientData);
             if (patientData.Length > 5)
             {
                 try
                 {
-                    patientTraits = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<String, String>>(patientData);
+                    this.patientTraits =
+                        Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(patientData);
                 }
                 catch (Exception)
                 {
@@ -431,11 +484,12 @@ namespace LevelData
                 }
             }
         }
+
         #region Events
 
         private void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion Events

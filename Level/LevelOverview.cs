@@ -1,20 +1,30 @@
-﻿using DataNameSpace;
-using NaturalSort.Extension;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Data;
-
-namespace LevelData
+﻿//--------------------------------------------------------------------------------------------------------------------
+// <copyright file="LevelOverview.cs" company="Blue Giraffe">
+//   Created by Jason Landbrug as part of an Design internship from 12-02-2018 / 18-06-2018 at Blue Giraffe
+// </copyright>
+// <summary>
+//   Defines the DesignToolData type.
+// </summary>
+//
+//--------------------------------------------------------------------------------------------------------------------
+namespace HM4DesignTool.Level
 {
-    using HM4DesignTool.Level;
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Data;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Windows.Controls;
+    using System.Windows.Data;
+
+    using DataNameSpace;
+
+    using LevelData;
+
+    using NaturalSort.Extension;
 
     public class LevelOverview : INotifyPropertyChanged
     {
@@ -36,18 +46,18 @@ namespace LevelData
         {
             get
             {
-                return _currentLevelLoaded;
+                return this._currentLevelLoaded;
             }
             set
             {
-                if (value != _currentLevelLoaded)
+                if (value != this._currentLevelLoaded)
                 {
-                    _currentLevelLoaded = value;
-                    OnPropertyChanged("GetLevelLoaded");
-                    OnPropertyChanged("LevelOverviewActive");
-                    OnPropertyChanged("DifficultyModifierList");
-                    UpdateRandomRecommendations();
-                    UpdatePatientSimulator();
+                    this._currentLevelLoaded = value;
+                    this.OnPropertyChanged("GetLevelLoaded");
+                    this.OnPropertyChanged("LevelOverviewActive");
+                    this.OnPropertyChanged("DifficultyModifierList");
+                    this.UpdateRandomRecommendations();
+                    this.UpdatePatientSimulator();
                 }
             }
         }
@@ -56,7 +66,7 @@ namespace LevelData
         {
             get
             {
-                if (GetLevelLoaded != null)
+                if (this.GetLevelLoaded != null)
                 {
                     return true;
                 }
@@ -72,13 +82,13 @@ namespace LevelData
         {
             get
             {
-                return _maxTreatmentsVisible;
+                return this._maxTreatmentsVisible;
             }
             set
             {
-                _maxTreatmentsVisible = value;
-                OnPropertyChanged("MaxTreatmentsVisible");
-                GetLevelLoaded.UpdateMaxTreatments(value);
+                this._maxTreatmentsVisible = value;
+                this.OnPropertyChanged("MaxTreatmentsVisible");
+                this.GetLevelLoaded.UpdateMaxTreatments(value);
             }
         }
 
@@ -88,9 +98,9 @@ namespace LevelData
         {
             get
             {
-                if (GetLevelLoaded != null)
+                if (this.GetLevelLoaded != null)
                 {
-                    String categoryKey = Globals.GetCategoryKey(GetLevelLoaded.GetRoomIndex);
+                    String categoryKey = Globals.GetCategoryKey(this.GetLevelLoaded.GetRoomIndex);
                     if (categoryKey != String.Empty)
                     {
                         return new ObservableCollection<String>(Globals.GetSettings.GetDifficultyModifierList(categoryKey));
@@ -105,13 +115,13 @@ namespace LevelData
         {
             get
             {
-                return _showAvailableTreatmentsCheck;
+                return this._showAvailableTreatmentsCheck;
             }
             set
             {
-                _showAvailableTreatmentsCheck = value;
-                OnPropertyChanged("ShowAvailableTreatmentsCheck");
-                OnPropertyChanged("GetTreatmentsAvailableString");
+                this._showAvailableTreatmentsCheck = value;
+                this.OnPropertyChanged("ShowAvailableTreatmentsCheck");
+                this.OnPropertyChanged("GetTreatmentsAvailableString");
             }
         }
 
@@ -121,13 +131,13 @@ namespace LevelData
         {
             get
             {
-                return _useRandomRecommendations;
+                return this._useRandomRecommendations;
             }
             set
             {
-                _useRandomRecommendations = value;
-                OnPropertyChanged("UseRandomRecommendations");
-                UpdateRandomRecommendations();
+                this._useRandomRecommendations = value;
+                this.OnPropertyChanged("UseRandomRecommendations");
+                this.UpdateRandomRecommendations();
             }
         }
 
@@ -137,12 +147,12 @@ namespace LevelData
         {
             get
             {
-                return _generatePatientTypeCheck;
+                return this._generatePatientTypeCheck;
             }
             set
             {
-                _generatePatientTypeCheck = value;
-                OnPropertyChanged("GeneratePatientTypeCheck");
+                this._generatePatientTypeCheck = value;
+                this.OnPropertyChanged("GeneratePatientTypeCheck");
             }
         }
 
@@ -151,12 +161,12 @@ namespace LevelData
         {
             get
             {
-                return _generatePatientTypeMin;
+                return this._generatePatientTypeMin;
             }
             set
             {
-                _generatePatientTypeMin = value;
-                OnPropertyChanged("GeneratePatientTypeMin");
+                this._generatePatientTypeMin = value;
+                this.OnPropertyChanged("GeneratePatientTypeMin");
             }
         }
 
@@ -165,12 +175,12 @@ namespace LevelData
         {
             get
             {
-                return _generatePatientTypeMax;
+                return this._generatePatientTypeMax;
             }
             set
             {
-                _generatePatientTypeMax = value;
-                OnPropertyChanged("GeneratePatientTypeMax");
+                this._generatePatientTypeMax = value;
+                this.OnPropertyChanged("GeneratePatientTypeMax");
             }
         }
         #endregion
@@ -181,12 +191,12 @@ namespace LevelData
         {
             get
             {
-                return _generatePatientsCheck;
+                return this._generatePatientsCheck;
             }
             set
             {
-                _generatePatientsCheck = value;
-                OnPropertyChanged("GeneratePatientsCheck");
+                this._generatePatientsCheck = value;
+                this.OnPropertyChanged("GeneratePatientsCheck");
             }
         }
 
@@ -195,12 +205,12 @@ namespace LevelData
         {
             get
             {
-                return _generatePatientsMin;
+                return this._generatePatientsMin;
             }
             set
             {
-                _generatePatientsMin = value;
-                OnPropertyChanged("GeneratePatientsMin");
+                this._generatePatientsMin = value;
+                this.OnPropertyChanged("GeneratePatientsMin");
             }
         }
 
@@ -209,12 +219,12 @@ namespace LevelData
         {
             get
             {
-                return _generatePatientsMax;
+                return this._generatePatientsMax;
             }
             set
             {
-                _generatePatientsMax = value;
-                OnPropertyChanged("GeneratePatientsMax");
+                this._generatePatientsMax = value;
+                this.OnPropertyChanged("GeneratePatientsMax");
             }
         }
         #endregion
@@ -225,12 +235,12 @@ namespace LevelData
         {
             get
             {
-                return _generatePatientDelayCheck;
+                return this._generatePatientDelayCheck;
             }
             set
             {
-                _generatePatientDelayCheck = value;
-                OnPropertyChanged("GeneratePatientDelayCheck");
+                this._generatePatientDelayCheck = value;
+                this.OnPropertyChanged("GeneratePatientDelayCheck");
             }
         }
 
@@ -239,12 +249,12 @@ namespace LevelData
         {
             get
             {
-                return _generatePatientDelayMin;
+                return this._generatePatientDelayMin;
             }
             set
             {
-                _generatePatientDelayMin = value;
-                OnPropertyChanged("GeneratePatientDelayMin");
+                this._generatePatientDelayMin = value;
+                this.OnPropertyChanged("GeneratePatientDelayMin");
             }
         }
 
@@ -253,12 +263,12 @@ namespace LevelData
         {
             get
             {
-                return _generatePatientDelayMax;
+                return this._generatePatientDelayMax;
             }
             set
             {
-                _generatePatientDelayMax = value;
-                OnPropertyChanged("GeneratePatientDelayMax");
+                this._generatePatientDelayMax = value;
+                this.OnPropertyChanged("GeneratePatientDelayMax");
             }
         }
         #endregion
@@ -269,12 +279,12 @@ namespace LevelData
         {
             get
             {
-                return _generateTreatmentsCheck;
+                return this._generateTreatmentsCheck;
             }
             set
             {
-                _generateTreatmentsCheck = value;
-                OnPropertyChanged("GenerateTreatmentsCheck");
+                this._generateTreatmentsCheck = value;
+                this.OnPropertyChanged("GenerateTreatmentsCheck");
             }
         }
 
@@ -283,12 +293,12 @@ namespace LevelData
         {
             get
             {
-                return _generateTreatmentsMin;
+                return this._generateTreatmentsMin;
             }
             set
             {
-                _generateTreatmentsMin = value;
-                OnPropertyChanged("GenerateTreatmentsMin");
+                this._generateTreatmentsMin = value;
+                this.OnPropertyChanged("GenerateTreatmentsMin");
             }
         }
 
@@ -297,12 +307,12 @@ namespace LevelData
         {
             get
             {
-                return _generateTreatmentsMax;
+                return this._generateTreatmentsMax;
             }
             set
             {
-                _generateTreatmentsMax = value;
-                OnPropertyChanged("GenerateTreatmentsMax");
+                this._generateTreatmentsMax = value;
+                this.OnPropertyChanged("GenerateTreatmentsMax");
             }
         }
 
@@ -342,7 +352,7 @@ namespace LevelData
 
         public List<String> GetFilteredLevels(int roomIndex = 0, bool storyLevels = false, bool bonusLevels = false, bool unknownLevels = false)
         {
-            List<String> rawLevelList = GetLevelsFromDisk(false, true);
+            List<String> rawLevelList = this.GetLevelsFromDisk(false, true);
             List<String> outputLevelList = new List<String> { };
 
             foreach (String level in rawLevelList)
@@ -388,20 +398,20 @@ namespace LevelData
         public Dictionary<String, List<String>> GetCategorizedFilteredLevels(int roomIndex = 0, bool storyLevels = false, bool bonusLevels = false, bool unknownLevels = false)
         {
             Dictionary<String, List<String>> CategorizedFilterdLevels = new Dictionary<String, List<String>> { };
-            List<String> FilteredLevelList = GetFilteredLevels(roomIndex, storyLevels, bonusLevels, unknownLevels);
+            List<String> FilteredLevelList = this.GetFilteredLevels(roomIndex, storyLevels, bonusLevels, unknownLevels);
 
             if (roomIndex == 0)
             {
                 if (storyLevels)
                 {
-                    CategorizedFilterdLevels.Add("Story", GetFilteredLevels(0, true, false, false));
+                    CategorizedFilterdLevels.Add("Story", this.GetFilteredLevels(0, true, false, false));
                 }
 
                 if (bonusLevels)
                 {
                     for (int i = 1; i <= Globals.roomCategories.Count; i++)
                     {
-                        CategorizedFilterdLevels.Add(Globals.roomCategories[i - 1], GetFilteredLevels(i, false, true, false));
+                        CategorizedFilterdLevels.Add(Globals.roomCategories[i - 1], this.GetFilteredLevels(i, false, true, false));
                     }
                 }
             }
@@ -409,18 +419,18 @@ namespace LevelData
             {
                 if (storyLevels)
                 {
-                    CategorizedFilterdLevels.Add("Story", GetFilteredLevels(roomIndex, true, false, false));
+                    CategorizedFilterdLevels.Add("Story", this.GetFilteredLevels(roomIndex, true, false, false));
                 }
 
                 if (bonusLevels)
                 {
-                    CategorizedFilterdLevels.Add(Globals.roomCategories[roomIndex - 1], GetFilteredLevels(roomIndex, false, true, false));
+                    CategorizedFilterdLevels.Add(Globals.roomCategories[roomIndex - 1], this.GetFilteredLevels(roomIndex, false, true, false));
                 }
             }
             //Add all the uncategorized rooms
             if (unknownLevels)
             {
-                CategorizedFilterdLevels.Add("Unknown", GetFilteredLevels(roomIndex, false, false, true));
+                CategorizedFilterdLevels.Add("Unknown", this.GetFilteredLevels(roomIndex, false, false, true));
             }
 
             return CategorizedFilterdLevels;
@@ -430,13 +440,13 @@ namespace LevelData
         {
             levelName = CleanLevelName(levelName);
 
-            if (LevelExist(levelName))
+            if (this.LevelExist(levelName))
             {
-                GetLevelLoaded = levelObjectData[levelName];
+                this.GetLevelLoaded = this.levelObjectData[levelName];
             }
             else
             {
-                GetLevelLoaded = AddLevelByName(levelName);
+                this.GetLevelLoaded = this.AddLevelByName(levelName);
             }
         }
 
@@ -444,11 +454,11 @@ namespace LevelData
         {
             levelName = CleanLevelName(levelName);
 
-            if (!LevelExist(levelName))
+            if (!this.LevelExist(levelName))
             {
-                AddLevelByName(levelName);
+                this.AddLevelByName(levelName);
             }
-            return levelObjectData[levelName];
+            return this.levelObjectData[levelName];
         }
 
         private Level CreateLevel(String levelName)
@@ -463,20 +473,20 @@ namespace LevelData
         private Level AddLevelByName(String levelName)
         {
             levelName = CleanLevelName(levelName);
-            if (LevelExist(levelName))
+            if (this.LevelExist(levelName))
             {
-                levelObjectData.Remove(levelName);
+                this.levelObjectData.Remove(levelName);
             }
 
-            levelObjectData.Add(levelName, CreateLevel(levelName));
-            return levelObjectData[levelName];
+            this.levelObjectData.Add(levelName, this.CreateLevel(levelName));
+            return this.levelObjectData[levelName];
         }
 
         public void AddPatientToLoadedLevel()
         {
-            if (GetLevelLoaded != null)
+            if (this.GetLevelLoaded != null)
             {
-                GetLevelLoaded.AddPatient();
+                this.GetLevelLoaded.AddPatient();
             }
         }
 
@@ -484,7 +494,7 @@ namespace LevelData
         {
             levelName = CleanLevelName(levelName);
 
-            return levelObjectData.ContainsKey(levelName);
+            return this.levelObjectData.ContainsKey(levelName);
         }
 
         private static String CleanLevelName(String levelName)
@@ -510,20 +520,20 @@ namespace LevelData
         internal void UpdateRandomRecommendations()
         {
 
-            if (UseRandomRecommendations)
+            if (this.UseRandomRecommendations)
             {
-                int numberOfPatients = Globals.GetGameValues.NumberOfPatientsToInt(GetLevelLoaded.GetDifficultyModifier);
-                int treatmentPerPatients = Globals.GetGameValues.TreatmentPerPatientToInt(GetLevelLoaded.GetDifficultyModifier);
-                int patientTypeCount = Globals.GetSettings.GetPatientChanceList(GetLevelLoaded.CategoryKey).Count;
+                int numberOfPatients = Globals.GetGameValues.NumberOfPatientsToInt(this.GetLevelLoaded.GetDifficultyModifier);
+                int treatmentPerPatients = Globals.GetGameValues.TreatmentPerPatientToInt(this.GetLevelLoaded.GetDifficultyModifier);
+                int patientTypeCount = Globals.GetSettings.GetPatientChanceList(this.GetLevelLoaded.CategoryKey).Count;
 
-                GeneratePatientTypeMin = patientTypeCount;
-                GeneratePatientTypeMax = patientTypeCount;
+                this.GeneratePatientTypeMin = patientTypeCount;
+                this.GeneratePatientTypeMax = patientTypeCount;
 
-                GeneratePatientsMin = numberOfPatients - 1;
-                GeneratePatientsMax = numberOfPatients + 1;
+                this.GeneratePatientsMin = numberOfPatients - 1;
+                this.GeneratePatientsMax = numberOfPatients + 1;
 
-                GenerateTreatmentsMin = treatmentPerPatients - 1;
-                GenerateTreatmentsMax = treatmentPerPatients + 1;
+                this.GenerateTreatmentsMin = treatmentPerPatients - 1;
+                this.GenerateTreatmentsMax = treatmentPerPatients + 1;
 
 
 
@@ -536,34 +546,34 @@ namespace LevelData
 
         public void RandomizeLevel()
         {
-            if (GetLevelLoaded != null)
+            if (this.GetLevelLoaded != null)
             {
-                if (GeneratePatientTypeCheck)
+                if (this.GeneratePatientTypeCheck)
                 {
-                    foreach (PatientChance patientChance in GetLevelLoaded.PatientChanceCollection)
+                    foreach (PatientChance patientChance in this.GetLevelLoaded.PatientChanceCollection)
                     {
                         patientChance.RandomizeWeight(Globals.GetRandom.Next(1, 100));
                     }
                 }
 
 
-                if (GeneratePatientsCheck)
+                if (this.GeneratePatientsCheck)
                 {
-                    int patientAmount = Globals.GetRandom.Next(Math.Min(GeneratePatientsMin, GeneratePatientsMax), GeneratePatientsMax);
-                    GetLevelLoaded.SetPatientAmount(patientAmount);
+                    int patientAmount = Globals.GetRandom.Next(Math.Min(this.GeneratePatientsMin, this.GeneratePatientsMax), this.GeneratePatientsMax);
+                    this.GetLevelLoaded.SetPatientAmount(patientAmount);
                 }
 
-                if (GenerateTreatmentsCheck)
+                if (this.GenerateTreatmentsCheck)
                 {
-                    GetLevelLoaded.RandomizeTreatments(Math.Min(GenerateTreatmentsMin, GenerateTreatmentsMax), GenerateTreatmentsMax);
+                    this.GetLevelLoaded.RandomizeTreatments(Math.Min(this.GenerateTreatmentsMin, this.GenerateTreatmentsMax), this.GenerateTreatmentsMax);
                 }
 
-                if (GeneratePatientDelayCheck)
+                if (this.GeneratePatientDelayCheck)
                 {
-                    GetLevelLoaded.RandomizeDelay();
+                    this.GetLevelLoaded.RandomizeDelay();
                 }
 
-                GetLevelLoaded.UpdateLevelOutput();
+                this.GetLevelLoaded.UpdateLevelOutput();
 
             }
         }
@@ -604,16 +614,16 @@ namespace LevelData
                 DataGridComboBoxColumn treatmentColumn = new DataGridComboBoxColumn();
                 treatmentColumn.Header = ColumnName;
                 treatmentColumn.SelectedValueBinding = new Binding(treatmentDataTable.Columns[i + 1].ToString());
-                treatmentColumn.ItemsSource = GetLevelLoaded.AvailableTreatmentList;
+                treatmentColumn.ItemsSource = this.GetLevelLoaded.AvailableTreatmentStringList;
                 treatmentColumn.Width = 120;
                 SimulatorGrid.Columns.Add(treatmentColumn);
 
 
             }
 
-            for (int patientIndex = 0; patientIndex < GetLevelLoaded.PatientCollection.Count; patientIndex++)
+            for (int patientIndex = 0; patientIndex < this.GetLevelLoaded.PatientCollection.Count; patientIndex++)
             {
-                Patient patient = GetLevelLoaded.PatientCollection[patientIndex];
+                Patient patient = this.GetLevelLoaded.PatientCollection[patientIndex];
                 DataRow patientDataRow = treatmentDataTable.NewRow();
 
                 patientDataRow["PatientName"] = patient.PatientName;
@@ -639,7 +649,7 @@ namespace LevelData
 
         public List<String> GetLevelsFromDisk(bool reload = false, bool filterExtension = false)
         {
-            if (levelList == null || levelList.Count() == 0 || reload)
+            if (this.levelList == null || this.levelList.Count() == 0 || reload)
             {
                 String projectPath = Globals.GetSettings.projectPathLevel;
                 if (Directory.Exists(projectPath))
@@ -660,11 +670,11 @@ namespace LevelData
                         }
                     }
 
-                    levelList = tmpLevelList;
+                    this.levelList = tmpLevelList;
                 }
             }
 
-            return levelList;
+            return this.levelList;
         }
 
         #endregion Getters
@@ -675,7 +685,7 @@ namespace LevelData
 
         private void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion INotifyPropertyChanged Members
