@@ -17,6 +17,7 @@ namespace HM4DesignTool.Level
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Data;
 
@@ -33,6 +34,11 @@ namespace HM4DesignTool.Level
     public class LevelOverview : INotifyPropertyChanged
     {
         #region Fields
+
+        /// <summary>
+        /// true if the LevelOverview has finished loading and setting up.
+        /// </summary>
+        private bool levelOverviewFinishedLoading;
 
         /// <summary>
         /// The allow level script to update field.
@@ -55,7 +61,7 @@ namespace HM4DesignTool.Level
         private bool showAvailableTreatmentsCheck;
 
         /// <summary>
-        /// List of the currently loaded levels field.
+        /// List of the level names field.
         /// </summary>
         private List<string> levelList = new List<string>();
 
@@ -63,6 +69,34 @@ namespace HM4DesignTool.Level
         /// The level object data.
         /// </summary>
         private Dictionary<string, Level> levelObjectData = new Dictionary<string, Level>();
+
+        #region LevelList
+
+        /// <summary>
+        /// The level list display collection used to display the list of levels in treeview in the Front-End.
+        /// </summary>
+        private ObservableCollection<TreeViewItem> levelListDisplayCollection = new ObservableCollection<TreeViewItem>();
+
+        /// <summary>
+        /// The LevelListDisplay Room filter selected index field.
+        /// </summary>
+        private int levelListFilterSelectedIndex;
+
+        /// <summary>
+        /// The LevelListDisplay story check field.
+        /// </summary>
+        private bool levelListStoryCheck = Globals.GetSettings.RoomFilterStoryCheck;
+
+        /// <summary>
+        /// The LevelListDisplay bonus check field.
+        /// </summary>
+        private bool levelListBonusCheck = Globals.GetSettings.RoomFilterBonusCheck;
+
+        /// <summary>
+        /// The LevelListDisplay unknown check field.
+        /// </summary>
+        private bool levelListUnknownCheck = Globals.GetSettings.RoomFilterUnknownCheck;
+        #endregion
 
         #region LevelGeneratingFields
 
@@ -136,10 +170,12 @@ namespace HM4DesignTool.Level
 
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LevelOverview"/> class.
+        /// </summary>
         public LevelOverview()
         {
         }
-
         #endregion
 
         #region Events
@@ -227,6 +263,19 @@ namespace HM4DesignTool.Level
         #region ItemCollections
 
         /// <summary>
+        /// Gets or sets the level list display collection used to display the list of levels in treeview in the Front-End.
+        /// </summary>
+        public ObservableCollection<TreeViewItem> LevelListDisplayCollection
+        {
+            get => this.levelListDisplayCollection;
+            set
+            {
+                this.levelListDisplayCollection = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
         /// Gets the difficulty modifier list for the currently loaded level.
         /// </summary>
         public ObservableCollection<string> DifficultyModifierList
@@ -243,6 +292,92 @@ namespace HM4DesignTool.Level
                 }
 
                 return new ObservableCollection<string>();
+            }
+        }
+
+        #endregion
+
+        #region LevelList
+
+        /// <summary>
+        /// Gets or sets the LevelListDisplay Room filter selected index value.
+        /// </summary>
+        public int LevelListFilterSelectedIndex
+        {
+            get => this.levelListFilterSelectedIndex;
+            set
+            {
+                this.levelListFilterSelectedIndex = value;
+                this.OnPropertyChanged();
+                if (this.levelOverviewFinishedLoading)
+                {
+                    this.UpdateLevelList();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the level list filter option items.
+        /// </summary>
+        public ObservableCollection<string> LevelListFilterItems
+        {
+            get
+            {
+                // Populate LevelListFilter Dropdown items
+                ObservableCollection<string> levelListFilterItems = new ObservableCollection<string>(Globals.roomCategories);
+                levelListFilterItems.Insert(0, "All");
+                return levelListFilterItems;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to show Story levels in the LevelListDisplay.
+        /// </summary>
+        public bool LevelListStoryCheck
+        {
+            get => this.levelListStoryCheck;
+            set
+            {
+                this.levelListStoryCheck = value;
+                this.OnPropertyChanged();
+                if (this.levelOverviewFinishedLoading)
+                {
+                    this.UpdateLevelList();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to show Bonus levels in the LevelListDisplay.
+        /// </summary>
+        public bool LevelListBonusCheck
+        {
+            get => this.levelListBonusCheck;
+            set
+            {
+                this.levelListBonusCheck = value;
+                this.OnPropertyChanged();
+                if (this.levelOverviewFinishedLoading)
+                {
+                    this.UpdateLevelList();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to show Unknown levels in the LevelListDisplay.
+        /// </summary>
+        public bool LevelListUnknownCheck
+        {
+            get => this.levelListUnknownCheck;
+            set
+            {
+                this.levelListUnknownCheck = value;
+                this.OnPropertyChanged();
+                if (this.levelOverviewFinishedLoading)
+                {
+                    this.UpdateLevelList();
+                }
             }
         }
 
@@ -489,6 +624,21 @@ namespace HM4DesignTool.Level
             }
         }
 
+        /// <summary>
+        /// Setup the LevelOverview.
+        /// </summary>
+        public void SetupLevelOverview()
+        {
+            this.LevelListFilterSelectedIndex = Globals.GetSettings.RoomFilterDropdownIndex;
+            this.LevelListStoryCheck = Globals.GetSettings.RoomFilterStoryCheck;
+            this.LevelListBonusCheck = Globals.GetSettings.RoomFilterBonusCheck;
+            this.LevelListUnknownCheck = Globals.GetSettings.RoomFilterUnknownCheck;
+
+            this.UpdateLevelList();
+
+            this.levelOverviewFinishedLoading = true;
+        }
+
         #endregion
         #region LevelManagement
         /// <summary>
@@ -693,6 +843,7 @@ namespace HM4DesignTool.Level
 
             return categorizedFilterdLevels;
         }
+
         #endregion
 
         #region ReadWrite
@@ -744,6 +895,7 @@ namespace HM4DesignTool.Level
 
             return this.levelList;
         }
+        #endregion
 
         #region GenerateLevel
 
@@ -808,9 +960,9 @@ namespace HM4DesignTool.Level
 
         #endregion
 
-        #endregion
-
         #region Private
+
+        #region Static
         /// <summary>
         /// Clean the LevelName before using it.
         /// </summary>
@@ -841,6 +993,8 @@ namespace HM4DesignTool.Level
             return levelName;
         }
 
+        #endregion
+        #region LevelManagement
         /// <summary>
         /// Create the level
         /// </summary>
@@ -880,6 +1034,54 @@ namespace HM4DesignTool.Level
             return this.levelObjectData[levelName];
         }
         #endregion
+
+        #region LevelList
+
+        /// <summary>
+        /// Update the Level List Display.
+        /// </summary>
+        private void UpdateLevelList()
+        {
+            bool firstCategoryOpen = true;
+
+            Dictionary<string, List<string>> levelDictionary = this.GetCategorizedFilteredLevels(this.LevelListFilterSelectedIndex, this.LevelListStoryCheck, this.LevelListBonusCheck, this.LevelListUnknownCheck);
+
+            // First clear the Level List
+            this.LevelListDisplayCollection.Clear();
+
+            foreach (KeyValuePair<string, List<string>> category in levelDictionary)
+            {
+                TreeViewItem categoryItem = new TreeViewItem { Header = category.Key };
+                if (category.Value.Count > 0)
+                {
+                    if (firstCategoryOpen)
+                    {
+                        categoryItem.ExpandSubtree();
+                        firstCategoryOpen = false;
+                    }
+
+                    foreach (string levelName in category.Value)
+                    {
+                        string levelHeader = levelName;
+                        //TODO Add levelType to level name. 
+                        ////if (this.LevelExist(levelName))
+                        ////{
+                        //    Level level = this.GetLevel(levelName);
+                        //    levelHeader = $"{levelName} - {level.GetLevelTypeString}";
+                        ////}
+
+                        TreeViewItem levelItem = new TreeViewItem { Header = levelHeader };
+                        levelItem.Selected += this.LevelListItemSelected;
+                        categoryItem.Items.Add(levelItem);
+                    }
+
+                    this.LevelListDisplayCollection.Add(categoryItem);
+                }
+            }
+        }
+
+        #endregion
+
         #region PatientSimulator
 
         /// <summary>
@@ -949,6 +1151,8 @@ namespace HM4DesignTool.Level
         #endregion
         #endregion
 
+        #endregion
+
         #region INotifyPropertyChanged Members
 
         /// <summary>
@@ -963,5 +1167,31 @@ namespace HM4DesignTool.Level
         }
 
         #endregion INotifyPropertyChanged Members
+
+        #region Signals
+
+        #region LevelList
+
+        /// <summary>
+        /// Fired when an Level has been selected in the LevelListDisplay.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void LevelListItemSelected(object sender, RoutedEventArgs e)
+        {
+            // https://stackoverflow.com/questions/24880824/how-to-add-wpf-treeview-node-click-event-to-get-the-node-value
+            if (sender is TreeViewItem item)
+            {
+                Globals.GetLevelOverview.LoadLevel(item.Header.ToString());
+            }
+        }
+
+        #endregion
+
+        #endregion
     }
 }

@@ -52,12 +52,11 @@ namespace HM4DesignTool
 
             this.DataContext = this;
             this.levelDataLayout.DataContext = Globals.GetLevelOverview;
-            this.levelControls.DataContext = Globals.GetLevelOverview;
-            this.autoUpdateCheckbox.DataContext = Globals.GetLevelOverview;
+            this.mainLayout.DataContext = Globals.GetLevelOverview;
 
             levelTypeDropDown.ItemsSource = GetLevelTypes;
             OnPropertyChanged("PatientRowDataTemplate");
-            //patientOverviewLayout.ItemTemplate = PatientRowDataTemplate;
+
             SetupWindow();
 
 
@@ -65,59 +64,17 @@ namespace HM4DesignTool
 
         private void SetupWindow()
         {
-            //Populate LevelListFilter Dropdown
-            levelListFilter.Items.Add("All");
-            levelListFilter.SelectedIndex = 0;
-            foreach (String category in Globals.roomCategories)
-            {
-                levelListFilter.Items.Add(category);
-            }
 
-            BeforeLoadWindowSettings();
 
-            //Populate LevelList
-            LoadLevelList();
+           // BeforeLoadWindowSettings();
 
-            AfterLoadWindowSettings();
+
+           // AfterLoadWindowSettings();
         }
 
 
 
-        private void LoadLevelList()
-        {
-            int roomIndex = levelListFilter.SelectedIndex;
-            bool firstCategoryOpen = true;
-            bool storyFilter = (bool)levelListStoryCheck.IsChecked;
-            bool bonusFilter = (bool)levelListBonusCheck.IsChecked;
-            bool unknownFilter = (bool)levelListUnknownCheck.IsChecked;
 
-
-            Dictionary<String, List<String>> levelDictionary = Globals.GetLevelOverview.GetCategorizedFilteredLevels(roomIndex, storyFilter, bonusFilter, unknownFilter);
-            levelListDisplay.Items.Clear();
-            foreach (KeyValuePair<String, List<String>> category in levelDictionary)
-            {
-                TreeViewItem categoryItem = new TreeViewItem();
-                categoryItem.Header = category.Key;
-                if (category.Value.Count > 0)
-                {
-                    if (firstCategoryOpen)
-                    {
-                        categoryItem.ExpandSubtree();
-                        firstCategoryOpen = false;
-                    }
-                    foreach (String levelName in category.Value)
-                    {
-                        TreeViewItem levelItem = new TreeViewItem();
-                        levelItem.Header = levelName;
-                        levelItem.Selected += levelListItem_Selected;
-                        categoryItem.Items.Add(levelItem);
-                    }
-
-                    levelListDisplay.Items.Add(categoryItem);
-                }
-
-            }
-        }
 
         private void BeforeLoadWindowSettings()
         {
@@ -179,37 +136,7 @@ namespace HM4DesignTool
 
         #endregion
 
-        #region LevelList
 
-        private void levelListItem_Selected(object sender, RoutedEventArgs e)
-        {
-            //https://stackoverflow.com/questions/24880824/how-to-add-wpf-treeview-node-click-event-to-get-the-node-value
-            TreeViewItem item = sender as TreeViewItem;
-            Globals.GetLevelOverview.LoadLevel(item.Header.ToString());
-
-        }
-        private void levelListFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            LoadLevelList();
-        }
-
-        private void levelListStoryCheck_Click(object sender, RoutedEventArgs e)
-        {
-            LoadLevelList();
-
-        }
-
-        private void levelListBonusCheck_Click(object sender, RoutedEventArgs e)
-        {
-            LoadLevelList();
-        }
-
-        private void levelListUnknownCheck_Click(object sender, RoutedEventArgs e)
-        {
-            LoadLevelList();
-        }
-
-        #endregion
 
 
         #region PatientOverview

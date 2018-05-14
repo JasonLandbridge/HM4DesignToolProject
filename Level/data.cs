@@ -62,7 +62,9 @@ namespace DataNameSpace
             {
                 if (LevelOverviewObject == null)
                 {
+                    // This is seperated as the setup of all children in the LevelOverview need a reference of this as object as well. 
                     LevelOverviewObject = new LevelOverview();
+                    LevelOverviewObject.SetupLevelOverview();
                 }
 
                 return LevelOverviewObject;
