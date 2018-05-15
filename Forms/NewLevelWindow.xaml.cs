@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Collections.ObjectModel;
-using System.IO;
-using DataNameSpace;
 using System.Windows.Media;
+
+using DataNameSpace;
 
 namespace UiWindows
 {
@@ -21,9 +22,9 @@ namespace UiWindows
         {
             get
             {
-                if (levelRoomValue != null)
+                if (this.levelRoomValue != null)
                 {
-                    return (int)levelRoomValue.Value;
+                    return (int)this.levelRoomValue.Value;
                 }
                 else
                 {
@@ -36,9 +37,9 @@ namespace UiWindows
         {
             get
             {
-                if (levelBranchValue != null)
+                if (this.levelBranchValue != null)
                 {
-                    return (int)levelBranchValue.Value;
+                    return (int)this.levelBranchValue.Value;
                 }
                 else
                 {
@@ -51,9 +52,9 @@ namespace UiWindows
         {
             get
             {
-                if (levelInstanceValue != null)
+                if (this.levelInstanceValue != null)
                 {
-                    return (int)levelInstanceValue.Value;
+                    return (int)this.levelInstanceValue.Value;
                 }
                 else
                 {
@@ -66,9 +67,9 @@ namespace UiWindows
         {
             get
             {
-                if (levelInstanceRangeValue != null)
+                if (this.levelInstanceRangeValue != null)
                 {
-                    return (int)levelInstanceRangeValue.Value;
+                    return (int)this.levelInstanceRangeValue.Value;
                 }
                 else
                 {
@@ -78,17 +79,17 @@ namespace UiWindows
             }
 
         }
-        private String LevelType
+        private string LevelType
         {
             get
             {
-                if (levelTypeValue != null)
+                if (this.levelTypeValue != null)
                 {
-                    return levelTypeValue.Text;
+                    return this.levelTypeValue.Text;
                 }
                 else
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
 
             }
@@ -98,9 +99,9 @@ namespace UiWindows
         {
             get
             {
-                if (useRangeCheckbox != null)
+                if (this.useRangeCheckbox != null)
                 {
-                    return (bool)useRangeCheckbox.IsChecked;
+                    return (bool)this.useRangeCheckbox.IsChecked;
                 }
                 else
                 {
@@ -109,22 +110,23 @@ namespace UiWindows
             }
         }
 
-        public ObservableCollection<String> FileNameList
+        public ObservableCollection<string> FileNameList
         {
             get
             {
-                ObservableCollection<String> fileList = new ObservableCollection<String> { };
-                if (UseRange)
+                ObservableCollection<string> fileList = new ObservableCollection<string> { };
+                if (this.UseRange)
                 {
-                    for (int i = LevelIndex; i <= LevelIndexMax; i++)
+                    for (int i = this.LevelIndex; i <= this.LevelIndexMax; i++)
                     {
-                        fileList.Add(GetFileName(i));
+                        fileList.Add(this.GetFileName(i));
                     }
                 }
                 else
                 {
-                    fileList.Add(GetFileName(LevelIndex));
+                    fileList.Add(this.GetFileName(this.LevelIndex));
                 }
+
                 return fileList;
             }
         }
@@ -134,13 +136,13 @@ namespace UiWindows
             {
                 ObservableCollection<ListBoxItem> fileItemList = new ObservableCollection<ListBoxItem> { };
 
-                foreach (String fileName in FileNameList)
+                foreach (string fileName in this.FileNameList)
                 {
 
                     ListBoxItem item = new ListBoxItem();
                     item.Content = fileName;
 
-                    if (LevelExist(fileName))
+                    if (this.LevelExist(fileName))
                     {
                         item.Background = Brushes.IndianRed;
                     }
@@ -149,9 +151,11 @@ namespace UiWindows
                         item.Background = Brushes.LightGreen;
 
                     }
+
                     fileItemList.Add(item);
 
                 }
+
                 return fileItemList;
             }
         }
@@ -161,34 +165,36 @@ namespace UiWindows
 
         public NewLevelWindow()
         {
-            InitializeComponent();
-            mainGrid.DataContext = this;
-            FinishedLoading = true;
-            SetRangeState();
-            //levelListDisplay.ItemsSource = FileNameList;
+            this.InitializeComponent();
+            this.mainGrid.DataContext = this;
+            this.FinishedLoading = true;
+            this.SetRangeState();
+
+            // levelListDisplay.ItemsSource = FileNameList;
         }
 
-        private String GetFileName(int index)
+        private string GetFileName(int index)
         {
-            //Get room index
-            String filename = "r";
-            filename += RoomIndex.ToString();
+            // Get room index
+            string filename = "r";
+            filename += this.RoomIndex.ToString();
             filename += "_";
-            //Get branch index
-            if (BranchIndex < 10)
+
+            // Get branch index
+            if (this.BranchIndex < 10)
             {
-                filename += "b0" + BranchIndex.ToString();
+                filename += "b0" + this.BranchIndex.ToString();
             }
             else
             {
-                filename += "b" + BranchIndex.ToString();
-
+                filename += "b" + this.BranchIndex.ToString();
             }
-            //Get room type
-            filename += "_";
-            filename += LevelType;
 
-            //Get instance N
+            // Get room type
+            filename += "_";
+            filename += this.LevelType;
+
+            // Get instance N
             filename += "_";
 
             if (index < 10)
@@ -198,32 +204,31 @@ namespace UiWindows
             else
             {
                 filename += index.ToString();
-
             }
 
             filename += ".lua";
             return filename;
-
         }
 
         private void SetRangeState()
         {
-            levelInstanceRangeLabel.IsEnabled = UseRange;
-            levelInstanceRangeValue.IsEnabled = UseRange;
+            this.levelInstanceRangeLabel.IsEnabled = this.UseRange;
+            this.levelInstanceRangeValue.IsEnabled = this.UseRange;
         }
 
         private void CreateLevelFiles()
         {
-            foreach (String FileName in FileNameList)
+            foreach (string FileName in this.FileNameList)
             {
-                String path = Globals.GetSettings.projectPathLevel + FileName;
-                if (!LevelExist(FileName))
+                string path = Globals.GetSettings.projectPathLevel + FileName;
+                if (!this.LevelExist(FileName))
                 {
                     File.Create(path).Dispose();
                 }
             }
         }
-        private bool LevelExist(String Filename)
+
+        private bool LevelExist(string Filename)
         {
             if (Filename.Length > 0)
             {
@@ -237,72 +242,73 @@ namespace UiWindows
 
         private void UpdateLevelList()
         {
-            OnPropertyChanged("FileNameList");
-            OnPropertyChanged("FileNameListBoxItems");
+            this.OnPropertyChanged("FileNameList");
+            this.OnPropertyChanged("FileNameListBoxItems");
         }
 
         private void levelRoomValue_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (FinishedLoading)
+            if (this.FinishedLoading)
             {
-                UpdateLevelList();
+                this.UpdateLevelList();
             }
         }
 
         private void levelBranchValue_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (FinishedLoading)
+            if (this.FinishedLoading)
             {
-                UpdateLevelList();
+                this.UpdateLevelList();
             }
         }
 
         private void levelTypeValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (FinishedLoading)
+            if (this.FinishedLoading)
             {
-                UpdateLevelList();
+                this.UpdateLevelList();
             }
         }
 
         private void levelInstanceValue_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (FinishedLoading)
+            if (this.FinishedLoading)
             {
-                UpdateLevelList();
+                this.UpdateLevelList();
             }
         }
 
         private void levelInstanceRangeValue_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (FinishedLoading)
+            if (this.FinishedLoading)
             {
-                UpdateLevelList();
+                this.UpdateLevelList();
             }
         }
 
         #region Events
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion
 
         private void useRangeCheckbox_Click(object sender, RoutedEventArgs e)
         {
-            if (FinishedLoading)
+            if (this.FinishedLoading)
             {
-                SetRangeState();
-                UpdateLevelList();
+                this.SetRangeState();
+                this.UpdateLevelList();
             }
 
         }
 
         private void buttonSave_Click(object sender, RoutedEventArgs e)
         {
-            CreateLevelFiles();
-            UpdateLevelList();
+            this.CreateLevelFiles();
+            this.UpdateLevelList();
+            Globals.GetLevelOverview.UpdateLevelList();
         }
     }
 }

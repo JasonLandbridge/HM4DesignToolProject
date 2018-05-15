@@ -204,7 +204,7 @@
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
-					<Button x:Name="reloadLevel" Grid.Column="0" Grid.Row="0" Content="Reload" Margin="5" Width="50" />
+					<Button x:Name="reloadLevel" Grid.Column="0" Grid.Row="0" Content="Reload" Margin="5" Width="50" Command="{Binding ReloadLevelCommand}" />
 					<Button x:Name="buttonOpenLevelScript" Grid.Column="1" Grid.Row="0" Content="Open" Margin="5" Width="50" Command="{Binding GetLevelLoaded.OpenLevelFromFileCommand}"/>
 					<Button x:Name="buttonSaveLevelScript" Grid.Column="2" Grid.Row="0" Content="Save" Margin="5" Width="50" Command="{Binding GetLevelLoaded.SaveLevelToFileCommand}" />
 
@@ -228,6 +228,7 @@
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition/>
 								<ColumnDefinition/>
+								<ColumnDefinition Width="Auto"/>
 							</Grid.ColumnDefinitions>
 							<!-- Design Data Group-->
 							<GroupBox Grid.Column="0" Header="Design Data" HorizontalAlignment="Stretch" Margin="0,5" VerticalAlignment="Stretch">
@@ -419,9 +420,9 @@
 									<!-- Random Treatment Preview Group-->
 									<Grid Grid.Row="3">
 										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto"/>
 											<ColumnDefinition/>
-											<ColumnDefinition/>
-											<ColumnDefinition/>
+											<ColumnDefinition Width="Auto"/>
 
 										</Grid.ColumnDefinitions>
 
@@ -429,14 +430,13 @@
 										<CheckBox x:Name="uniqueTreatmentsCheckBox" Content="Unique Treatments Only Per Patient" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,5,0,5" IsEnabled="False" IsChecked="True" Visibility="Hidden"/>
 										<Button x:Name="customTreatmentWeightsButton" Content="Custom Treatment Weights" Grid.Column="2" Grid.Row="0" Click="customTreatmentWeightsButton_Click" />
 									</Grid>
-
-									<TextBox x:Name="previewAvailableTreatments" Grid.Row="4" Margin="0,5" Text="{Binding GetLevelLoaded.TreatmentsAvailableString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding DataContext.ShowAvailableTreatmentsCheck, Mode=OneWay, Converter={StaticResource VisibilityOfBool}, RelativeSource={RelativeSource Self}}" TextWrapping="Wrap"/>
-
 									<Button x:Name="generateLevelButton" Grid.Row="6" Content="Generate Level" Margin="0,5" Padding="1,5" Click="generateLevelButton_Click"/>
 								</Grid>
 							</GroupBox>
 
-
+							<GroupBox Grid.Column="2" Header="Available Treatments" Visibility="{Binding DataContext.ShowAvailableTreatmentsCheck, Mode=OneWay, Converter={StaticResource VisibilityOfBool}, RelativeSource={RelativeSource Self}}">
+								<TextBox x:Name="previewAvailableTreatments" Margin="0,5" Text="{Binding GetLevelLoaded.TreatmentsAvailableString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"  TextWrapping="Wrap" MinWidth="250"/>
+							</GroupBox>
 						</Grid>
 					</TabItem>
 					<TabItem Header="Patient Overview" IsEnabled="{Binding Path=LevelOverviewActive}">

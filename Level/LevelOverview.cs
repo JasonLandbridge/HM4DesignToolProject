@@ -21,8 +21,11 @@ namespace HM4DesignTool.Level
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Data;
+    using System.Windows.Input;
 
     using DataNameSpace;
+
+    using HM4DesignTool.Utilities;
 
     using LevelData;
 
@@ -183,6 +186,12 @@ namespace HM4DesignTool.Level
         /// Generate the weight for each patients check max value field.
         /// </summary>
         private int generateWeightMax = 90;
+        #endregion
+
+        #region Commands
+
+        private ICommand reloadLevelCommand;
+
         #endregion
 
         #endregion
@@ -705,6 +714,18 @@ namespace HM4DesignTool.Level
 
         #endregion
 
+
+        #region Commands
+        public ICommand ReloadLevelCommand
+        {
+            get
+            {
+                return this.reloadLevelCommand ?? (this.reloadLevelCommand = new CommandHandler(this.ReloadLevel, this.levelOverviewFinishedLoading));
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #endregion
@@ -1196,6 +1217,33 @@ namespace HM4DesignTool.Level
             this.levelObjectData.Add(levelName, this.CreateLevel(levelName));
             return this.levelObjectData[levelName];
         }
+
+
+        private void RemoveLevelByName(string levelName)
+        {
+            if (this.LevelExist(levelName))
+            {
+                this.levelObjectData.Remove(levelName);
+            }
+        }
+
+        /// <summary>
+        /// Reloads the currently loaded level
+        /// </summary>
+        public void ReloadLevel()
+        {
+            if (this.GetLevelLoaded != null)
+            {
+                // Remove and re-create again.
+                string levelName = this.GetLevelLoaded.LevelName;
+                this.RemoveLevelByName(levelName);
+
+                this.AddLevelByName(levelName);
+
+                // Set the Level
+                this.GetLevelLoaded = this.levelObjectData[levelName];
+            }
+        }
         #endregion
 
         #region LevelList
@@ -1203,7 +1251,7 @@ namespace HM4DesignTool.Level
         /// <summary>
         /// Update the Level List Display.
         /// </summary>
-        private void UpdateLevelList()
+        public void UpdateLevelList()
         {
             bool firstCategoryOpen = true;
 
@@ -1242,7 +1290,6 @@ namespace HM4DesignTool.Level
                 }
             }
         }
-
         #endregion
 
         #region PatientSimulator
@@ -1356,5 +1403,7 @@ namespace HM4DesignTool.Level
         #endregion
 
         #endregion
+
+
     }
 }
