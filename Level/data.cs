@@ -123,6 +123,7 @@ namespace DataNameSpace
             }
         }
 
+
         public static Double StringToDouble(String difficultyModifier = null)
         {
             if (difficultyModifier != null)

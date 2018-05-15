@@ -159,7 +159,7 @@
 				<RowDefinition Height="1*"/>
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition MaxWidth="200" Width="Auto"/>
+				<ColumnDefinition Width="Auto"/>
 				<ColumnDefinition Width="1*"/>
 			</Grid.ColumnDefinitions>
 			<!-- Level List -->
@@ -170,11 +170,11 @@
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition MaxWidth="200"/>
+					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
 				<!-- Level List -->
 				<GroupBox Header="Level List" VerticalAlignment="Stretch" Margin="0,0,0,0">
-					<TreeView x:Name="levelListDisplay" Margin="0" ItemsSource="{Binding LevelListDisplayCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+					<TreeView x:Name="levelListDisplay" Margin="0" ItemsSource="{Binding LevelListDisplayCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="216" />
 				</GroupBox>
 				<!-- Level List Filters-->
 				<GroupBox Header="Filters" HorizontalAlignment="Stretch" Margin="0,0,0,0" Grid.Row="1">
@@ -245,6 +245,7 @@
 											<RowDefinition/>
 											<RowDefinition/>
 											<RowDefinition/>
+											<RowDefinition/>
 										</Grid.RowDefinitions>
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition/>
@@ -253,6 +254,7 @@
 										<Label MinWidth="100" Grid.Column="0" Grid.Row="0" Content="Part of Room: " Margin="0,5" />
 										<Label MinWidth="100" Grid.Column="0" Grid.Row="1" Content="Difficulty Modifier: " Margin="0,5" />
 										<Label MinWidth="100" Grid.Column="0" Grid.Row="3" Content="Level Type: " Margin="0,5"/>
+										<Label MinWidth="100" Grid.Column="0" Grid.Row="4" Content="Gameplay Character: " Margin="0,5"/>
 
 										<wpfTool:IntegerUpDown x:Name="roomIndexValue" MinWidth="100" Grid.Column="1" Grid.Row="0" Margin="0,5" Value="{Binding RoomIndex, UpdateSourceTrigger=PropertyChanged, FallbackValue=-1}" DefaultValue="0"/>
 										<Grid Grid.Column="1" Grid.Row="1" Margin="0,5">
@@ -270,7 +272,7 @@
 											</Grid.ColumnDefinitions>
 										</Grid>
 										<ComboBox x:Name="levelTypeDropDown" Grid.Column="1" Grid.Row="3"  Margin="5,5" ItemsSource="{Binding Path=GetLevelTypes, Mode=OneTime}" SelectedIndex="0" SelectedValue="{Binding GetLevelLoaded.GetLevelTypeString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
+										<TextBox Grid.Row="4" Grid.Column="1" Margin="5,5" Text="{Binding GetLevelLoaded.GameplayCharacter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
 
 
 									</Grid>
@@ -292,7 +294,8 @@
 							</GroupBox>
 
 							<!-- Random Data Group-->
-							<GroupBox Grid.Column="1" Header="Randomize Data" HorizontalAlignment="Stretch" Margin="0,5" VerticalAlignment="Stretch">
+							<GroupBox Grid.Column="1" Header="Randomize Data" HorizontalAlignment="Stretch" Margin="0,5" VerticalAlignment="Stretch" >
+								<!--IsEnabled="{Binding RandomGroupEnabled, Mode=OneWay, UpdateSourceTrigger=PropertyChanged} -->
 								<Grid HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" >
 									<Grid.RowDefinitions>
 										<RowDefinition Height="Auto"/>
@@ -434,7 +437,7 @@
 								</Grid>
 							</GroupBox>
 
-							<GroupBox Grid.Column="2" Header="Available Treatments" Visibility="{Binding DataContext.ShowAvailableTreatmentsCheck, Mode=OneWay, Converter={StaticResource VisibilityOfBool}, RelativeSource={RelativeSource Self}}">
+							<GroupBox Grid.Column="2" Header="Available Treatments" Visibility="{Binding DataContext.ShowAvailableTreatmentsCheck, Mode=OneWay, Converter={StaticResource VisibilityOfBool}, RelativeSource={RelativeSource Self}, FallbackValue=Collapsed}">
 								<TextBox x:Name="previewAvailableTreatments" Margin="0,5" Text="{Binding GetLevelLoaded.TreatmentsAvailableString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"  TextWrapping="Wrap" MinWidth="250"/>
 							</GroupBox>
 						</Grid>

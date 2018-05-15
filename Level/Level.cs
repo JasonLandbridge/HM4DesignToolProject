@@ -47,11 +47,17 @@ namespace HM4DesignTool.Level
 
         #region General
 
+        private string gameplayCharacter = string.Empty;
+
+
         /// <summary>
         /// Only execute commands in this level when this is true.
         /// </summary>
         private readonly bool canExecuteCommands;
 
+        private bool levelFinishedLoading;
+
+        private bool isEdited;
         #endregion General
 
         #region DesignToolData
@@ -145,6 +151,7 @@ namespace HM4DesignTool.Level
             this.UpdateAvailableTreatmentList();
             this.UpdateLevelOutput();
             this.canExecuteCommands = true;
+            this.LevelFinishedLoading = true;
         }
 
         #endregion Constructors
@@ -176,6 +183,34 @@ namespace HM4DesignTool.Level
         public string FileName => $"{this.LevelName}.lua";
 
         /// <summary>
+        /// Gets the level name with the status of the level.
+        /// </summary>
+        public string LevelNameWithStatus
+        {
+            get
+            {
+                string levelName = $"{this.LevelName}";
+
+                if (this.IsEdited)
+                {
+                    levelName += $" (*)";
+                }
+
+                if (this.IsEmpty)
+                {
+                    levelName += $" (e)";
+                }
+
+                if (this.GetLevelType != LevelTypeEnum.Unknown)
+                {
+                    levelName += $" - {this.GetLevelType.ToString()}";
+                }
+
+                return levelName;
+            }
+        }
+
+        /// <summary>
         /// Based on the roomIndex translated to the Category, 0 => Room 1, 1 => Room 2, 2 => Room 3, etc
         /// </summary>
         public string CategoryKey => Globals.GetCategoryKey(this.GetRoomIndex);
@@ -185,6 +220,52 @@ namespace HM4DesignTool.Level
         /// </summary>
         public bool WeightEnabled => this.designToolData.LevelType == LevelTypeEnum.TimeTrial;
 
+        public string GameplayCharacter
+        {
+            get => this.gameplayCharacter;
+            set
+            {
+                this.gameplayCharacter = value;
+                this.OnPropertyChanged();
+                this.UpdateLevelOutput();
+            }
+        }
+
+        public bool LevelFinishedLoading
+        {
+            get => this.levelFinishedLoading;
+            set
+            {
+                this.levelFinishedLoading = value;
+                this.OnPropertyChanged();
+
+            }
+        }
+
+        public bool IsEdited
+        {
+            get => this.isEdited;
+            set
+            {
+                this.isEdited = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                if (this.GetLevelType == LevelTypeEnum.Bonus || this.GetLevelType == LevelTypeEnum.Story || this.GetLevelType == LevelTypeEnum.TimeTrial)
+                {
+                    return this.PatientCollection.Count == 0;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
         #endregion General
 
         #region DesignToolData
@@ -444,6 +525,12 @@ namespace HM4DesignTool.Level
                 output += this.designToolData.ToString();
                 output += Environment.NewLine;
 
+                // Output an optional GamePlay character.
+                if (this.GameplayCharacter != string.Empty)
+                {
+                    output += $"levelDesc.gameplayCharacterId = \"{this.GameplayCharacter}\"{Environment.NewLine}levelDesc.decoId = \"{this.GameplayCharacter}\"{Environment.NewLine}{Environment.NewLine}";
+                }
+
                 // Output the patient chances
                 if (this.GetLevelType != LevelTypeEnum.OliverOne &&
                     this.GetLevelType != LevelTypeEnum.OliverAll &&
@@ -457,7 +544,7 @@ namespace HM4DesignTool.Level
                     {
                         if (patientChance.Weight > 0)
                         {
-                            //Depending on the Length of the PatientName add another tab. 
+                            // Depending on the Length of the PatientName add another tab. 
                             if (patientChance.PatientName.Length <= 8)
                             {
                                 output += $"\t{patientChance.PatientName}\t\t\t = \t{patientChance.Weight}";
@@ -755,6 +842,8 @@ namespace HM4DesignTool.Level
 
                     this.PatientList.RemoveAt(index);
                 }
+                this.UpdateLevelEdited();
+                
             }
             else if (newAmount > patientCount)
             {
@@ -764,8 +853,8 @@ namespace HM4DesignTool.Level
                 {
                     this.AddPatient();
                 }
+                this.UpdateLevelEdited();
             }
-
             this.UpdateLevelOutput();
         }
 
@@ -845,7 +934,10 @@ namespace HM4DesignTool.Level
 
                 // Store new TreatmentList in the patient
                 patient.SetTreatments(randomTreatmentList);
+
             }
+
+            this.UpdateLevelEdited();
         }
 
         /// <summary>
@@ -906,20 +998,30 @@ namespace HM4DesignTool.Level
                     }
                 }
 
+                this.UpdateLevelEdited();
+
                 this.UpdateLevelOutput();
             }
         }
 
-
-
+        /// <summary>
+        /// The randomize the Patient weights.
+        /// </summary>
+        /// <param name="weightMinValue">
+        /// The weight min value.
+        /// </param>
+        /// <param name="weightMaxValue">
+        /// The weight max value.
+        /// </param>
         public void RandomizePatientWeight(int weightMinValue, int weightMaxValue)
         {
             foreach (Patient patient in this.PatientCollection)
             {
                 patient.Weight = Globals.GetRandom.Next(Math.Min(weightMinValue, weightMaxValue), weightMaxValue);
-
             }
+            this.UpdateLevelEdited();
         }
+
         #endregion
 
         #region PatientChance
@@ -985,6 +1087,7 @@ namespace HM4DesignTool.Level
                     patientChance.RandomizeWeight(Globals.GetRandom.Next(1, 100));
                 }
             }
+            this.UpdateLevelEdited();
         }
 
         #endregion PatientChance
@@ -1000,6 +1103,24 @@ namespace HM4DesignTool.Level
             {
                 this.LevelScriptBuffer = this.GetNewLevelScript;
                 this.OnPropertyChanged("LevelScriptBuffer");
+            }
+
+        }
+
+        public void LevelLoaded()
+        {
+            this.OnPropertyChanged("PatientCollection");
+        }
+
+        /// <summary>
+        /// Call this method when the level has been edited. 
+        /// </summary>
+        public void UpdateLevelEdited()
+        {
+            if (this.LevelFinishedLoading && !this.IsEdited)
+            {
+                this.IsEdited = true;
+                Globals.GetLevelOverview.UpdateLevelList();
             }
         }
 
@@ -1021,6 +1142,12 @@ namespace HM4DesignTool.Level
             // Clean up the text by removing tabs, enters and spaces and special characters.
             rawLevelText = rawLevelText.Replace("\t", string.Empty).Replace("\r", string.Empty).Replace("{\n", "{")
                 .Replace(" ", string.Empty).Replace("\n\n", string.Empty);
+
+
+            // levelDesc.decoId = "ruth"
+
+            // Parse possible GamePlayCharacters
+            rawLevelText = this.ParseGameplayCharacter(rawLevelText);
 
             // Parse DesignToolData embeded in file.
             string startDesignToolData = "--[[HM4DesignToolData:";
@@ -1048,28 +1175,56 @@ namespace HM4DesignTool.Level
             // Isolate any previous comments at the start of the text
             // if (rawLevelText.Contains(startDesignToolData))
             // {
-            //    int startDesignToolDataIndex = rawLevelText.IndexOf(startPatientChancesText, StringComparison.Ordinal);
-            //    if (startDesignToolDataIndex > 0)
-            //    {
-            //        this.StartComments = rawLevelText.Substring(0, startDesignToolDataIndex);
-            //    }
+            // int startDesignToolDataIndex = rawLevelText.IndexOf(startPatientChancesText, StringComparison.Ordinal);
+            // if (startDesignToolDataIndex > 0)
+            // {
+            // this.StartComments = rawLevelText.Substring(0, startDesignToolDataIndex);
+            // }
             // }
             // else if (rawLevelText.Contains(startDesignToolData))
             // {
-            //    int startPatientChancesIndex = rawLevelText.IndexOf(startPatientChancesText, StringComparison.Ordinal);
-            //    if (startPatientChancesIndex > 0)
-            //    {
-            //        this.StartComments = rawLevelText.Substring(0, startPatientChancesIndex);
-            //    }
+            // int startPatientChancesIndex = rawLevelText.IndexOf(startPatientChancesText, StringComparison.Ordinal);
+            // if (startPatientChancesIndex > 0)
+            // {
+            // this.StartComments = rawLevelText.Substring(0, startPatientChancesIndex);
+            // }
             // }
             // else if (rawLevelText.Contains(startPatientTriggerText))
             // {
-            //    int startPatientTriggerIndex = rawLevelText.IndexOf(startPatientTriggerText, StringComparison.Ordinal);
-            //    if (startPatientTriggerIndex > 0)
-            //    {
-            //        this.StartComments = rawLevelText.Substring(0, startPatientTriggerIndex);
-            //    }
+            // int startPatientTriggerIndex = rawLevelText.IndexOf(startPatientTriggerText, StringComparison.Ordinal);
+            // if (startPatientTriggerIndex > 0)
+            // {
+            // this.StartComments = rawLevelText.Substring(0, startPatientTriggerIndex);
             // }
+            // }
+        }
+
+        private string ParseGameplayCharacter(string rawLevelText)
+        {
+            const string GameplayCharacterStartText = "levelDesc.gameplayCharacterId=\"";
+            const string GameplayCharacterEndText = "\"";
+            if (rawLevelText.Contains(GameplayCharacterStartText))
+            {
+                int startGameplayCharacterIndex = rawLevelText.IndexOf(GameplayCharacterStartText, StringComparison.Ordinal)
+                                                  + GameplayCharacterStartText.Length;
+                int endGameplayCharacterIndex = rawLevelText.IndexOf(GameplayCharacterEndText, startGameplayCharacterIndex, StringComparison.Ordinal);
+
+                this.GameplayCharacter = rawLevelText.Substring(startGameplayCharacterIndex, endGameplayCharacterIndex - startGameplayCharacterIndex);
+
+                rawLevelText = rawLevelText.Replace($"{GameplayCharacterStartText}{this.GameplayCharacter}{GameplayCharacterEndText}", string.Empty);
+            }
+
+            // Assuming the levelDesc.decoId is the same GameplayCharacter then just remove it. 
+            const string DecoStartText = "levelDesc.decoId=\"";
+            const string DecoEndText = "\"";
+            if (rawLevelText.Contains(DecoStartText))
+            {
+                int startDecoIndex = rawLevelText.IndexOf(DecoStartText, StringComparison.Ordinal);
+                int endDecoIndex = rawLevelText.IndexOf(DecoEndText, startDecoIndex + DecoStartText.Length, StringComparison.Ordinal) + DecoEndText.Length;
+                rawLevelText = rawLevelText.Remove(startDecoIndex, endDecoIndex - startDecoIndex);
+            }
+
+            return rawLevelText;
         }
 
         /// <summary>
@@ -1159,7 +1314,7 @@ namespace HM4DesignTool.Level
                 if (startPatientTriggerIndex > -1 && endPatientTriggerIndex - EndPatientTriggerText.Length > -1 && startPatientTriggerIndex < endPatientTriggerIndex)
                 {
                     string patientsTriggersRawText = rawLevelText.Substring(startPatientTriggerIndex, endPatientTriggerIndex - startPatientTriggerIndex);
-                    rawLevelText = rawLevelText.Remove(startPatientTriggerIndex, endPatientTriggerIndex);
+                    rawLevelText = rawLevelText.Replace(patientsTriggersRawText, string.Empty);
 
                     // Filter all new lines, remove the unnecessary text
                     patientsTriggersRawText = patientsTriggersRawText.Replace("\n", string.Empty);
@@ -1181,6 +1336,7 @@ namespace HM4DesignTool.Level
 
             return rawLevelText;
         }
+
         #endregion ParseData
 
         #region ReadWrite

@@ -110,6 +110,8 @@ namespace HM4DesignTool.Level
 
         #region LevelGeneratingFields
 
+        private bool randomGroupEnabled = true;
+
         /// <summary>
         /// The use random recommendations field.
         /// </summary>
@@ -471,6 +473,16 @@ namespace HM4DesignTool.Level
 
         #region LevelGeneratingFields
 
+        public bool RandomGroupEnabled
+        {
+            get => this.randomGroupEnabled;
+            set
+            {
+                this.randomGroupEnabled = value;
+                this.OnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// Gets or sets a value indicating whether to use random recommendations.
         /// </summary>
@@ -570,6 +582,10 @@ namespace HM4DesignTool.Level
 
             set
             {
+                if (value < 1)
+                {
+                    value = 1;
+                }
                 this.generatePatientTypeMax = value;
                 this.OnPropertyChanged();
             }
@@ -646,6 +662,10 @@ namespace HM4DesignTool.Level
 
             set
             {
+                if (value < 1)
+                {
+                    value = 1;
+                }
                 this.generateTreatmentsMin = value;
                 this.OnPropertyChanged();
             }
@@ -660,13 +680,17 @@ namespace HM4DesignTool.Level
 
             set
             {
+                if (value < 1)
+                {
+                    value = 1;
+                }
                 this.generateTreatmentsMax = value;
                 this.OnPropertyChanged();
             }
         }
         #endregion
 
-        #region Treatment
+        #region Weight
 
         /// <summary>
         /// Gets or sets a value indicating whether to generate Weight check.
@@ -723,6 +747,8 @@ namespace HM4DesignTool.Level
                 return this.reloadLevelCommand ?? (this.reloadLevelCommand = new CommandHandler(this.ReloadLevel, this.levelOverviewFinishedLoading));
             }
         }
+
+
 
         #endregion
 
@@ -1115,9 +1141,12 @@ namespace HM4DesignTool.Level
         public void CurrentLevelUpdated()
         {
             this.OnPropertyChanged("LevelOverviewActive");
+
             this.RoomIndex = this.GetLevelLoaded.GetRoomIndex;
 
             this.DifficultyModifier = this.GetLevelLoaded.GetDifficultyModifier;
+
+            this.GetLevelLoaded.LevelLoaded();
 
             this.UpdatePatientSimulator();
 
@@ -1138,8 +1167,11 @@ namespace HM4DesignTool.Level
         public void DifficultyModifierUpdated()
         {
             this.OnPropertyChanged("DifficultyModifier");
+            this.RandomGroupEnabled = this.DifficultyModifier == 0;
             this.UpdateRandomRecommendations();
         }
+
+
         #endregion
 
         #endregion
@@ -1158,22 +1190,16 @@ namespace HM4DesignTool.Level
         /// </returns>
         private static string CleanLevelName(string levelName)
         {
-            levelName = levelName.Replace(" ", string.Empty);
+            // Remove everything from the first ' '
+            if (levelName.IndexOf(' ') > -1)
+            {
+                levelName = levelName.Substring(0, levelName.IndexOf(' '));
+            }
+
             if (levelName.EndsWith(".lua"))
             {
                 levelName = levelName.Replace(".lua", string.Empty);
             }
-
-            if (levelName.Contains("(e)"))
-            {
-                levelName = levelName.Replace("(e)", string.Empty);
-            }
-
-            if (levelName.Contains("*"))
-            {
-                levelName = levelName.Replace("*", string.Empty);
-            }
-
             return levelName;
         }
 
@@ -1242,6 +1268,8 @@ namespace HM4DesignTool.Level
 
                 // Set the Level
                 this.GetLevelLoaded = this.levelObjectData[levelName];
+
+                this.UpdateLevelList();
             }
         }
         #endregion
@@ -1273,13 +1301,15 @@ namespace HM4DesignTool.Level
 
                     foreach (string levelName in category.Value)
                     {
+                        // Load all levels that are found and display there status in the header.
                         string levelHeader = levelName;
-                        //TODO Add levelType to level name. 
-                        ////if (this.LevelExist(levelName))
-                        ////{
-                        //    Level level = this.GetLevel(levelName);
-                        //    levelHeader = $"{levelName} - {level.GetLevelTypeString}";
-                        ////}
+                        if (!this.LevelExist(levelName))
+                        {
+                            this.AddLevelByName(levelName);
+                        }
+
+                        levelHeader = this.GetLevel(levelName).LevelNameWithStatus;
+
 
                         TreeViewItem levelItem = new TreeViewItem { Header = levelHeader };
                         levelItem.Selected += this.LevelListItemSelected;
@@ -1396,7 +1426,7 @@ namespace HM4DesignTool.Level
             // https://stackoverflow.com/questions/24880824/how-to-add-wpf-treeview-node-click-event-to-get-the-node-value
             if (sender is TreeViewItem item)
             {
-                Globals.GetLevelOverview.LoadLevel(item.Header.ToString());
+                Globals.GetLevelOverview.LoadLevel(CleanLevelName(item.Header.ToString()));
             }
         }
 

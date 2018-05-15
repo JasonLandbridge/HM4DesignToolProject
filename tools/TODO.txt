@@ -1,5 +1,4 @@
 Todo
-  - Add LevelType, Empty, Star to levelName
   - Add ShopItems tab in the settings. 
   - Add Balancing Scores tab to the Patient Overview
   - Add Stations Objects. 
@@ -9,12 +8,11 @@ Todo
   - Hide the Weight Column in the patient Overview when wrong LevelType
   - Change text to white when in treatmentSettings there is a dark color. 
   - Add Functionality to the "Insert Design Data"
-  - Add functionality for inserting the Character Deco based on the heroes. 
   - Text used in the level Generating should be in the level Const
   - Help Screen with info
   - Add restart function in menu
   - BUG: Reload the PatientOverview after generating a new level
-  
+  - Disable the LevelGeneretinggroup if leveltype is wrong.
   
   
   1. Instant treatment / Quick Treatment -> Single Click
