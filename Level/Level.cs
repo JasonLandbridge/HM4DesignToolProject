@@ -204,10 +204,10 @@ namespace HM4DesignTool.Level
             {
                 this.designToolData.DifficultyLevel = value;
                 this.OnPropertyChanged();
+                this.OnPropertyChanged("GetDifficultyModifierString");
                 this.OnPropertyChanged("GetTreatmentOptions");
                 this.OnPropertyChanged("GetTreatmentsAvailableString");
                 this.UpdateAvailableTreatmentList();
-                Globals.GetLevelOverview.UpdateRandomRecommendations();
             }
         }
 
@@ -232,6 +232,23 @@ namespace HM4DesignTool.Level
             }
         }
 
+
+        /// <summary>
+        /// Gets or sets the Level type Enum.
+        /// </summary>
+        public LevelTypeEnum GetLevelType
+        {
+            get => this.designToolData.LevelType;
+            set
+            {
+                this.designToolData.LevelType = value;
+                this.OnPropertyChanged();
+                this.OnPropertyChanged("DesignToolDataString");
+                this.OnPropertyChanged("WeightEnabled");
+                this.UpdateLevelOutput();
+            }
+        }
+
         /// <summary>
         /// Gets or sets the Level type string.
         /// </summary>
@@ -241,6 +258,7 @@ namespace HM4DesignTool.Level
             set
             {
                 this.designToolData.LevelTypeString = value;
+                this.OnPropertyChanged();
                 this.OnPropertyChanged("DesignToolDataString");
                 this.OnPropertyChanged("WeightEnabled");
                 this.UpdateLevelOutput();
@@ -302,6 +320,7 @@ namespace HM4DesignTool.Level
             {
                 this.designToolData.Roomindex = value;
                 this.OnPropertyChanged("DesignToolDataString");
+                this.OnPropertyChanged("GetDifficultyModifier");
                 this.UpdateLevelOutput();
             }
         }
@@ -426,7 +445,10 @@ namespace HM4DesignTool.Level
                 output += Environment.NewLine;
 
                 // Output the patient chances
-                if (this.PatientChanceCollection.Count > 0)
+                if (this.GetLevelType != LevelTypeEnum.OliverOne &&
+                    this.GetLevelType != LevelTypeEnum.OliverAll &&
+                    this.GetLevelType != LevelTypeEnum.MiniGame &&
+                    this.PatientChanceCollection.Count > 0)
                 {
                     output += "levelDesc.patientChances = " + Environment.NewLine;
                     output += "{" + Environment.NewLine;
@@ -435,7 +457,21 @@ namespace HM4DesignTool.Level
                     {
                         if (patientChance.Weight > 0)
                         {
-                            output += "\t" + patientChance.PatientName + " \t= \t" + patientChance.Weight;
+                            //Depending on the Length of the PatientName add another tab. 
+                            if (patientChance.PatientName.Length <= 8)
+                            {
+                                output += $"\t{patientChance.PatientName}\t\t\t = \t{patientChance.Weight}";
+                            }
+                            else if (patientChance.PatientName.Length > 8 && patientChance.PatientName.Length <= 16)
+                            {
+                                output += $"\t{patientChance.PatientName}\t\t = \t{patientChance.Weight}";
+                            }
+                            else if (patientChance.PatientName.Length > 16)
+                            {
+                                output += $"\t{patientChance.PatientName}\t = \t{patientChance.Weight}";
+
+                            }
+
                             if (i < this.PatientChanceCollection.Count - 1)
                             {
                                 output += ",";
@@ -452,7 +488,10 @@ namespace HM4DesignTool.Level
                 output += Environment.NewLine;
 
                 // Output the patient treatments
-                if (this.PatientCollection.Count > 0)
+                if (this.GetLevelType != LevelTypeEnum.OliverOne &&
+                    this.GetLevelType != LevelTypeEnum.OliverAll &&
+                    this.GetLevelType != LevelTypeEnum.MiniGame &&
+                    this.PatientChanceCollection.Count > 0)
                 {
                     output += "levelDesc.triggers = " + Environment.NewLine;
                     output += "{" + Environment.NewLine;
@@ -871,7 +910,17 @@ namespace HM4DesignTool.Level
             }
         }
 
-        #endregion 
+
+
+        public void RandomizePatientWeight(int weightMinValue, int weightMaxValue)
+        {
+            foreach (Patient patient in this.PatientCollection)
+            {
+                patient.Weight = Globals.GetRandom.Next(Math.Min(weightMinValue, weightMaxValue), weightMaxValue);
+
+            }
+        }
+        #endregion
 
         #region PatientChance
 
@@ -994,7 +1043,7 @@ namespace HM4DesignTool.Level
 
             rawLevelText = this.ParsePatientChances(rawLevelText);
 
-           this.ParsePatientTriggers(rawLevelText);
+            this.ParsePatientTriggers(rawLevelText);
 
             // Isolate any previous comments at the start of the text
             // if (rawLevelText.Contains(startDesignToolData))

@@ -251,15 +251,14 @@
 										</Grid.ColumnDefinitions>
 										<Label MinWidth="100" Grid.Column="0" Grid.Row="0" Content="Part of Room: " Margin="0,5" />
 										<Label MinWidth="100" Grid.Column="0" Grid.Row="1" Content="Difficulty Modifier: " Margin="0,5" />
-										<Label MinWidth="100" Grid.Column="0" Grid.Row="2" Content="Delay Random Range: " Margin="0,5"/>
 										<Label MinWidth="100" Grid.Column="0" Grid.Row="3" Content="Level Type: " Margin="0,5"/>
 
-										<wpfTool:IntegerUpDown x:Name="roomIndexValue" MinWidth="100" Grid.Column="1" Grid.Row="0" Margin="0,5" Value="{Binding GetLevelLoaded.GetRoomIndex, UpdateSourceTrigger=PropertyChanged, FallbackValue=-1}" DefaultValue="0"/>
+										<wpfTool:IntegerUpDown x:Name="roomIndexValue" MinWidth="100" Grid.Column="1" Grid.Row="0" Margin="0,5" Value="{Binding RoomIndex, UpdateSourceTrigger=PropertyChanged, FallbackValue=-1}" DefaultValue="0"/>
 										<Grid Grid.Column="1" Grid.Row="1" Margin="0,5">
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition/>
 											</Grid.ColumnDefinitions>
-											<ComboBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="5,0" VerticalAlignment="Stretch" ItemsSource="{Binding Path=DifficultyModifierList, Mode=OneWay}" SelectedValue="{Binding GetLevelLoaded.GetDifficultyModifierString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+											<ComboBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="5,0" VerticalAlignment="Stretch" ItemsSource="{Binding Path=DifficultyModifierList, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding DifficultyModifierString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, diag:PresentationTraceSources.TraceLevel=High}"/>
 											<!-- <wpfTool:DecimalUpDown Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Visibility="{Binding ElementName=difficultyModifierCheckBox, Path=IsChecked}"/> -->
 										</Grid>
 										<Grid Grid.Column="1" Grid.Row="2" Margin="0,5">
@@ -268,9 +267,6 @@
 												<ColumnDefinition Width="Auto"/>
 												<ColumnDefinition/>
 											</Grid.ColumnDefinitions>
-											<wpfTool:IntegerUpDown Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="-1000" DefaultValue="-1000"/>
-											<Label Grid.Column="1" Grid.Row="0" Content="-" Margin="10,0" />
-											<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="1000" DefaultValue="1000"/>
 										</Grid>
 										<ComboBox x:Name="levelTypeDropDown" Grid.Column="1" Grid.Row="3"  Margin="5,5" ItemsSource="{Binding Path=GetLevelTypes, Mode=OneTime}" SelectedIndex="0" SelectedValue="{Binding GetLevelLoaded.GetLevelTypeString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
@@ -335,9 +331,9 @@
 													<ColumnDefinition Width="Auto"/>
 													<ColumnDefinition/>
 												</Grid.ColumnDefinitions>
-												<wpfTool:IntegerUpDown Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Minimum="1" Value="{Binding GeneratePatientTypeMin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Maximum="{Binding GeneratePatientTypeMax, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
+												<wpfTool:IntegerUpDown Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Minimum="1" Value="{Binding GeneratePatientTypeMin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Maximum="{Binding GeneratePatientTypeMax, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False" AllowTextInput="False"/>
 												<Label Grid.Column="1" Grid.Row="0" Content="-" Margin="10,0" HorizontalContentAlignment="Stretch" FontWeight="Bold" />
-												<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Minimum="1" Value="{Binding GeneratePatientTypeMax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Maximum="{Binding GeneratePatientTypeMax, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
+												<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Minimum="1" Value="{Binding GeneratePatientTypeMax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Maximum="{Binding GeneratePatientTypeMax, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False" AllowTextInput="False"/>
 											</Grid>
 
 										</Grid>
@@ -366,9 +362,9 @@
 													<ColumnDefinition Width="Auto"/>
 													<ColumnDefinition/>
 												</Grid.ColumnDefinitions>
-												<wpfTool:IntegerUpDown Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="{Binding GeneratePatientsMin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="50"/>
-												<Label Grid.Column="1" Grid.Row="0" Content="-" Margin="10,0" HorizontalContentAlignment="Stretch" FontWeight="Bold" />
-												<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="{Binding GeneratePatientsMax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="50"/>
+												<wpfTool:IntegerUpDown Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="{Binding GeneratePatientsMin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="50" AllowTextInput="False"/>
+												<Label Grid.Column="1" Grid.Row="0" Content="-" Margin="10,0" HorizontalContentAlignment="Stretch" />
+												<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="{Binding GeneratePatientsMax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="50" AllowTextInput="False"/>
 											</Grid>
 											<!-- Random Data - Delay -->
 											<CheckBox Content="Patients Delay" Grid.Column="0" Grid.Row="1" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GeneratePatientDelayCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}" />
@@ -381,9 +377,9 @@
 													<ColumnDefinition Width="Auto"/>
 													<ColumnDefinition/>
 												</Grid.ColumnDefinitions>
-												<wpfTool:IntegerUpDown Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="{Binding GeneratePatientDelayMin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="-10000" Maximum="10000" DefaultValue="-1000"/>
-												<Label Grid.Column="1" Grid.Row="0" Content="-" Margin="10,0" HorizontalContentAlignment="Stretch" FontWeight="Bold" />
-												<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="{Binding GeneratePatientDelayMax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="-10000" Maximum="10000" DefaultValue="1000"/>
+												<wpfTool:IntegerUpDown Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="{Binding GeneratePatientDelayMin, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Minimum="-10000" Maximum="10000" DefaultValue="-1000" AllowTextInput="False" Increment="100"/>
+												<Label Grid.Column="1" Grid.Row="0" Content="-" Margin="10,0" HorizontalContentAlignment="Stretch" />
+												<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="{Binding GeneratePatientDelayMax, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Minimum="-10000" Maximum="10000" DefaultValue="1000" AllowTextInput="False" ClipValueToMinMax="True" Increment="100"/>
 											</Grid>
 
 											<!-- Random Data - Treatments -->
@@ -397,12 +393,12 @@
 													<ColumnDefinition Width="Auto"/>
 													<ColumnDefinition/>
 												</Grid.ColumnDefinitions>
-												<wpfTool:IntegerUpDown Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="{Binding GenerateTreatmentsMin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="50" />
-												<Label Grid.Column="1" Grid.Row="0" Content="-" Margin="10,0" HorizontalContentAlignment="Stretch" FontWeight="Bold" />
-												<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="{Binding GenerateTreatmentsMax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="50"/>
+												<wpfTool:IntegerUpDown Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="{Binding GenerateTreatmentsMin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="50" AllowTextInput="False" />
+												<Label Grid.Column="1" Grid.Row="0" Content="-" Margin="10,0" HorizontalContentAlignment="Stretch"/>
+												<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="{Binding GenerateTreatmentsMax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="50" AllowTextInput="False"/>
 											</Grid>
 											<!-- Random Data - Weight -->
-											<CheckBox Content="Weight" Grid.Column="0" Grid.Row="3" VerticalContentAlignment="Center" Margin="10,0,0,0" Visibility="{Binding GetLevelLoaded.WeightEnabled, Converter={StaticResource VisibilityOfBool}}" IsChecked="True"  />
+											<CheckBox Content="Weight" Grid.Column="0" Grid.Row="3" VerticalContentAlignment="Center" Margin="10,0,0,0" Visibility="{Binding GetLevelLoaded.WeightEnabled, Converter={StaticResource VisibilityOfBool}}" IsChecked="{Binding GenerateWeightCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  />
 											<Grid Grid.Column="1" Grid.Row="3" Margin="0,5" Visibility="{Binding GetLevelLoaded.WeightEnabled, Converter={StaticResource VisibilityOfBool}}">
 												<Grid.RowDefinitions>
 													<RowDefinition Height="20"/>
@@ -412,9 +408,9 @@
 													<ColumnDefinition Width="Auto"/>
 													<ColumnDefinition/>
 												</Grid.ColumnDefinitions>
-												<wpfTool:IntegerUpDown Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Minimum="0" Maximum="100" DefaultValue="10" Increment="5" Value="10"/>
-												<Label Grid.Column="1" Grid.Row="0" Content="-" Margin="10,0" HorizontalContentAlignment="Stretch" FontWeight="Bold" />
-												<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Minimum="0" Maximum="100" DefaultValue="90" Increment="5" Value="90"/>
+												<wpfTool:IntegerUpDown Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Minimum="0" Maximum="100" DefaultValue="10" Increment="5" Value="{Binding GenerateWeightMin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AllowTextInput="False"/>
+												<Label Grid.Column="1" Grid.Row="0" Content="-" Margin="10,0" HorizontalContentAlignment="Stretch" />
+												<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Minimum="0" Maximum="100" DefaultValue="90" Increment="5" Value="{Binding GenerateWeightMax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AllowTextInput="False"/>
 											</Grid>
 
 										</Grid>

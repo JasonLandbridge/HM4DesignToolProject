@@ -9,6 +9,8 @@ using UiWindows;
 
 namespace HM4DesignTool
 {
+    using HM4DesignTool.Forms;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -66,10 +68,10 @@ namespace HM4DesignTool
         {
 
 
-           // BeforeLoadWindowSettings();
+            // BeforeLoadWindowSettings();
 
 
-           // AfterLoadWindowSettings();
+            // AfterLoadWindowSettings();
         }
 
 

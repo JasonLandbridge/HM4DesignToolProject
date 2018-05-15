@@ -14,6 +14,7 @@ namespace HM4DesignTool.Level
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Data;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -35,6 +36,7 @@ namespace HM4DesignTool.Level
     {
         #region Fields
 
+        #region General
         /// <summary>
         /// true if the LevelOverview has finished loading and setting up.
         /// </summary>
@@ -60,6 +62,11 @@ namespace HM4DesignTool.Level
         /// </summary>
         private bool showAvailableTreatmentsCheck;
 
+        private int roomIndexValue;
+
+        private double difficultyModifierValue;
+
+        #endregion
         /// <summary>
         /// List of the level names field.
         /// </summary>
@@ -111,24 +118,18 @@ namespace HM4DesignTool.Level
         private bool generatePatientTypeCheck = true;
 
         /// <summary>
-        /// Generate the PatientChances max value field.
-        /// </summary>
-        private int generatePatientTypeMax;
-
-        /// <summary>
         /// Generate the PatientChances min value field.
         /// </summary>
         private int generatePatientTypeMin;
 
         /// <summary>
+        /// Generate the PatientChances max value field.
+        /// </summary>
+        private int generatePatientTypeMax;
+        /// <summary>
         /// Generate the amount of patients check field.
         /// </summary>
         private bool generatePatientsCheck = true;
-
-        /// <summary>
-        /// Generate the amount of patients max value field.
-        /// </summary>
-        private int generatePatientsMax = 1;
 
         /// <summary>
         /// Generate the amount of patients min value field.
@@ -136,14 +137,13 @@ namespace HM4DesignTool.Level
         private int generatePatientsMin = 1;
 
         /// <summary>
+        /// Generate the amount of patients max value field.
+        /// </summary>
+        private int generatePatientsMax = 1;
+        /// <summary>
         /// Generate the delay of each patient field.
         /// </summary>
         private bool generatePatientDelayCheck = true;
-
-        /// <summary>
-        /// Generate patient delay min value field.
-        /// </summary>
-        private int generatePatientDelayMax = 1000;
 
         /// <summary>
         /// Generate patient delay max value field.
@@ -151,9 +151,18 @@ namespace HM4DesignTool.Level
         private int generatePatientDelayMin = -1000;
 
         /// <summary>
+        /// Generate patient delay min value field.
+        /// </summary>
+        private int generatePatientDelayMax = 1000;
+        /// <summary>
         /// Generate the treatments for each patients check field.
         /// </summary>
         private bool generateTreatmentsCheck = true;
+
+        /// <summary>
+        /// Generate the treatments for each patients check min value field.
+        /// </summary>
+        private int generateTreatmentsMin = 1;
 
         /// <summary>
         /// Generate the treatments for each patients check max value field.
@@ -161,9 +170,19 @@ namespace HM4DesignTool.Level
         private int generateTreatmentsMax = 1;
 
         /// <summary>
-        /// Generate the treatments for each patients check min value field.
+        /// Generate the weight for each patients check field.
         /// </summary>
-        private int generateTreatmentsMin = 1;
+        private bool generateWeightCheck = true;
+
+        /// <summary>
+        /// Generate the weight for each patients check min value field.
+        /// </summary>
+        private int generateWeightMin = 10;
+
+        /// <summary>
+        /// Generate the weight for each patients check max value field.
+        /// </summary>
+        private int generateWeightMax = 90;
         #endregion
 
         #endregion
@@ -186,11 +205,72 @@ namespace HM4DesignTool.Level
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        #endregion 
+        #endregion
 
         #region Properties
 
         #region Public
+
+        #region General
+        public int RoomIndex
+        {
+            get => this.roomIndexValue;
+            set
+            {
+                this.roomIndexValue = value;
+                this.OnPropertyChanged();
+                this.RoomIndexUpdated();
+
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the get difficulty modifier of the Level.
+        /// </summary>
+        public double DifficultyModifier
+        {
+            get
+            {
+                if (this.GetLevelLoaded != null)
+                {
+                    return this.GetLevelLoaded.GetDifficultyModifier;
+                }
+                else
+                {
+                    return this.difficultyModifierValue;
+                }
+            }
+            set
+            {
+                if (this.GetLevelLoaded != null)
+                {
+                    this.GetLevelLoaded.GetDifficultyModifier = value;
+                }
+                this.difficultyModifierValue = value;
+
+                this.OnPropertyChanged();
+                this.OnPropertyChanged("DifficultyModifierString");
+                this.DifficultyModifierUpdated();
+
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the difficulty modifier string.
+        /// </summary>
+        public string DifficultyModifierString
+        {
+            get => this.DifficultyModifier.ToString("0.0");
+            set
+            {
+                if (value != null)
+                {
+                    this.DifficultyModifier = float.Parse(value, CultureInfo.InvariantCulture.NumberFormat);
+                }
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Gets or sets a value indicating whether to allow  the level script to update.
@@ -222,10 +302,7 @@ namespace HM4DesignTool.Level
                 {
                     this.currentLevelLoaded = value;
                     this.OnPropertyChanged();
-                    this.OnPropertyChanged("LevelOverviewActive");
-                    this.OnPropertyChanged("DifficultyModifierList");
-                    this.UpdateRandomRecommendations();
-                    this.UpdatePatientSimulator();
+                    this.CurrentLevelUpdated();
                 }
             }
         }
@@ -284,7 +361,7 @@ namespace HM4DesignTool.Level
             {
                 if (this.GetLevelLoaded != null)
                 {
-                    string categoryKey = Globals.GetCategoryKey(this.GetLevelLoaded.GetRoomIndex);
+                    string categoryKey = this.GetLevelLoaded.CategoryKey;
                     if (categoryKey != string.Empty)
                     {
                         return new ObservableCollection<string>(Globals.GetSettings.GetDifficultyModifierList(categoryKey));
@@ -579,6 +656,52 @@ namespace HM4DesignTool.Level
             }
         }
         #endregion
+
+        #region Treatment
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to generate Weight check.
+        /// </summary>
+        public bool GenerateWeightCheck
+        {
+            get => this.generateWeightCheck;
+
+            set
+            {
+                this.generateWeightCheck = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the generate Weight min value.
+        /// </summary>
+        public int GenerateWeightMin
+        {
+            get => this.generateWeightMin;
+
+            set
+            {
+                this.generateWeightMin = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the generate Weight max value.
+        /// </summary>
+        public int GenerateWeightMax
+        {
+            get => this.generateWeightMax;
+
+            set
+            {
+                this.generateWeightMax = value;
+                this.OnPropertyChanged();
+            }
+        }
+        #endregion
+
 
         #endregion
 
@@ -906,8 +1029,11 @@ namespace HM4DesignTool.Level
         {
             if (this.UseRandomRecommendations)
             {
+
                 int numberOfPatients = Globals.GetGameValues.NumberOfPatientsToInt(this.GetLevelLoaded.GetDifficultyModifier);
+
                 int treatmentPerPatients = Globals.GetGameValues.TreatmentPerPatientToInt(this.GetLevelLoaded.GetDifficultyModifier);
+
                 int patientTypeCount = Globals.GetSettings.GetPatientChanceList(this.GetLevelLoaded.CategoryKey).Count;
 
                 this.GeneratePatientTypeMin = patientTypeCount;
@@ -952,10 +1078,47 @@ namespace HM4DesignTool.Level
                     this.GetLevelLoaded.RandomizeDelay();
                 }
 
+                if (this.GenerateWeightCheck && this.GetLevelLoaded.GetLevelType == LevelTypeEnum.TimeTrial)
+                {
+                    this.GetLevelLoaded.RandomizePatientWeight(this.GenerateWeightMin, this.GenerateWeightMax);
+                }
                 this.GetLevelLoaded.UpdateLevelOutput();
             }
         }
 
+        #endregion
+
+        #region UpdateEvents
+
+
+        public void CurrentLevelUpdated()
+        {
+            this.OnPropertyChanged("LevelOverviewActive");
+            this.RoomIndex = this.GetLevelLoaded.GetRoomIndex;
+
+            this.DifficultyModifier = this.GetLevelLoaded.GetDifficultyModifier;
+
+            this.UpdatePatientSimulator();
+
+        }
+
+        /// <summary>
+        /// Event fired when the RoomIndex is updated. 
+        /// </summary>
+        public void RoomIndexUpdated()
+        {
+            this.GetLevelLoaded.GetRoomIndex = this.RoomIndex;
+            this.OnPropertyChanged("DifficultyModifierList");
+            this.DifficultyModifierUpdated();
+
+        }
+
+
+        public void DifficultyModifierUpdated()
+        {
+            this.OnPropertyChanged("DifficultyModifier");
+            this.UpdateRandomRecommendations();
+        }
         #endregion
 
         #endregion

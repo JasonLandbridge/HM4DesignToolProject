@@ -12,5 +12,13 @@ Todo
   - Add functionality for inserting the Character Deco based on the heroes. 
   - Text used in the level Generating should be in the level Const
   - Help Screen with info
-  - Move LevelList to LevelOverview
   - Add restart function in menu
+  - BUG: Reload the PatientOverview after generating a new level
+  
+  
+  
+  1. Instant treatment / Quick Treatment -> Single Click
+2. Gesture Treatments -> Gesture, mostly no product needed. 
+3. Pop-up Treatment -> 
+Product Treatment -> Aways pick-up an item or Combo Product. 
+Mini-game Treatment ->

@@ -200,9 +200,9 @@ namespace SettingsNamespace
         {
             List<String> patientTypeList = GetPatientTypeList(categoryKey);  // Room[N] -> List with only checked patientTypes
 
-            List<PatientChance> patientChanceList = new List<PatientChance> { };
+            List<PatientChance> patientChanceList = new List<PatientChance>( );
 
-            if (patientChanceList.Count > 0)
+            if (patientTypeList.Count > 0)
             {
                 foreach (String patientType in patientTypeList)
                 {

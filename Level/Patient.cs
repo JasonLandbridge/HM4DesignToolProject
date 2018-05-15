@@ -312,7 +312,7 @@ namespace LevelData
                 }
 
 
-                if (this.weightEnabled && this.weight > -1)
+                if (this.ParentLevel.WeightEnabled && this.weight > -1)
                 {
                     output = $"{output}, weight = {this.weight.ToString()}";
                 }
