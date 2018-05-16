@@ -103,7 +103,7 @@
 					</ItemsControl.ItemsPanel>
 				</ItemsControl>
 				<Button  Grid.Column="8" Content="Treatments" MinWidth="80" Visibility="Hidden"/>
-				<Button  Grid.Column="9" Content="Traits" MinWidth="80"/>
+				<Button  Grid.Column="9" Content="Traits" MinWidth="80" Command="{Binding OpenTraitsWindowCommand}"/>
 			</Grid>
 		</DataTemplate>
 		<!--PatientChancesRowTemplate-->

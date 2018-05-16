@@ -10,6 +10,7 @@
 namespace HM4DesignTool.Level
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
@@ -19,6 +20,7 @@ namespace HM4DesignTool.Level
     using System.IO;
     using System.Linq;
     using System.Windows.Input;
+    using NLua;
 
     using DataNameSpace;
 
@@ -1302,8 +1304,8 @@ namespace HM4DesignTool.Level
         {
             // Parse the PatientList with treatments
             const string StartPatientTriggerText = "levelDesc.triggers=";
-            const string EndPatientTriggerText = "},\n}";
-            string[] delimiter = { "}," };
+            const string EndPatientTriggerText = "},\n";
+            string[] delimiter = { "},\n" };
 
             if (rawLevelText.Contains(StartPatientTriggerText) && rawLevelText.Contains(EndPatientTriggerText))
             {
@@ -1314,11 +1316,21 @@ namespace HM4DesignTool.Level
                 if (startPatientTriggerIndex > -1 && endPatientTriggerIndex - EndPatientTriggerText.Length > -1 && startPatientTriggerIndex < endPatientTriggerIndex)
                 {
                     string patientsTriggersRawText = rawLevelText.Substring(startPatientTriggerIndex, endPatientTriggerIndex - startPatientTriggerIndex);
-                    rawLevelText = rawLevelText.Replace(patientsTriggersRawText, string.Empty);
+                    //rawLevelText = rawLevelText.Replace(patientsTriggersRawText, string.Empty);
 
                     // Filter all new lines, remove the unnecessary text
-                    patientsTriggersRawText = patientsTriggersRawText.Replace("\n", string.Empty);
-                    patientsTriggersRawText = patientsTriggersRawText.Replace(StartPatientTriggerText + "{", string.Empty).TrimEnd('}');
+                    //patientsTriggersRawText = patientsTriggersRawText.Replace("\n", string.Empty);
+                    //patientsTriggersRawText = patientsTriggersRawText.Replace(StartPatientTriggerText + "{", string.Empty).TrimEnd('}');
+
+
+
+                    rawLevelText = rawLevelText.Replace("levelDesc.", string.Empty);
+
+                    Lua luaObject = new Lua();
+
+                    luaObject.DoString(rawLevelText);
+
+
 
                     // Split into seperate items divided by PatientTrigger
                     List<string> patientTriggers = patientsTriggersRawText.Split(delimiter, StringSplitOptions.None).ToList();

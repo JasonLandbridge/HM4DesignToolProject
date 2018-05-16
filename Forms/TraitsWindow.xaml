@@ -1,0 +1,31 @@
+﻿<Window x:Class="HM4DesignTool.Forms.TraitsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HM4DesignTool.Forms"
+        mc:Ignorable="d"
+        Title="Patients Traits" Height="450" Width="600" WindowStartupLocation="CenterOwner">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition/>
+			<ColumnDefinition Width="Auto"/>
+		</Grid.ColumnDefinitions>
+		<DataGrid AutoGenerateColumns="False">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Property" Width="*"/>
+				<DataGridTextColumn Header="value" Width="*"/>
+			</DataGrid.Columns>
+		</DataGrid>
+		<StackPanel Grid.Column="1" >
+			<Button x:Name="buttonPatientOverviewAddRow" Grid.Column="2" Content="Save" Width="80" Margin="5,5" IsDefault="True" />
+			<Button x:Name="buttonPatientOverviewRemoveRow" Grid.Column="3" Content="Cancel" Width="80" Margin="5,5" IsCancel="True" />
+		</StackPanel>
+
+		<TextBlock Grid.ColumnSpan="2" Grid.Row="1" MinHeight="50" Margin="10" />
+	</Grid>
+</Window>
