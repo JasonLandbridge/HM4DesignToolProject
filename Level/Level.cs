@@ -1304,7 +1304,7 @@ namespace HM4DesignTool.Level
         {
             // Parse the PatientList with treatments
             const string StartPatientTriggerText = "levelDesc.triggers=";
-            const string EndPatientTriggerText = "},\n";
+            const string EndPatientTriggerText = "},\n}";
             string[] delimiter = { "},\n" };
 
             if (rawLevelText.Contains(StartPatientTriggerText) && rawLevelText.Contains(EndPatientTriggerText))
@@ -1316,24 +1316,34 @@ namespace HM4DesignTool.Level
                 if (startPatientTriggerIndex > -1 && endPatientTriggerIndex - EndPatientTriggerText.Length > -1 && startPatientTriggerIndex < endPatientTriggerIndex)
                 {
                     string patientsTriggersRawText = rawLevelText.Substring(startPatientTriggerIndex, endPatientTriggerIndex - startPatientTriggerIndex);
-                    //rawLevelText = rawLevelText.Replace(patientsTriggersRawText, string.Empty);
 
                     // Filter all new lines, remove the unnecessary text
-                    //patientsTriggersRawText = patientsTriggersRawText.Replace("\n", string.Empty);
-                    //patientsTriggersRawText = patientsTriggersRawText.Replace(StartPatientTriggerText + "{", string.Empty).TrimEnd('}');
+                    patientsTriggersRawText = patientsTriggersRawText.Replace(StartPatientTriggerText, string.Empty).TrimEnd('}');
 
+                    // Remove the first new line
+                    if (patientsTriggersRawText.StartsWith("\n"))
+                    {
+                        patientsTriggersRawText = patientsTriggersRawText.Remove(0, 2);
+                    }
 
-
-                    rawLevelText = rawLevelText.Replace("levelDesc.", string.Empty);
-
-                    Lua luaObject = new Lua();
-
-                    luaObject.DoString(rawLevelText);
-
-
+                    if (patientsTriggersRawText.StartsWith("{{"))
+                    {
+                        patientsTriggersRawText = patientsTriggersRawText.Remove(0, 1);
+                    }
 
                     // Split into seperate items divided by PatientTrigger
-                    List<string> patientTriggers = patientsTriggersRawText.Split(delimiter, StringSplitOptions.None).ToList();
+                    List<string> patientTriggers = patientsTriggersRawText.Split(delimiter, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+
+                    for (int i = 0; i < patientTriggers.Count; i++)
+                    {
+                        // Remove all newlines ("\n") and tabs ("\t")
+                        string correctedEntry = patientTriggers[i].Replace("\n", string.Empty).Replace("\t", string.Empty);
+
+                        // Add the delimiter back again at the end. 
+                        patientTriggers[i] = $"{correctedEntry}}}";
+                    }
+
 
                     // Create all the patients
                     foreach (string patientTrigger in patientTriggers)

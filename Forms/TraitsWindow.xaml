@@ -4,28 +4,29 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HM4DesignTool.Forms"
+        xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         mc:Ignorable="d"
         Title="Patients Traits" Height="450" Width="600" WindowStartupLocation="CenterOwner">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition/>
-			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto" MinHeight="50"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition/>
 			<ColumnDefinition Width="Auto"/>
 		</Grid.ColumnDefinitions>
-		<DataGrid AutoGenerateColumns="False">
+		<DataGrid ItemsSource="{Binding PatientTraitCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" SelectionUnit="Cell" SelectionMode="Single">
 			<DataGrid.Columns>
-				<DataGridTextColumn Header="Property" Width="*"/>
-				<DataGridTextColumn Header="value" Width="*"/>
+				<DataGridTextColumn Header="Property" Width="*" Binding="{Binding Property, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+				<DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 			</DataGrid.Columns>
 		</DataGrid>
 		<StackPanel Grid.Column="1" >
-			<Button x:Name="buttonPatientOverviewAddRow" Grid.Column="2" Content="Save" Width="80" Margin="5,5" IsDefault="True" />
-			<Button x:Name="buttonPatientOverviewRemoveRow" Grid.Column="3" Content="Cancel" Width="80" Margin="5,5" IsCancel="True" />
+			<Button x:Name="buttonTraitWindowSave" Grid.Column="2" Content="Save" Width="80" Margin="5,5" IsDefault="True" Click="buttonTraitWindowSave_Click" />
+			<Button x:Name="buttonTraitWindowCancel" Grid.Column="3" Content="Cancel" Width="80" Margin="5,5" IsCancel="True" />
 		</StackPanel>
 
-		<TextBlock Grid.ColumnSpan="2" Grid.Row="1" MinHeight="50" Margin="10" />
+		<TextBlock x:Name="PatientTraitsPreview" Grid.ColumnSpan="2" Grid.Row="1" Margin="10" MinHeight="50" Text="{Binding PatientTraitString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, diag:PresentationTraceSources.TraceLevel=High}" TextWrapping="Wrap" />
 	</Grid>
 </Window>

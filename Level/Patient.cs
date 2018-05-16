@@ -32,6 +32,7 @@ namespace LevelData
 
 
         #region General
+
         /// <summary>
         /// true if the LevelOverview has finished loading and setting up.
         /// </summary>
@@ -97,23 +98,6 @@ namespace LevelData
 
         #endregion
 
-
-
-
-
-
-
-
-
-
-
-
-        #region Events
-
-
-
-        #endregion
-
         #region Properties
 
         #region Public
@@ -174,11 +158,20 @@ namespace LevelData
 
 
 
-        public List<PatientTrait> PatientTraitList { get; set; }
+        public List<PatientTrait> PatientTraitList
+        {
+            get => this.patientTraitList;
+            set
+            {
+                this.patientTraitList = value;
+                this.OnPropertyChanged();
+            }
+        }
 
 
 
         #region ItemCollections
+
         /// <summary>
         /// Gets or sets the list with all the Patient objects in this level converted to an ObservableCollection.
         /// </summary>
@@ -190,9 +183,40 @@ namespace LevelData
             {
                 this.PatientTraitList = value.ToList();
                 this.OnPropertyChanged();
+                this.UpdatePatientTraitString();
             }
         }
 
+        private string patientTraitString;
+
+        public void UpdatePatientTraitString()
+        {
+            string output = string.Empty;
+
+            foreach (PatientTrait patientTrait in this.PatientTraitList)
+            {
+                output += patientTrait.ToString();
+            }
+
+            if (output.EndsWith(","))
+            {
+                output = output.TrimEnd(',');
+            }
+
+            this.PatientTraitString = output;
+
+        }
+
+        public string PatientTraitString
+        {
+            get => this.patientTraitString;
+
+            set
+            {
+                this.patientTraitString = value;
+                this.OnPropertyChanged();
+            }
+        }
         #endregion
 
         #region Commands
@@ -252,7 +276,7 @@ namespace LevelData
         {
             // Clean up the patientData
             patientData = System.Text.RegularExpressions.Regex.Replace(patientData, @"\s+", string.Empty);
-            patientData = patientData.Replace("\t", String.Empty);
+            patientData = patientData.Replace("\t", string.Empty);
             patientData = RemoveFirstComma(patientData);
 
             // Parse the delay
@@ -359,7 +383,17 @@ namespace LevelData
 
         public void OpenTraitsWindow()
         {
-            TraitsWindow dialog = new TraitsWindow();
+
+            // Make sure at least 10 entries are avalible. 
+            if (this.PatientTraitList.Count <= 10)
+            {
+                for (int i = this.PatientTraitList.Count; this.PatientTraitList.Count <= 10; i++)
+                {
+                    this.PatientTraitList.Add(new PatientTrait());
+                }
+            }
+
+            TraitsWindow dialog = new TraitsWindow { DataContext = this };
             bool? dialogResult = dialog.ShowDialog();
 
         }
@@ -525,6 +559,7 @@ namespace LevelData
         {
             this.ParsePatientData(patientData);
         }
+
         public void SetTreatments(List<Treatment> TreatmentList)
         {
             // Make sure the maxAmount of visible treatments in visible
@@ -557,7 +592,7 @@ namespace LevelData
 
                 if (this.delay > -1)
                 {
-                    //Add extra space to line everything up
+                    // Add extra space to line everything up
                     if (this.delay < 10000)
                     {
                         output = $"{output} delay =  {this.delay.ToString()}";
@@ -611,6 +646,7 @@ namespace LevelData
         {
             return $"{this.PatientName}, {this.delay}, {this.TreatmentListString},";
         }
+
         private static string RemoveFirstComma(string patientString)
         {
             if (patientString.StartsWith(","))
@@ -640,6 +676,7 @@ namespace LevelData
             this.TreatmentCollection.Add(treatment);
 
         }
+
         #region INotifyPropertyChanged Members
 
         /// <summary>
