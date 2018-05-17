@@ -431,7 +431,7 @@
 
 										<CheckBox x:Name="showAvailableTreatmentsCheck" Content="Show available treatments" Grid.Column="0" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,5,0,5" IsChecked="{Binding ShowAvailableTreatmentsCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 										<CheckBox x:Name="uniqueTreatmentsCheckBox" Content="Unique Treatments Only Per Patient" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,5,0,5" IsEnabled="False" IsChecked="True" Visibility="Hidden"/>
-										<Button x:Name="customTreatmentWeightsButton" Content="Custom Treatment Weights" Grid.Column="2" Grid.Row="0" Click="customTreatmentWeightsButton_Click" />
+										<Button x:Name="customTreatmentWeightsButton" Content="Custom Treatment Weights" Grid.Column="2" Grid.Row="0" Click="customTreatmentWeightsButton_Click" Padding="10,1" />
 									</Grid>
 									<Button x:Name="generateLevelButton" Grid.Row="6" Content="Generate Level" Margin="0,5" Padding="1,5" Click="generateLevelButton_Click"/>
 								</Grid>

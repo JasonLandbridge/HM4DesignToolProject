@@ -186,7 +186,12 @@
       "fridgeChoice": 0,
       "organWeighing": 0
     },
-    "r6_b02_bonus_01": {},
+    "r6_b02_bonus_01": {
+      "applyAdrenaline": 100,
+      "applyHotBalm": 100,
+      "findTools": 0,
+      "takeBlood": 0
+    },
     "r6_b02_bonus_02": {
       "applyAdrenaline": 27
     }

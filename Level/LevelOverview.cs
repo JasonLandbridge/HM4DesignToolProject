@@ -27,8 +27,6 @@ namespace HM4DesignTool.Level
 
     using HM4DesignTool.Utilities;
 
-    using LevelData;
-
     using NaturalSort.Extension;
 
     /// <inheritdoc />
@@ -1389,6 +1387,7 @@ namespace HM4DesignTool.Level
         }
 
         #endregion
+
         #endregion
 
         #endregion

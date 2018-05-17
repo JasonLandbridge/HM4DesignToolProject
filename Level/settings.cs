@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using DataNameSpace;
 using System.IO;
-using LevelData;
 using System.Windows.Media;
 
 namespace SettingsNamespace

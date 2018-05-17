@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SettingsNamespace;
-using LevelData;
+
 using System.Windows.Media;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -139,6 +139,32 @@ namespace DataNameSpace
         public static String FilterToNumerical(String str)
         {
             return Regex.Replace(str, @"[^\d]", "");
+        }
+
+        /// <summary>
+        /// Remove first comma.
+        /// </summary>
+        /// <param name="stringObject">
+        /// The patient string.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        public static string RemoveFirstComma(string stringObject)
+        {
+            if (stringObject.StartsWith(","))
+            {
+                return stringObject.Substring(1, stringObject.Count() - 1);
+            }
+            else if (stringObject.StartsWith("{,"))
+            {
+
+                return stringObject.Remove(1, 1);
+            }
+            else
+            {
+                return stringObject;
+            }
         }
 
         public static String GetCategoryKey(int RoomIndex)

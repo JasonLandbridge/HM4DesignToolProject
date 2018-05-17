@@ -10,7 +10,6 @@
 namespace HM4DesignTool.Level
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
@@ -20,13 +19,10 @@ namespace HM4DesignTool.Level
     using System.IO;
     using System.Linq;
     using System.Windows.Input;
-    using NLua;
 
     using DataNameSpace;
 
     using HM4DesignTool.Utilities;
-
-    using LevelData;
 
     using Weighted_Randomizer;
 
@@ -49,6 +45,9 @@ namespace HM4DesignTool.Level
 
         #region General
 
+        /// <summary>
+        /// The gameplay character that can optionally be added.
+        /// </summary>
         private string gameplayCharacter = string.Empty;
 
 
@@ -845,7 +844,7 @@ namespace HM4DesignTool.Level
                     this.PatientList.RemoveAt(index);
                 }
                 this.UpdateLevelEdited();
-                
+
             }
             else if (newAmount > patientCount)
             {
@@ -1334,7 +1333,6 @@ namespace HM4DesignTool.Level
                     // Split into seperate items divided by PatientTrigger
                     List<string> patientTriggers = patientsTriggersRawText.Split(delimiter, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-
                     for (int i = 0; i < patientTriggers.Count; i++)
                     {
                         // Remove all newlines ("\n") and tabs ("\t")
@@ -1343,7 +1341,6 @@ namespace HM4DesignTool.Level
                         // Add the delimiter back again at the end. 
                         patientTriggers[i] = $"{correctedEntry}}}";
                     }
-
 
                     // Create all the patients
                     foreach (string patientTrigger in patientTriggers)
