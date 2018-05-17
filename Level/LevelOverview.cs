@@ -67,6 +67,9 @@ namespace HM4DesignTool.Level
 
         private double difficultyModifierValue;
 
+
+        private bool insertDesignData = true;
+
         #endregion
         /// <summary>
         /// List of the level names field.
@@ -327,7 +330,18 @@ namespace HM4DesignTool.Level
             {
                 this.maxTreatmentsVisible = value;
                 this.OnPropertyChanged();
-                this.GetLevelLoaded.UpdateMaxTreatments(value);
+                this.GetLevelLoaded?.UpdateMaxTreatments(value);
+            }
+        }
+
+        public bool InsertDesignData
+        {
+            get => this.insertDesignData;
+            set
+            {
+                this.insertDesignData = value;
+                this.OnPropertyChanged();
+                this.GetLevelLoaded?.UpdateLevelOutput();
             }
         }
 
@@ -745,9 +759,6 @@ namespace HM4DesignTool.Level
                 return this.reloadLevelCommand ?? (this.reloadLevelCommand = new CommandHandler(this.ReloadLevel, this.levelOverviewFinishedLoading));
             }
         }
-
-
-
         #endregion
 
         #endregion

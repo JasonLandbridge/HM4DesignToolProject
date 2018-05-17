@@ -582,6 +582,7 @@ namespace DataNameSpace
                 _treatmentColor = value;
                 OnPropertyChanged("TreatmentColor");
                 OnPropertyChanged("TreatmentColorBrush");
+                OnPropertyChanged("TreatmentFontColorBrush");
                 OnPropertyChanged("TreatmentColorString");
 
             }
@@ -593,6 +594,27 @@ namespace DataNameSpace
                 return new SolidColorBrush(TreatmentColor);
             }
         }
+
+        public SolidColorBrush TreatmentFontColorBrush
+        {
+            get
+            {
+                int brightness = (int)Math.Sqrt(
+                    this.TreatmentColor.R * TreatmentColor.R * .299 +
+                    TreatmentColor.G * TreatmentColor.G * .587 +
+                    TreatmentColor.B * TreatmentColor.B * .114);
+
+                if (brightness > 130)
+                {
+                    return new SolidColorBrush(Colors.Black);
+                }
+                else
+                {
+                    return new SolidColorBrush(Colors.White);
+                }
+            }
+        }
+
         public String TreatmentColorString
         {
             get

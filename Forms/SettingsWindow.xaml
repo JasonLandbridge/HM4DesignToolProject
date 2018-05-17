@@ -35,7 +35,7 @@
 										<RowDefinition/>
 										<RowDefinition/>
 									</Grid.RowDefinitions>
-									<Label x:Name="projectDirectoryLabel" Content="Data directory (e.g, 'C:/hm4/data/')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
+									<Label x:Name="projectDirectoryLabel" Content="Data directory (e.g, 'C:\hm4\data\')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
 									<TextBox x:Name="projectDirectoryPathText" Text="{Binding ProjectDirectoryPathValue, Mode=OneWay}" Grid.Column="0" Grid.Row="1" Margin="5,0" />
 									<Button x:Name="projectDirectoryBrowseButton" Grid.Column="1" Grid.Row="1" Content="Browse" Margin="5,0" Padding="5,1" Click="projectDirectoryBrowseButton_Click"/>
 								</Grid>
@@ -47,7 +47,7 @@
 										<RowDefinition/>
 										<RowDefinition/>
 									</Grid.RowDefinitions>
-									<Label x:Name="projectPathScriptLabel" Content="Script directory (e.g, 'C:/hm4/data/script/')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
+									<Label x:Name="projectPathScriptLabel" Content="Script directory (e.g, 'C:\hm4\data\script\')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
 									<TextBox x:Name="projectPathScriptText" Text="{Binding ProjectPathScriptValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="1" Margin="5,0" IsEnabled="False" />
 								</Grid>
 								<Grid>
@@ -58,7 +58,7 @@
 										<RowDefinition/>
 										<RowDefinition/>
 									</Grid.RowDefinitions>
-									<Label x:Name="projectPathLevelLabel" Content="Level directory (e.g, 'C:/hm4/data/script/levels')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
+									<Label x:Name="projectPathLevelLabel" Content="Level directory (e.g, 'C:\hm4\data\script\levels\')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
 									<TextBox x:Name="projectPathLevelText" Text="{Binding ProjectPathLevelValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="1" Margin="5,0" IsEnabled="False" />
 								</Grid>
 
@@ -71,7 +71,7 @@
 										<RowDefinition/>
 										<RowDefinition/>
 									</Grid.RowDefinitions>
-									<Label x:Name="projectPathImagesLabel" Content="Images directory (e.g, 'C:/hm4/data/images/')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
+									<Label x:Name="projectPathImagesLabel" Content="Images directory (e.g, 'C:\hm4\data\images\')" FontStyle="Italic" FontSize="10" Margin="5,0,0,0"/>
 									<TextBox x:Name="projectPathImagesText" Text="{Binding ProjectPathImagesValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="1" Margin="5,0" IsEnabled="False" />
 								</Grid>
 
@@ -170,14 +170,15 @@
 									<DataGridCheckBoxColumn Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Select" MaxWidth="70" MinWidth="50"/>
 									<DataGridTextColumn Binding="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Treatment Name" MinWidth="50" Width="*"/>
 									<DataGridComboBoxColumn x:Name="difficultyUnlockedColumn" ItemsSource="{Binding DataContext.TreatmentDifficultyModifierList, RelativeSource={RelativeSource AncestorType=Grid}}" SelectedValuePath="DifficultyUnlockedString"  TextBinding="{Binding DifficultyUnlockedString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, diag:PresentationTraceSources.TraceLevel=High}" Header="Difficulty Unlocked" Width="*"/>
-									<mah:DataGridNumericUpDownColumn Binding="{Binding HeartsValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Hearts Value" Width="*"/>
-									<mah:DataGridNumericUpDownColumn Binding="{Binding Weight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Base Weight" Width="*" MaxWidth="80"/>
+									<DataGridTextColumn Binding="{Binding HeartsValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Hearts Value" Width="*"/>
+									<DataGridTextColumn Binding="{Binding Weight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Base Weight" Width="*" MaxWidth="80"/>
 									<DataGridCheckBoxColumn Binding="{Binding Gesture, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Gesture" Width="*" MaxWidth="60"/>
 									<DataGridCheckBoxColumn Binding="{Binding AlwaysLast, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Always Last" Width="*" MaxWidth="80"/>
 									<DataGridTextColumn Binding="{Binding TreatmentColorString, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"  Header="Color Value" Width="*">
 										<DataGridTextColumn.ElementStyle>
 											<Style TargetType="{x:Type TextBlock}">
 												<Setter Property="Background" Value="{Binding TreatmentColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+												<Setter Property="Foreground" Value="{Binding TreatmentFontColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 											</Style>
 										</DataGridTextColumn.ElementStyle>
 									</DataGridTextColumn>

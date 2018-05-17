@@ -523,8 +523,12 @@ namespace HM4DesignTool.Level
             {
                 string output = string.Empty;
 
-                output += this.designToolData.ToString();
-                output += Environment.NewLine;
+                if (Globals.GetLevelOverview.InsertDesignData)
+                {
+                    output += this.designToolData.ToString();
+                    output += Environment.NewLine;
+
+                }
 
                 // Output an optional GamePlay character.
                 if (this.GameplayCharacter != string.Empty)

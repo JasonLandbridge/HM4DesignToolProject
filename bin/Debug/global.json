@@ -26,7 +26,8 @@
       "curvy_female1",
       "senior_female",
       "teen1_female_casual"
-    ]
+    ],
+    "Room 7": []
   },
   "treatmentCategories": {
     "Room 1": {},
@@ -161,7 +162,8 @@
       "29.5",
       "30.0",
       "31.0"
-    ]
+    ],
+    "Room 7": []
   },
   "CustomizedTreatmentWeights": {
     "r3_b02_bonus_01": {
