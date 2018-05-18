@@ -112,6 +112,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data\Enum.cs" />
+    <Compile Include="Data\GameValues.cs" />
+    <Compile Include="Data\Globals.cs" />
     <Compile Include="Forms\TraitsWindow.xaml.cs">
       <DependentUpon>TraitsWindow.xaml</DependentUpon>
     </Compile>
@@ -129,6 +132,7 @@
       <DependentUpon>RoomExportWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Level\PatientTrait.cs" />
+    <Compile Include="Level\Treatment.cs" />
     <Compile Include="Utilities\ClassTemplate.cs" />
     <Compile Include="Utilities\CommandHandler.cs" />
     <Page Include="Forms\CustomTreatmentWeightsWindow.xaml">
@@ -155,7 +159,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Forms\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -172,7 +176,7 @@
     <Compile Include="Forms\NewLevelWindow.xaml.cs">
       <DependentUpon>NewLevelWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Forms\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -195,7 +199,7 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
+    <EmbeddedResource Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">

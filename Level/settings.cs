@@ -7,6 +7,7 @@ using System.Windows.Media;
 
 namespace SettingsNamespace
 {
+    using HM4DesignTool.Data;
     using HM4DesignTool.Level;
 
     //Storing settings in JSON: https://github.com/Nucs/JsonSettings
@@ -199,7 +200,7 @@ namespace SettingsNamespace
         {
             List<String> patientTypeList = GetPatientTypeList(categoryKey);  // Room[N] -> List with only checked patientTypes
 
-            List<PatientChance> patientChanceList = new List<PatientChance>( );
+            List<PatientChance> patientChanceList = new List<PatientChance>();
 
             if (patientTypeList.Count > 0)
             {

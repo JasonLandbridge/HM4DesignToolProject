@@ -22,6 +22,7 @@ namespace HM4DesignTool.Level
 
     using DataNameSpace;
 
+    using HM4DesignTool.Data;
     using HM4DesignTool.Utilities;
 
     using Weighted_Randomizer;
@@ -1154,6 +1155,9 @@ namespace HM4DesignTool.Level
 
         }
 
+        /// <summary>
+        /// Call this function when the Level is loaded. 
+        /// </summary>
         public void LevelLoaded()
         {
             this.OnPropertyChanged("PatientList");
@@ -1225,33 +1229,8 @@ namespace HM4DesignTool.Level
 
             rawLevelText = this.ParsePatientChances(rawLevelText);
 
-            this.ParsePatientTriggers(rawLevelText);
+            string unused = this.ParsePatientTriggers(rawLevelText);
 
-            // Isolate any previous comments at the start of the text
-            // if (rawLevelText.Contains(startDesignToolData))
-            // {
-            // int startDesignToolDataIndex = rawLevelText.IndexOf(startPatientChancesText, StringComparison.Ordinal);
-            // if (startDesignToolDataIndex > 0)
-            // {
-            // this.StartComments = rawLevelText.Substring(0, startDesignToolDataIndex);
-            // }
-            // }
-            // else if (rawLevelText.Contains(startDesignToolData))
-            // {
-            // int startPatientChancesIndex = rawLevelText.IndexOf(startPatientChancesText, StringComparison.Ordinal);
-            // if (startPatientChancesIndex > 0)
-            // {
-            // this.StartComments = rawLevelText.Substring(0, startPatientChancesIndex);
-            // }
-            // }
-            // else if (rawLevelText.Contains(startPatientTriggerText))
-            // {
-            // int startPatientTriggerIndex = rawLevelText.IndexOf(startPatientTriggerText, StringComparison.Ordinal);
-            // if (startPatientTriggerIndex > 0)
-            // {
-            // this.StartComments = rawLevelText.Substring(0, startPatientTriggerIndex);
-            // }
-            // }
         }
 
         /// <summary>

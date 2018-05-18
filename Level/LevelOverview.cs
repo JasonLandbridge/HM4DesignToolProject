@@ -25,6 +25,7 @@ namespace HM4DesignTool.Level
 
     using DataNameSpace;
 
+    using HM4DesignTool.Data;
     using HM4DesignTool.Utilities;
 
     using NaturalSort.Extension;
