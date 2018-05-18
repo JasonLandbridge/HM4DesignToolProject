@@ -13,7 +13,7 @@
 
 		<!-- PatientRowTreatmentTemplate -->
 		<DataTemplate x:Key="PatientRowTreatmentTemplate">
-			<ComboBox Margin="5,0" Style="{DynamicResource ComboBoxTest2}" ItemsSource="{Binding Mode=OneWay, ElementName=patientRow, Path=DataContext.TreatmentOptions}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=None}" Visibility="{Binding IsVisible, Mode=TwoWay, Converter={StaticResource VisibilityOfBool}, UpdateSourceTrigger=PropertyChanged}" Width="125">
+			<ComboBox Margin="5,0" Style="{DynamicResource ComboBoxTest2}" ItemsSource="{Binding Mode=OneWay, ElementName=patientRow, Path=DataContext.TreatmentOptions}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding IsVisible, Mode=TwoWay, Converter={StaticResource VisibilityOfBool}, UpdateSourceTrigger=PropertyChanged}" Width="125">
 				<ComboBox.Resources>
 					<Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
 
@@ -81,7 +81,7 @@
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
-				<CheckBox MinWidth="20" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,0,0" />
+				<CheckBox MinWidth="20" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,0,0,0" />
 				<TextBox MinWidth="100" Grid.Column="1" Text="{Binding PatientName, FallbackValue=Patient, Mode=TwoWay}" />
 				<wpfTool:IntegerUpDown Grid.Column="2" Margin="5,0" MinWidth="80" Value="{Binding Delay, FallbackValue=0, Mode=TwoWay}" Increment="100"/>
 				<wpfTool:IntegerUpDown Grid.Column="3" Margin="5,0" MinWidth="80" Value="{Binding Weight, FallbackValue=0, Mode=TwoWay}" Increment="5"/>
@@ -263,7 +263,7 @@
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition/>
 											</Grid.ColumnDefinitions>
-											<ComboBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="5,0" VerticalAlignment="Stretch" ItemsSource="{Binding Path=DifficultyModifierList, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding DifficultyModifierString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, diag:PresentationTraceSources.TraceLevel=High}"/>
+											<ComboBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="5,0" VerticalAlignment="Stretch" ItemsSource="{Binding Path=DifficultyModifierList, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding DifficultyModifierString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 											<!-- <wpfTool:DecimalUpDown Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Visibility="{Binding ElementName=difficultyModifierCheckBox, Path=IsChecked}"/> -->
 										</Grid>
 										<Grid Grid.Column="1" Grid.Row="2" Margin="0,5">
@@ -488,7 +488,7 @@
 
 							<!-- Patient Overview -->
 							<ScrollViewer HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" >
-								<ItemsControl x:Name="patientOverviewLayout" ItemTemplate="{DynamicResource PatientRowControlTemplate}"  ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+								<ItemsControl x:Name="patientOverviewLayout" ItemTemplate="{DynamicResource PatientRowControlTemplate}"  ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, diag:PresentationTraceSources.TraceLevel=High}" />
 							</ScrollViewer>
 
 							<!-- Patient Overview Footer -->
@@ -509,8 +509,8 @@
 									<wpfTool:IntegerUpDown x:Name="maxTreatmentsValue" Grid.Column="1" MinWidth="50" Margin="0,10" ClipValueToMinMax="True" Maximum="50" Minimum="1" DefaultValue="5" Value="{Binding MaxTreatmentsVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayDefaultValueOnEmptyText="True"/>
 								</Grid>
 
-								<Button x:Name="buttonPatientOverviewAddRow" Grid.Column="2" Content="Add Row" Width="80" Margin="5,5" Click="buttonPatientOverviewAddRow_Click" />
-								<Button x:Name="buttonPatientOverviewRemoveRow" Grid.Column="3" Content="Remove Row" Width="80" Margin="5,5" />
+								<Button x:Name="buttonPatientOverviewAddRow" Grid.Column="2" Content="Add Row" Width="80" Margin="5,5" Command="{Binding GetLevelLoaded.AddPatientRowToLevelCommand}" />
+								<Button x:Name="buttonPatientOverviewRemoveRow" Grid.Column="3" Content="Remove Row" Width="80" Margin="5,5" Command="{Binding GetLevelLoaded.RemovePatientRowFromLevelCommand}" />
 							</Grid>
 
 						</Grid>

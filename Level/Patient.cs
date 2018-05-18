@@ -39,8 +39,12 @@ namespace HM4DesignTool.Level
         /// The parent level field.
         /// </summary>
         private Level parentLevel;
+        #endregion
 
         #region PatientData
+
+
+        private bool isSelected;
 
         /// <summary>
         /// The delay.
@@ -56,8 +60,6 @@ namespace HM4DesignTool.Level
         /// The weight of this patients when in TimeTrial field.
         /// </summary>
         private int weight;
-
-        #endregion
 
         #endregion
 
@@ -134,6 +136,17 @@ namespace HM4DesignTool.Level
 
         #region Public
         #region PatientData
+
+        public bool IsSelected
+        {
+            get => this.isSelected;
+            set
+            {
+                this.isSelected = value;
+                this.OnPropertyChanged();
+            }
+        }
+
 
         /// <summary>
         /// Gets or sets the PatientName.
@@ -380,6 +393,7 @@ namespace HM4DesignTool.Level
             }
         }
 
+
         #endregion
 
         #endregion
@@ -530,6 +544,12 @@ namespace HM4DesignTool.Level
 
                 treatment.SetPatientParent(this);
             }
+        }
+
+
+        public void TreatmentsUpdated()
+        {
+            this.OnPropertyChanged("TreatmentCollection");
         }
 
         #endregion

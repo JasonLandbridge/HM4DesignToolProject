@@ -752,13 +752,14 @@ namespace HM4DesignTool.Level
 
 
         #region Commands
-        public ICommand ReloadLevelCommand
-        {
-            get
-            {
-                return this.reloadLevelCommand ?? (this.reloadLevelCommand = new CommandHandler(this.ReloadLevel, this.levelOverviewFinishedLoading));
-            }
-        }
+
+        /// <summary>
+        /// Reload the level command.
+        /// </summary>
+        public ICommand ReloadLevelCommand => this.reloadLevelCommand ?? (this.reloadLevelCommand = new CommandHandler(this.ReloadLevel, this.LevelOverviewActive));
+
+
+
         #endregion
 
         #endregion

@@ -89,7 +89,7 @@ namespace HM4DesignTool.Level
         /// <summary>
         /// The Patient Object list.
         /// </summary>
-        private List<Patient> patientList;
+        private ObservableCollection<Patient> patientCollection = new ObservableCollection<Patient>();
 
         #endregion Patient
 
@@ -112,6 +112,10 @@ namespace HM4DesignTool.Level
         #endregion LevelScript
 
         #region Commands
+
+        private ICommand addPatientRowToLevelCommand;
+
+        private ICommand removePatientRowFromLevelCommand;
 
         /// <summary>
         /// The randomizeAllWeightCommand property.
@@ -144,7 +148,7 @@ namespace HM4DesignTool.Level
         {
             this.LevelName = levelName;
             this.PatientChanceList = Globals.GetSettings.GetPatientChanceList(this.CategoryKey);
-            this.PatientList = new List<Patient>();
+            //this.PatientList = new List<Patient>();
 
             // Translate the levelScript into workable variables.
             this.ParseRawText();
@@ -464,11 +468,16 @@ namespace HM4DesignTool.Level
         /// </summary>
         public ObservableCollection<Patient> PatientCollection
         {
-            get => new ObservableCollection<Patient>(this.PatientList);
+            get => this.patientCollection;
 
             set
             {
-                this.PatientList = value.ToList();
+                foreach (Patient patient in value)
+                {
+                    patient.ParentLevel = this;
+                }
+
+                this.patientCollection = value;
                 this.OnPropertyChanged();
             }
         }
@@ -587,7 +596,7 @@ namespace HM4DesignTool.Level
                 {
                     output += "levelDesc.triggers = " + Environment.NewLine;
                     output += "{" + Environment.NewLine;
-                    foreach (Patient patient in this.PatientList)
+                    foreach (Patient patient in this.PatientCollection)
                     {
                         output += patient.ToOutput();
                     }
@@ -616,6 +625,16 @@ namespace HM4DesignTool.Level
         #region Commands
 
         /// <summary>
+        /// Add patient row to level command.
+        /// </summary>
+        public ICommand AddPatientRowToLevelCommand => this.addPatientRowToLevelCommand ?? (this.addPatientRowToLevelCommand = new CommandHandler(this.AddPatient, this.canExecuteCommands));
+
+        /// <summary>
+        /// Remove patient row from level command.
+        /// </summary>
+        public ICommand RemovePatientRowFromLevelCommand => this.removePatientRowFromLevelCommand ?? (this.removePatientRowFromLevelCommand = new CommandHandler(this.RemovePatient, this.canExecuteCommands));
+
+        /// <summary>
         /// The RandomizeAllWeight command => RandomizePatientChancesWeight.
         /// </summary>
         public ICommand RandomizeAllWeightCommand => this.randomizeAllWeightCommand ?? (this.randomizeAllWeightCommand = new CommandHandler(this.RandomizePatientChancesWeight, this.canExecuteCommands));
@@ -637,23 +656,6 @@ namespace HM4DesignTool.Level
         #region Private Properties
 
         #region Patient
-
-        /// <summary>
-        /// Gets or sets the list with all the Patient objects in this level.
-        /// </summary>
-        private List<Patient> PatientList
-        {
-            get => this.patientList;
-            set
-            {
-                foreach (Patient patient in value)
-                {
-                    patient.ParentLevel = this;
-                }
-
-                this.patientList = value;
-            }
-        }
 
         #endregion Patient
 
@@ -800,6 +802,18 @@ namespace HM4DesignTool.Level
 
         #region Patient
 
+
+        public void AddPatient()
+        {
+            int index = this.PatientCollection.Count;
+            string patientName = $"Patient_{index}";
+            Patient patientObject = new Patient(this, patientName);
+            patientObject.SetMaxTreatments(Globals.GetLevelOverview.MaxTreatmentsVisible);
+            this.PatientCollection.Add(patientObject);
+            LevelLoaded();
+
+        }
+
         /// <summary>
         /// Add a PatientObject representing a PatientRow from the LevelScript.
         /// </summary>
@@ -813,7 +827,7 @@ namespace HM4DesignTool.Level
         {
             if (index == -1)
             {
-                index = this.PatientList.Count();
+                index = this.PatientCollection.Count();
             }
 
             string patientName = $"Patient_{index}";
@@ -824,8 +838,36 @@ namespace HM4DesignTool.Level
                 patientObject.SetPatientData(patientData);
             }
 
-            this.PatientList.Insert(index, patientObject);
+            this.PatientCollection.Insert(index, patientObject);
         }
+
+
+        public void RemovePatient()
+        {
+            if (this.PatientCollection.Count > 0)
+            {
+                bool patientRemoved = false;
+
+                for (int i = this.PatientCollection.Count - 1; i >= 0; i--)
+                {
+                    if (this.PatientCollection[i] != null && this.PatientCollection[i].IsSelected)
+                    {
+                        this.PatientCollection.RemoveAt(i);
+                        patientRemoved = true;
+                    }
+                }
+
+                // If nothing was removed than by default remove the last row
+                if (!patientRemoved)
+                {
+                    this.PatientCollection.RemoveAt(this.PatientCollection.Count - 1);
+                }
+
+                this.LevelLoaded();
+            }
+
+        }
+
 
         /// <summary>
         /// Set the amount of Patient Objects in this Level.
@@ -845,7 +887,7 @@ namespace HM4DesignTool.Level
                 {
                     int index = patientCount - i;
 
-                    this.PatientList.RemoveAt(index);
+                    this.PatientCollection.RemoveAt(index);
                 }
                 this.UpdateLevelEdited();
 
@@ -958,11 +1000,11 @@ namespace HM4DesignTool.Level
                 int patientDelayMin = Globals.GetLevelOverview.GeneratePatientDelayMin;
                 int patientDelayMax = Globals.GetLevelOverview.GeneratePatientDelayMax;
 
-                for (int patientIndex = 0; patientIndex < this.patientList.Count; patientIndex++)
+                for (int patientIndex = 0; patientIndex < this.PatientCollection.Count; patientIndex++)
                 {
                     if (timePerTreatment > 0)
                     {
-                        Patient patient = this.patientList[patientIndex];
+                        Patient patient = this.PatientCollection[patientIndex];
                         int delayModifier = Globals.GetRandom.Next(patientDelayMin, patientDelayMax);
                         int patientTreatmentCount;
 
@@ -979,7 +1021,7 @@ namespace HM4DesignTool.Level
                         else
                         {
                             // Take the patientTreatmentCount from two patients ago. 
-                            patientTreatmentCount = this.patientList[patientIndex - 2].GetTreatmentCount;
+                            patientTreatmentCount = this.PatientCollection[patientIndex - 2].GetTreatmentCount;
                         }
 
                         if (patientTreatmentCount > -1)
@@ -1114,7 +1156,18 @@ namespace HM4DesignTool.Level
 
         public void LevelLoaded()
         {
+            this.OnPropertyChanged("PatientList");
             this.OnPropertyChanged("PatientCollection");
+
+            foreach (Patient patient in this.PatientCollection)
+            {
+                if (patient != null)
+                {
+                    patient.TreatmentsUpdated();
+                }
+            }
+
+            this.UpdateLevelOutput();
         }
 
         /// <summary>
@@ -1147,9 +1200,6 @@ namespace HM4DesignTool.Level
             // Clean up the text by removing tabs, enters and spaces and special characters.
             rawLevelText = rawLevelText.Replace("\t", string.Empty).Replace("\r", string.Empty).Replace("{\n", "{")
                 .Replace(" ", string.Empty).Replace("\n\n", string.Empty);
-
-
-            // levelDesc.decoId = "ruth"
 
             // Parse possible GamePlayCharacters
             rawLevelText = this.ParseGameplayCharacter(rawLevelText);
@@ -1204,6 +1254,15 @@ namespace HM4DesignTool.Level
             // }
         }
 
+        /// <summary>
+        /// The parse gameplay character from the LevelScript.
+        /// </summary>
+        /// <param name="rawLevelText">
+        /// The raw level text.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
         private string ParseGameplayCharacter(string rawLevelText)
         {
             const string GameplayCharacterStartText = "levelDesc.gameplayCharacterId=\"";
@@ -1411,5 +1470,7 @@ namespace HM4DesignTool.Level
         }
 
         #endregion INotifyPropertyChanged Members
+
+
     }
 }
