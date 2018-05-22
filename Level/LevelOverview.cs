@@ -23,8 +23,6 @@ namespace HM4DesignTool.Level
     using System.Windows.Data;
     using System.Windows.Input;
 
-    using DataNameSpace;
-
     using HM4DesignTool.Data;
     using HM4DesignTool.Utilities;
 
@@ -425,7 +423,7 @@ namespace HM4DesignTool.Level
             get
             {
                 // Populate LevelListFilter Dropdown items
-                ObservableCollection<string> levelListFilterItems = new ObservableCollection<string>(Globals.roomCategories);
+                ObservableCollection<string> levelListFilterItems = new ObservableCollection<string>(Globals.RoomCategories);
                 levelListFilterItems.Insert(0, "All");
                 return levelListFilterItems;
             }
@@ -993,10 +991,10 @@ namespace HM4DesignTool.Level
 
                 if (bonusLevels)
                 {
-                    for (int i = 1; i <= Globals.roomCategories.Count; i++)
+                    for (int i = 1; i <= Globals.RoomCategories.Count; i++)
                     {
                         categorizedFilterdLevels.Add(
-                            Globals.roomCategories[i - 1],
+                            Globals.RoomCategories[i - 1],
                             this.GetFilteredLevels(i, false, true));
                     }
                 }
@@ -1011,7 +1009,7 @@ namespace HM4DesignTool.Level
                 if (bonusLevels)
                 {
                     categorizedFilterdLevels.Add(
-                        Globals.roomCategories[roomIndex - 1],
+                        Globals.RoomCategories[roomIndex - 1],
                         this.GetFilteredLevels(roomIndex, false, true));
                 }
             }

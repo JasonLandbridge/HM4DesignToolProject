@@ -168,7 +168,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Level\settings.cs" />
-    <Compile Include="Level\data.cs" />
     <Compile Include="Level\Level.cs" />
     <Compile Include="Forms\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>

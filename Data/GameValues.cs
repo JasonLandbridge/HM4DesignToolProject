@@ -65,6 +65,8 @@ namespace HM4DesignTool.Data
 
         #endregion
 
+        #region Methods
+
         /// <summary>
         /// Gets a dictionary from all the GameValues.
         /// </summary>
@@ -98,6 +100,8 @@ namespace HM4DesignTool.Data
                 return null;
             }
         }
+
+        #endregion
 
         #region GameValues
 

@@ -15,8 +15,6 @@ namespace HM4DesignTool.Level
     using System.Linq;
     using System.Windows.Input;
 
-    using DataNameSpace;
-
     using HM4DesignTool.Data;
     using HM4DesignTool.Forms;
     using HM4DesignTool.Utilities;

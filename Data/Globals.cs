@@ -20,34 +20,13 @@ namespace HM4DesignTool.Data
     public static class Globals
     {
         private static Settings SettingsObject;
-        private static HM4DesignTool.Data DataObject;
         private static LevelOverview LevelOverviewObject;
         private static GameValues GameValueObject = new GameValues();
-        private static MainWindow MainWindowObject;
+
         private static Random random;
 
-        public static Settings GetSettings
-        {
-            get
-            {
-                if (SettingsObject == null)
-                {
-                    SettingsObject = new Settings();
-                }
-                return SettingsObject;
-            }
-        }
-        public static HM4DesignTool.Data GetData
-        {
-            get
-            {
-                if (DataObject == null)
-                {
-                    DataObject = new HM4DesignTool.Data();
-                }
-                return DataObject;
-            }
-        }
+        public static Settings GetSettings => SettingsObject ?? (SettingsObject = new Settings());
+
         public static LevelOverview GetLevelOverview
         {
             get
@@ -62,51 +41,23 @@ namespace HM4DesignTool.Data
                 return LevelOverviewObject;
             }
         }
-        public static GameValues GetGameValues
-        {
-            get
-            {
-                if (GameValueObject == null)
-                {
-                    GameValueObject = new GameValues();
-                }
+        public static GameValues GetGameValues => GameValueObject ?? (GameValueObject = new GameValues());
 
-                return GameValueObject;
-            }
-        }
-        public static MainWindow GetMainWindow
-        {
-            get
-            {
-                return MainWindowObject;
-            }
-            set
-            {
-                MainWindowObject = value;
-            }
-        }
+        public static MainWindow GetMainWindow { get; set; }
 
-        public static Random GetRandom
-        {
-            get
-            {
-                if (random == null)
-                {
-                    random = new Random();
-                }
+        public static Random GetRandom => random ?? (random = new Random());
 
-                return random;
-            }
+        /// <summary>
+        /// The room categories.
+        /// </summary>
+        public static List<string> RoomCategories { get; } = new List<string> { "Room 1", "Room 2", "Room 3", "Room 4", "Room 5", "Room 6" };
 
-        }
-
-        public static List<String> roomCategories = new List<String> { "Room 1", "Room 2", "Room 3", "Room 4", "Room 5", "Room 6", "Room 7" };
-        public static List<String> GetLevelTypes
+        public static List<string> GetLevelTypes
         {
             get
             {
                 IEnumerable<LevelTypeEnum> output = Enum.GetValues(typeof(LevelTypeEnum)).Cast<LevelTypeEnum>();
-                List<String> LevelTypeString = new List<string> { };
+                List<string> LevelTypeString = new List<string> { };
                 foreach (LevelTypeEnum leveltype in output)
                 {
                     LevelTypeString.Add(leveltype.ToString());
@@ -163,9 +114,9 @@ namespace HM4DesignTool.Data
         {
             //Convert RoomNumber to RoomIndex, [1,2,3,4..] => [0,1,2,3..] 
             RoomIndex--;
-            if (-1 < RoomIndex && RoomIndex < roomCategories.Count)
+            if (-1 < RoomIndex && RoomIndex < RoomCategories.Count)
             {
-                return roomCategories[RoomIndex];
+                return RoomCategories[RoomIndex];
             }
             else
             {
