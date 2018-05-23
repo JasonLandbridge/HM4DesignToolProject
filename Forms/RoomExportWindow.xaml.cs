@@ -5,7 +5,7 @@
     using System.Windows;
     using System.Windows.Controls;
 
-    using DataNameSpace;
+    using HM4DesignTool.Data;
 
     /// <summary>
     /// Window used to create a list of level names. 
@@ -19,7 +19,7 @@
             //Populate LevelListFilter Dropdown
             this.levelListFilter.Items.Add("All");
             this.levelListFilter.SelectedIndex = 0;
-            foreach (String category in Globals.roomCategories)
+            foreach (String category in Globals.RoomCategories)
             {
                 this.levelListFilter.Items.Add(category);
             }

@@ -12,8 +12,7 @@ namespace HM4DesignTool.Level
     using System.ComponentModel;
     using System.Windows.Input;
 
-    using DataNameSpace;
-
+    using HM4DesignTool.Data;
     using HM4DesignTool.Utilities;
 
     /// <inheritdoc />

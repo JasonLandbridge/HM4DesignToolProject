@@ -69,6 +69,11 @@ namespace HM4DesignTool.Level
 
         private bool insertDesignData = true;
 
+        /// <summary>
+        /// Only execute commands in this level when this is true.
+        /// </summary>
+        private readonly bool canExecuteCommands;
+
         #endregion
         /// <summary>
         /// List of the level names field.
@@ -205,6 +210,7 @@ namespace HM4DesignTool.Level
         /// </summary>
         public LevelOverview()
         {
+            this.canExecuteCommands = true;
         }
         #endregion
 
@@ -755,7 +761,7 @@ namespace HM4DesignTool.Level
         /// <summary>
         /// Reload the level command.
         /// </summary>
-        public ICommand ReloadLevelCommand => this.reloadLevelCommand ?? (this.reloadLevelCommand = new CommandHandler(this.ReloadLevel, this.LevelOverviewActive));
+        public ICommand ReloadLevelCommand => this.reloadLevelCommand ?? (this.reloadLevelCommand = new CommandHandler(this.ReloadLevel, this.canExecuteCommands));
 
 
 

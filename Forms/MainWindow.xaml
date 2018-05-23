@@ -1,10 +1,10 @@
-﻿<Window x:Class="HM4DesignTool.MainWindow"
+﻿<Window x:Class="HM4DesignTool.Forms.MainWindow"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
-		xmlns:local="clr-namespace:HM4DesignTool"
+		xmlns:local="clr-namespace:HM4DesignTool.Forms"
 		xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
 		mc:Ignorable="d"
 		Title="HM4 Design Tool" Height="768" Width="1280" Closed="Window_Closed">
@@ -206,7 +206,7 @@
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
-					<Button x:Name="reloadLevel" Grid.Column="0" Grid.Row="0" Content="Reload" Margin="5" Width="50" Command="{Binding ReloadLevelCommand}" />
+					<Button x:Name="reloadLevel" Grid.Column="0" Grid.Row="0" Content="Reload" Margin="5" Width="50" Command="{Binding Path=ReloadLevelCommand, diag:PresentationTraceSources.TraceLevel=High}" />
 					<Button x:Name="buttonOpenLevelScript" Grid.Column="1" Grid.Row="0" Content="Open" Margin="5" Width="50" Command="{Binding GetLevelLoaded.OpenLevelFromFileCommand}"/>
 					<Button x:Name="buttonSaveLevelScript" Grid.Column="2" Grid.Row="0" Content="Save" Margin="5" Width="50" Command="{Binding GetLevelLoaded.SaveLevelToFileCommand}" />
 
@@ -358,7 +358,7 @@
 												<ColumnDefinition/>
 											</Grid.ColumnDefinitions>
 											<!-- Random Data - Patients -->
-											<CheckBox Content="Patients Amount" Grid.Column="0" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GeneratePatientsCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}" />
+											<CheckBox Content="Number of Patients" Grid.Column="0" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GeneratePatientsCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}" />
 											<Grid Grid.Column="1" Grid.Row="0" Margin="0,5">
 												<Grid.RowDefinitions>
 													<RowDefinition Height="20"/>
@@ -373,7 +373,7 @@
 												<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="{Binding GeneratePatientsMax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="50" AllowTextInput="False"/>
 											</Grid>
 											<!-- Random Data - Delay -->
-											<CheckBox Content="Patients Delay" Grid.Column="0" Grid.Row="1" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GeneratePatientDelayCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}" />
+											<CheckBox Content="Delay between Patients" Grid.Column="0" Grid.Row="1" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GeneratePatientDelayCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}" />
 											<Grid Grid.Column="1" Grid.Row="1" Margin="0,5">
 												<Grid.RowDefinitions>
 													<RowDefinition Height="20"/>
@@ -389,7 +389,7 @@
 											</Grid>
 
 											<!-- Random Data - Treatments -->
-											<CheckBox Content="Treatment Amount" Grid.Column="0" Grid.Row="2" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GenerateTreatmentsCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}"/>
+											<CheckBox Content="Number of Treatments" Grid.Column="0" Grid.Row="2" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GenerateTreatmentsCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}"/>
 											<Grid Grid.Column="1" Grid.Row="2" Margin="0,5">
 												<Grid.RowDefinitions>
 													<RowDefinition Height="20"/>
@@ -404,7 +404,7 @@
 												<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="{Binding GenerateTreatmentsMax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="1" Maximum="50" AllowTextInput="False"/>
 											</Grid>
 											<!-- Random Data - Weight -->
-											<CheckBox Content="Weight" Grid.Column="0" Grid.Row="3" VerticalContentAlignment="Center" Margin="10,0,0,0" Visibility="{Binding GetLevelLoaded.WeightEnabled, Converter={StaticResource VisibilityOfBool}}" IsChecked="{Binding GenerateWeightCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  />
+											<CheckBox Content="Weight of Patients" Grid.Column="0" Grid.Row="3" VerticalContentAlignment="Center" Margin="10,0,0,0" Visibility="{Binding GetLevelLoaded.WeightEnabled, Converter={StaticResource VisibilityOfBool}}" IsChecked="{Binding GenerateWeightCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  />
 											<Grid Grid.Column="1" Grid.Row="3" Margin="0,5" Visibility="{Binding GetLevelLoaded.WeightEnabled, Converter={StaticResource VisibilityOfBool}}">
 												<Grid.RowDefinitions>
 													<RowDefinition Height="20"/>
@@ -433,7 +433,7 @@
 
 										<CheckBox x:Name="showAvailableTreatmentsCheck" Content="Show available treatments" Grid.Column="0" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,5,0,5" IsChecked="{Binding ShowAvailableTreatmentsCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 										<CheckBox x:Name="uniqueTreatmentsCheckBox" Content="Unique Treatments Only Per Patient" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,5,0,5" IsEnabled="False" IsChecked="True" Visibility="Hidden"/>
-										<Button x:Name="customTreatmentWeightsButton" Content="Custom Treatment Weights" Grid.Column="2" Grid.Row="0" Click="customTreatmentWeightsButton_Click" Padding="10,1" />
+										<Button x:Name="customTreatmentWeightsButton" Content="Level Custom Treatment Weights" Grid.Column="2" Grid.Row="0" Click="customTreatmentWeightsButton_Click" Padding="10,1" />
 									</Grid>
 									<Button x:Name="generateLevelButton" Grid.Row="6" Content="Generate Level" Margin="0,5" Padding="1,5" Click="generateLevelButton_Click"/>
 								</Grid>
@@ -488,7 +488,7 @@
 
 							<!-- Patient Overview -->
 							<ScrollViewer HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" >
-								<ItemsControl x:Name="patientOverviewLayout" ItemTemplate="{DynamicResource PatientRowControlTemplate}"  ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, diag:PresentationTraceSources.TraceLevel=High}" />
+								<ItemsControl x:Name="patientOverviewLayout" ItemTemplate="{DynamicResource PatientRowControlTemplate}"  ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 							</ScrollViewer>
 
 							<!-- Patient Overview Footer -->

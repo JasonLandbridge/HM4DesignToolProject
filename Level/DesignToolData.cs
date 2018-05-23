@@ -15,7 +15,7 @@ namespace HM4DesignTool.Level
     using System.Linq;
     using System.Runtime.CompilerServices;
 
-    using DataNameSpace;
+    using HM4DesignTool.Data;
 
     /// <inheritdoc />
     /// <summary>

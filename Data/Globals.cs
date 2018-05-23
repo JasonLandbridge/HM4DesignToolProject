@@ -13,6 +13,7 @@ namespace HM4DesignTool.Data
     using System.Text.RegularExpressions;
     using System.Windows.Media;
 
+    using HM4DesignTool.Forms;
     using HM4DesignTool.Level;
 
     using SettingsNamespace;

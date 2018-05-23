@@ -1,14 +1,14 @@
-﻿using nucs.JsonSettings;
-using System;
-using System.Collections.Generic;
-using DataNameSpace;
-using System.IO;
-using System.Windows.Media;
-
-namespace SettingsNamespace
+﻿namespace SettingsNamespace
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Windows.Media;
+
     using HM4DesignTool.Data;
     using HM4DesignTool.Level;
+
+    using nucs.JsonSettings;
 
     //Storing settings in JSON: https://github.com/Nucs/JsonSettings
     public class Settings
@@ -181,6 +181,31 @@ namespace SettingsNamespace
                 return patientTypeCategoriesDict;
             }
         }
+
+        public List<String> GetPatientTypesFromDisk(bool reload = false)
+        {
+
+            String projectPath = Globals.GetSettings.projectPathImages + "patients\\";
+
+            if (System.IO.Directory.Exists(projectPath))
+            {
+                List<String> rawPatientTypeList = new List<String>(Directory.GetDirectories(projectPath));
+                List<String> rawPatientList = new List<String> { };
+
+                foreach (String patientType in rawPatientTypeList)
+                {
+                    rawPatientList.Add(patientType.Replace(projectPath, ""));
+                }
+
+                return rawPatientList;
+            }
+            else
+            {
+                return new List<string>();
+            }
+
+        }
+
 
         public List<String> GetPatientTypeList(String categoryKey)
         {

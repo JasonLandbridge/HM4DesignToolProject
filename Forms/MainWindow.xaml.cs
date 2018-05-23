@@ -1,41 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows;
-using System.Windows.Controls;
-using DataNameSpace;
-using UiWindows;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MainWindow.xaml.cs" company="Blue Giraffe">
+//   Created by Jason Landbrug as part of an Design internship from 12-02-2018 / 18-06-2018 at Blue Giraffe
+// </copyright>
+// <author> Jason Landbrug </author>
+// <summary>  The main window for the Design Tool </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace HM4DesignTool
+namespace HM4DesignTool.Forms
 {
-    using HM4DesignTool.Forms;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Runtime.CompilerServices;
+    using System.Windows;
+    using System.Windows.Controls;
+
+    using HM4DesignTool.Data;
+
+    using UiWindows;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : INotifyPropertyChanged
     {
-        private DataTemplate _patientRowDataTemplate = null;
-        public DataTemplate PatientRowDataTemplate
-        {
-            get
-            {
-                if (_patientRowDataTemplate == null)
-                {
-                    _patientRowDataTemplate = FindResource("PatientRowControlTemplate") as DataTemplate;
-                }
-                return _patientRowDataTemplate;
-            }
-        }
 
         public SettingsWindow SettingsWindow;
         public String StatusbarText
         {
             get
             {
-                OnPropertyChanged();
-                return Globals.GetData.StatusbarText;
+                //TODO Create Statusbar functionality
+                this.OnPropertyChanged();
+                return string.Empty;
             }
         }
         public List<String> GetLevelTypes
@@ -48,18 +45,18 @@ namespace HM4DesignTool
 
         public MainWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
             //Set Global reference to this Window
             Globals.GetMainWindow = this;
 
             this.DataContext = this;
             this.levelDataLayout.DataContext = Globals.GetLevelOverview;
             this.mainLayout.DataContext = Globals.GetLevelOverview;
+            this.levelControls.DataContext = Globals.GetLevelOverview;
+            this.levelTypeDropDown.ItemsSource = this.GetLevelTypes;
+            this.OnPropertyChanged("PatientRowDataTemplate");
 
-            levelTypeDropDown.ItemsSource = GetLevelTypes;
-            OnPropertyChanged("PatientRowDataTemplate");
-
-            SetupWindow();
+            this.SetupWindow();
 
 
         }
@@ -81,18 +78,18 @@ namespace HM4DesignTool
         private void BeforeLoadWindowSettings()
         {
             //Set saved Room Filter settings
-            levelListFilter.SelectedIndex = Globals.GetSettings.RoomFilterDropdownIndex;
-            levelListStoryCheck.IsChecked = Globals.GetSettings.RoomFilterStoryCheck;
-            levelListBonusCheck.IsChecked = Globals.GetSettings.RoomFilterBonusCheck;
-            levelListUnknownCheck.IsChecked = Globals.GetSettings.RoomFilterUnknownCheck;
+            this.levelListFilter.SelectedIndex = Globals.GetSettings.RoomFilterDropdownIndex;
+            this.levelListStoryCheck.IsChecked = Globals.GetSettings.RoomFilterStoryCheck;
+            this.levelListBonusCheck.IsChecked = Globals.GetSettings.RoomFilterBonusCheck;
+            this.levelListUnknownCheck.IsChecked = Globals.GetSettings.RoomFilterUnknownCheck;
         }
 
 
         private void AfterLoadWindowSettings()
         {
-            if (levelListDisplay.Items.Count > 0)
+            if (this.levelListDisplay.Items.Count > 0)
             {
-                TreeViewItem categoryItem = levelListDisplay.Items[0] as TreeViewItem;
+                TreeViewItem categoryItem = this.levelListDisplay.Items[0] as TreeViewItem;
                 categoryItem.IsExpanded = Globals.GetSettings.LevelListFirstCategoryOpen;
             }
 
@@ -102,14 +99,14 @@ namespace HM4DesignTool
 
         private void StoreWindowSettings()
         {
-            Globals.GetSettings.RoomFilterDropdownIndex = levelListFilter.SelectedIndex;
-            Globals.GetSettings.RoomFilterStoryCheck = (bool)levelListStoryCheck.IsChecked;
-            Globals.GetSettings.RoomFilterBonusCheck = (bool)levelListBonusCheck.IsChecked;
-            Globals.GetSettings.RoomFilterUnknownCheck = (bool)levelListUnknownCheck.IsChecked;
+            Globals.GetSettings.RoomFilterDropdownIndex = this.levelListFilter.SelectedIndex;
+            Globals.GetSettings.RoomFilterStoryCheck = (bool)this.levelListStoryCheck.IsChecked;
+            Globals.GetSettings.RoomFilterBonusCheck = (bool)this.levelListBonusCheck.IsChecked;
+            Globals.GetSettings.RoomFilterUnknownCheck = (bool)this.levelListUnknownCheck.IsChecked;
 
-            if (levelListDisplay.Items.Count > 0)
+            if (this.levelListDisplay.Items.Count > 0)
             {
-                TreeViewItem categoryItem = levelListDisplay.Items[0] as TreeViewItem;
+                TreeViewItem categoryItem = this.levelListDisplay.Items[0] as TreeViewItem;
                 Globals.GetSettings.LevelListFirstCategoryOpen = categoryItem.IsExpanded;
             }
             else
@@ -164,20 +161,20 @@ namespace HM4DesignTool
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion INotifyPropertyChanged Members
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            StoreWindowSettings();
+            this.StoreWindowSettings();
 
         }
 
         private void selectAllPatientChancesCheckbox_Click(object sender, RoutedEventArgs e)
         {
-            Globals.GetLevelOverview.GetLevelLoaded.SelectAllPatientChances((bool)selectAllPatientChancesCheckbox.IsChecked);
+            Globals.GetLevelOverview.GetLevelLoaded.SelectAllPatientChances((bool)this.selectAllPatientChancesCheckbox.IsChecked);
         }
 
         private void customTreatmentWeightsButton_Click(object sender, RoutedEventArgs e)

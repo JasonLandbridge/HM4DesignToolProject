@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data;
-using System.Runtime.CompilerServices;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using DataNameSpace;
-using System.Linq;
-
-namespace UiWindows
+﻿namespace UiWindows
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Media;
+
+    using HM4DesignTool.Data;
+    using HM4DesignTool.Level;
+
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
     /// Based on How to Data Bind in WPF (C#/XAML) tutorial: https://www.youtube.com/watch?v=545NoF7Sab4
@@ -68,7 +68,7 @@ namespace UiWindows
 
         #region PatientTypeTabProperties
         private int lastLoadedPatientTypeCategoriesIndex = -1;
-        private List<String> PatientTypeList = Globals.GetData.GetPatientTypesFromDisk();
+        private List<String> PatientTypeList = Globals.GetSettings.GetPatientTypesFromDisk();
         private Dictionary<String, List<String>> patientTypeCategoriesDict = Globals.GetSettings.GetPatientTypes();
         private Dictionary<String, CheckBox> PatientTypeCheckboxDict
         {
@@ -278,7 +278,7 @@ namespace UiWindows
 
             //Set categories for the patientTypeRoomList
             #region SetupPatientTypeTab
-            foreach (String roomName in Globals.roomCategories)
+            foreach (String roomName in Globals.RoomCategories)
             {
                 patientTypeRoomList.Items.Add(roomName);
 
@@ -314,7 +314,7 @@ namespace UiWindows
             //Set categories for the treatmentRoomList
             #region SetupTreatmentTab
             //set the itemssource
-            foreach (String roomName in Globals.roomCategories)
+            foreach (String roomName in Globals.RoomCategories)
             {
                 treatmentRoomList.Items.Add(roomName);
 
@@ -328,7 +328,7 @@ namespace UiWindows
 
             //Set categories for the balancingRoomList
             #region SetupBalancingTab
-            foreach (String roomName in Globals.roomCategories)
+            foreach (String roomName in Globals.RoomCategories)
             {
                 balancingRoomList.Items.Add(roomName);
 
@@ -537,7 +537,7 @@ namespace UiWindows
                     treatment.TreatmentColor = TreatmentSelectColor;
                 }
             }
-            
+
 
         }
         #region Signals
@@ -593,7 +593,8 @@ namespace UiWindows
                     TreatmentList.Remove(TreatmentList.Last());
                 }
 
-            }        }
+            }
+        }
 
         private void treatmentRoomList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -661,7 +662,7 @@ namespace UiWindows
                 }
                 if (difficultyModifierList.Items.Count > 0)
                 {
-                    if(index < difficultyModifierList.Items.Count)
+                    if (index < difficultyModifierList.Items.Count)
                     {
                         difficultyModifierList.SelectedIndex = index;
                     }
