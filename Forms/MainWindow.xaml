@@ -206,7 +206,7 @@
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
-					<Button x:Name="reloadLevel" Grid.Column="0" Grid.Row="0" Content="Reload" Margin="5" Width="50" Command="{Binding Path=ReloadLevelCommand, diag:PresentationTraceSources.TraceLevel=High}" />
+					<Button x:Name="reloadLevel" Grid.Column="0" Grid.Row="0" Content="Reload" Margin="5" Width="50" Command="{Binding Path=ReloadLevelCommand}" />
 					<Button x:Name="buttonOpenLevelScript" Grid.Column="1" Grid.Row="0" Content="Open" Margin="5" Width="50" Command="{Binding GetLevelLoaded.OpenLevelFromFileCommand}"/>
 					<Button x:Name="buttonSaveLevelScript" Grid.Column="2" Grid.Row="0" Content="Save" Margin="5" Width="50" Command="{Binding GetLevelLoaded.SaveLevelToFileCommand}" />
 
@@ -296,7 +296,7 @@
 							</GroupBox>
 
 							<!-- Random Data Group-->
-							<GroupBox Grid.Column="1" Header="Randomize Data" HorizontalAlignment="Stretch" Margin="0,5" VerticalAlignment="Stretch" >
+							<GroupBox Grid.Column="1" Header="Level Generating Options" HorizontalAlignment="Stretch" Margin="0,5" VerticalAlignment="Stretch" >
 								<!--IsEnabled="{Binding RandomGroupEnabled, Mode=OneWay, UpdateSourceTrigger=PropertyChanged} -->
 								<Grid HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" >
 									<Grid.RowDefinitions>
@@ -327,7 +327,7 @@
 												<ColumnDefinition/>
 												<ColumnDefinition/>
 											</Grid.ColumnDefinitions>
-											<CheckBox Content="Patient Types" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GeneratePatientTypeCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}" />
+											<CheckBox Content="Number of Patient Types" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GeneratePatientTypeCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}" />
 											<Grid Grid.Column="1" Grid.Row="1" Margin="0,5">
 												<Grid.RowDefinitions>
 													<RowDefinition Height="20"/>

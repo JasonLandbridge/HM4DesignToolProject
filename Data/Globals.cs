@@ -20,13 +20,16 @@ namespace HM4DesignTool.Data
 
     public static class Globals
     {
-        private static Settings SettingsObject;
+        /// <summary>
+        /// The settings object.
+        /// </summary>
+        private static Settings settingsObject;
         private static LevelOverview LevelOverviewObject;
         private static GameValues GameValueObject = new GameValues();
 
         private static Random random;
 
-        public static Settings GetSettings => SettingsObject ?? (SettingsObject = new Settings());
+        public static Settings GetSettings => settingsObject ?? (settingsObject = new Settings());
 
         public static LevelOverview GetLevelOverview
         {

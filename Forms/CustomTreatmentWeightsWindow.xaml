@@ -55,7 +55,7 @@
 				<ColumnDefinition Width="Auto"/>
 				<ColumnDefinition Width="18"/>
 			</Grid.ColumnDefinitions>
-			<Label Content="Patient Name" Grid.Column="0" Margin="5,0,0,0" Width="180" MinWidth="100" VerticalContentAlignment="Center" FontWeight="Bold"/>
+			<Label Content="Treatment Name" Grid.Column="0" Margin="5,0,0,0" Width="180" MinWidth="100" VerticalContentAlignment="Center" FontWeight="Bold"/>
 			<Label Content=" " Grid.Column="1" Margin="10,5" Width="20" MinWidth="20"/>
 			<Label Content="Base Weight" Grid.Column="2" Margin="0" VerticalContentAlignment="Center" FontWeight="Bold" Width="100" MinWidth="100"/>
 			<Label Content="Custom Weight" Grid.Column="3" Margin="0" VerticalContentAlignment="Center" FontWeight="Bold" Width="100" MinWidth="100"/>

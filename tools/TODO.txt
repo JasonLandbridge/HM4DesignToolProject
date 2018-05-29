@@ -4,16 +4,15 @@ Todo
   - Add Stations Objects. 
   - Reloading of Window after changing settigs. 
   - Fix the traits window and Parsing of data
-  - Fix Add Patient and Remove Patient Row
   - Hide the Weight Column in the patient Overview when wrong LevelType
-  - Change text to white when in treatmentSettings there is a dark color. 
-  - Add Functionality to the "Insert Design Data"
   - Text used in the level Generating should be in the level Const
   - Help Screen with info
   - Add restart function in menu
   - BUG: Reload the PatientOverview after generating a new level
   - Disable the LevelGeneretinggroup if leveltype is wrong.
-  
+  - Synchrozined scrolling for preview windows. 
+  - don't render treatments that are hidden
+  - Saved items should hide the astriek again. 
   
   1. Instant treatment / Quick Treatment -> Single Click
 2. Gesture Treatments -> Gesture, mostly no product needed. 

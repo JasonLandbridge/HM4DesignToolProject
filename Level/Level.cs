@@ -735,7 +735,7 @@ namespace HM4DesignTool.Level
                     foreach (Treatment treatment in treatmentList)
                     {
                         output += treatment.TreatmentName + " (" + Math.Round(
-                                      (treatment.Weight / Convert.ToDouble(totalWeight)) * 100,
+                                      (treatment.Weight / (double)totalWeight) * 100,
                                       1).ToString("N1") + "%), ";
                         if (treatment.Weight != treatment.CustomizedWeight)
                         {
@@ -955,11 +955,11 @@ namespace HM4DesignTool.Level
                 List<Treatment> randomTreatmentList = new List<Treatment>();
                 foreach (string x in randomTreatmentNameList)
                 {
-                    foreach (Treatment treatment in treatmentOptions)
+                    foreach (Treatment t in treatmentOptions)
                     {
-                        if (x == treatment.TreatmentName)
+                        if (x == t.TreatmentName)
                         {
-                            randomTreatmentList.Add(treatment);
+                            randomTreatmentList.Add(t);
                             break;
                         }
                     }

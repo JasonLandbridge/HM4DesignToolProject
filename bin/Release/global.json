@@ -196,6 +196,11 @@
     },
     "r6_b02_bonus_02": {
       "applyAdrenaline": 27
+    },
+    "r6_b02_bonus_04": {
+      "applyColdPack": 10,
+      "findTools": 15,
+      "xrayTreatment": 10
     }
   }
 }
