@@ -1,4 +1,12 @@
-﻿namespace UiWindows
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="SettingsWindow.xaml.cs" company="Blue Giraffe">
+//   Created by Jason Landbrug as part of an Design internship from 12-02-2018 / 18-06-2018 at Blue Giraffe
+// </copyright>
+// <summary>
+//   Defines the DesignToolData type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+namespace UiWindows
 {
     using System;
     using System.Collections.Generic;
@@ -22,59 +30,23 @@
 
     public partial class SettingsWindow : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        #region GeneralTabProperties
-        private String _projectDirectoryPathValue = Globals.GetSettings.projectPathData;
-        public String ProjectDirectoryPathValue
-        {
-            get
-            {
-                return _projectDirectoryPathValue;
-            }
-            set
-            {
-                if (_projectDirectoryPathValue != value)
-                {
-                    _projectDirectoryPathValue = value;
-                    OnPropertyChanged();
-                    projectPathScriptText.Text = ProjectPathScriptValue;
-                    projectPathLevelText.Text = ProjectPathLevelValue;
-                    projectPathImagesText.Text = ProjectPathImagesValue;
-                }
-            }
-        }
-        public String ProjectPathScriptValue
-        {
-            get
-            {
-                return ProjectDirectoryPathValue + "\\script\\";
-            }
-        }
-        public String ProjectPathLevelValue
-        {
-            get
-            {
-                return ProjectDirectoryPathValue + "\\script\\levels\\";
-            }
-        }
-        public String ProjectPathImagesValue
-        {
-            get
-            {
-                return ProjectDirectoryPathValue + "\\images\\";
-            }
-        }
-        #endregion
 
-        #region PatientTypeTabProperties
+        #region Fields
+        private string projectDirectoryPathValue = Globals.GetSettings.projectPathData;
+
+
+
+        #region PatientTypeTabFields
+
         private int lastLoadedPatientTypeCategoriesIndex = -1;
-        private List<String> PatientTypeList = Globals.GetSettings.GetPatientTypesFromDisk();
-        private Dictionary<String, List<String>> patientTypeCategoriesDict = Globals.GetSettings.GetPatientTypes();
-        private Dictionary<String, CheckBox> PatientTypeCheckboxDict
+
+        private List<string> patientTypeList = Globals.GetSettings.GetPatientTypesFromDisk();
+        private Dictionary<string, List<string>> patientTypeCategoriesDict = Globals.GetSettings.GetPatientTypes();
+        private Dictionary<string, CheckBox> PatientTypeCheckboxDict
         {
             get
             {
-                Dictionary<String, CheckBox> patientTypeCheckboxDict = new Dictionary<String, CheckBox> { };
+                Dictionary<string, CheckBox> patientTypeCheckboxDict = new Dictionary<string, CheckBox> { };
 
                 foreach (ItemCollection checkList in new List<ItemCollection> { patientTypeMaleCheckList.Items, patientTypeFemaleCheckList.Items, patientTypeOtherCheckList.Items })
                 {
@@ -89,12 +61,114 @@
 
             }
         }
-        public String PatientListPreview
+        #endregion
+        #endregion
+
+
+
+        #region Constructors
+        public SettingsWindow()
+        {
+            InitializeComponent();
+
+            DataContext = this;
+
+            SetupSettingsWindow();
+            LoadSaveData();
+
+        }
+
+
+
+
+        #endregion
+
+
+        #region Events
+
+        /// <inheritdoc />
+        /// <summary>
+        /// This is used to notify the bound XAML Control to update its value.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        #endregion Events
+
+
+        #region Properties
+
+        #region Public
+        #region GeneralTabProperties
+        public string ProjectDirectoryPathValue
+        {
+            get => this.projectDirectoryPathValue;
+            set
+            {
+                if (this.projectDirectoryPathValue != value)
+                {
+                    this.projectDirectoryPathValue = value;
+                    OnPropertyChanged();
+                    projectPathScriptText.Text = ProjectPathScriptValue;
+                    projectPathLevelText.Text = ProjectPathLevelValue;
+                    projectPathImagesText.Text = ProjectPathImagesValue;
+                }
+            }
+        }
+        public string ProjectPathScriptValue => ProjectDirectoryPathValue + "\\script\\";
+
+        public string ProjectPathLevelValue => ProjectDirectoryPathValue + "\\script\\levels\\";
+
+        public string ProjectPathImagesValue => ProjectDirectoryPathValue + "\\images\\";
+
+        #endregion
+
+
+        #region Commands
+
+        #endregion
+
+        #endregion
+
+        #region Private
+
+
+
+        #endregion
+
+        #endregion
+
+
+
+        #region Methods
+
+        #region Public
+
+
+
+        #endregion
+
+        #region Private
+
+        #region Signals
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+
+
+
+        #region PatientTypeTabProperties
+
+
+        public string PatientListPreview
         {
             get
             {
-                String text = String.Empty;
-                foreach (String patientType in PatientTypeList)
+                string text = string.Empty;
+                foreach (string patientType in this.patientTypeList)
                 {
                     text += patientType + Environment.NewLine;
                 }
@@ -106,7 +180,14 @@
 
         #region TreatmentTabProperties
         private int lastLoadedTreatmentCategoriesIndex = -1;
-        private String SelectedTreatmentRoomCategoryKey
+        private Dictionary<string, List<Treatment>> treatmentCategoriesDict = Globals.GetSettings.GetTreatmentDictionary();
+
+        private Color _treatmentSelectColor = Colors.White;
+        private ObservableCollection<Treatment> LoadedTreatmentList = new ObservableCollection<Treatment> { };
+
+        private ObservableCollection<string> treatmentDifficultyModifierList = new ObservableCollection<string> { };
+
+        private string SelectedTreatmentRoomCategoryKey
         {
             get
             {
@@ -116,18 +197,13 @@
                 }
                 else
                 {
-                    return String.Empty;
+                    return string.Empty;
                 }
             }
         }
-        private Dictionary<String, List<Treatment>> treatmentCategoriesDict = Globals.GetSettings.GetTreatmentDictionary();
-        private ObservableCollection<Treatment> LoadedTreatmentList = new ObservableCollection<Treatment> { };
         public ObservableCollection<Treatment> TreatmentList
         {
-            get
-            {
-                return LoadedTreatmentList;
-            }
+            get => LoadedTreatmentList;
             set
             {
                 LoadedTreatmentList = value;
@@ -135,13 +211,9 @@
             }
 
         }
-        private ObservableCollection<String> treatmentDifficultyModifierList = new ObservableCollection<String> { };
-        public ObservableCollection<String> TreatmentDifficultyModifierList
+        public ObservableCollection<string> TreatmentDifficultyModifierList
         {
-            get
-            {
-                return treatmentDifficultyModifierList;
-            }
+            get => treatmentDifficultyModifierList;
             set
             {
                 treatmentDifficultyModifierList = value;
@@ -149,13 +221,9 @@
 
             }
         }
-        private Color _treatmentSelectColor = Colors.White;
         public Color TreatmentSelectColor
         {
-            get
-            {
-                return _treatmentSelectColor;
-            }
+            get => _treatmentSelectColor;
             set
             {
                 _treatmentSelectColor = value;
@@ -167,36 +235,23 @@
 
         #region BalancingTabProperties
         private int lastLoadedBalancingCategoriesIndex = -1;
-        private Dictionary<String, List<String>> balancingCategoriesDict = Globals.GetSettings.GetBalancingCategories();  // Room[N] -> List with double difficulty Modifiers
+        private Dictionary<string, List<string>> balancingCategoriesDict = Globals.GetSettings.GetBalancingCategories();  // Room[N] -> List with double difficulty Modifiers
 
-        private ObservableCollection<String> LoadedDifficultyModifierList = new ObservableCollection<String> { };
-        public ObservableCollection<String> DifficultyModifierList
+        private ObservableCollection<string> LoadedDifficultyModifierList = new ObservableCollection<string> { };
+        private Double difficultyModifier = 0;
+
+        public ObservableCollection<string> DifficultyModifierList
         {
-            get
-            {
-                return LoadedDifficultyModifierList;
-
-            }
+            get => LoadedDifficultyModifierList;
             set
             {
                 LoadedDifficultyModifierList = value;
                 OnPropertyChanged("TreatmentDifficultyModifierList");
             }
         }
-        public GameValues GlobalValues
-        {
-            get
-            {
-                return Globals.GetGameValues;
-            }
-        }
-        private Double difficultyModifier = 0;
         private Double LoadedDifficultyModifier
         {
-            get
-            {
-                return difficultyModifier;
-            }
+            get => difficultyModifier;
             set
             {
                 difficultyModifier = value;
@@ -209,87 +264,38 @@
                 OnPropertyChanged("MinutesPerLevel");
             }
         }
-        public Double AverageEntryTimePerPatient
-        {
-            get
-            {
-                return GlobalValues.AverageEntryTimePerPatient(LoadedDifficultyModifier);
-            }
-        }
-        public Double TimeBetweenPatients
-        {
-            get
-            {
-                return GlobalValues.TimeBetweenPatients(LoadedDifficultyModifier);
-            }
-        }
-        public Double NumberOfPatients
-        {
-            get
-            {
-                return GlobalValues.NumberOfPatients(LoadedDifficultyModifier);
-            }
-        }
-        public Double TreatmentPerPatient
-        {
-            get
-            {
-                return GlobalValues.TreatmentPerPatient(LoadedDifficultyModifier);
-            }
-        }
-        public Double TimePerTreatment
-        {
-            get
-            {
-                return GlobalValues.TimePerTreatment(LoadedDifficultyModifier);
-            }
-        }
-        public Double MilliSecondsPerLevel
-        {
-            get
-            {
-                return GlobalValues.MilliSecondsPerLevel(LoadedDifficultyModifier);
-            }
-        }
-        public Double MinutesPerLevel
-        {
-            get
-            {
-                return Math.Round(GlobalValues.MinutesPerLevel(LoadedDifficultyModifier), 6);
-            }
-        }
+        public Double AverageEntryTimePerPatient => GameValues.AverageEntryTimePerPatient(LoadedDifficultyModifier);
+
+        public Double TimeBetweenPatients => GameValues.TimeBetweenPatients(LoadedDifficultyModifier);
+
+        public Double NumberOfPatients => GameValues.NumberOfPatients(LoadedDifficultyModifier);
+
+        public Double TreatmentPerPatient => GameValues.TreatmentPerPatient(LoadedDifficultyModifier);
+
+        public Double TimePerTreatment => GameValues.TimePerTreatment(LoadedDifficultyModifier);
+
+        public Double MilliSecondsPerLevel => GameValues.MilliSecondsPerLevel(LoadedDifficultyModifier);
+
+        public Double MinutesPerLevel => Math.Round(GameValues.MinutesPerLevel(LoadedDifficultyModifier), 6);
 
         #endregion
-
-
-        public SettingsWindow()
-        {
-            InitializeComponent();
-
-            DataContext = this;
-
-            SetupSettingsWindow();
-            LoadSaveData();
-
-        }
-
         private void SetupSettingsWindow()
         {
 
             //Set categories for the patientTypeRoomList
             #region SetupPatientTypeTab
-            foreach (String roomName in Globals.RoomCategories)
+            foreach (string roomName in Globals.RoomCategories)
             {
                 patientTypeRoomList.Items.Add(roomName);
 
                 if (!patientTypeCategoriesDict.ContainsKey(roomName))
                 {
-                    patientTypeCategoriesDict.Add(roomName, new List<String> { });
+                    patientTypeCategoriesDict.Add(roomName, new List<string> { });
                 }
 
             }
             // Sort and create all checkboxes for the different groups
-            foreach (String patientType in PatientTypeList)
+            foreach (string patientType in this.patientTypeList)
             {
                 CheckBox checkBox = new CheckBox();
                 checkBox.Content = patientType;
@@ -314,7 +320,7 @@
             //Set categories for the treatmentRoomList
             #region SetupTreatmentTab
             //set the itemssource
-            foreach (String roomName in Globals.RoomCategories)
+            foreach (string roomName in Globals.RoomCategories)
             {
                 treatmentRoomList.Items.Add(roomName);
 
@@ -328,13 +334,13 @@
 
             //Set categories for the balancingRoomList
             #region SetupBalancingTab
-            foreach (String roomName in Globals.RoomCategories)
+            foreach (string roomName in Globals.RoomCategories)
             {
                 balancingRoomList.Items.Add(roomName);
 
                 if (!balancingCategoriesDict.ContainsKey(roomName))
                 {
-                    balancingCategoriesDict.Add(roomName, new List<String> { });
+                    balancingCategoriesDict.Add(roomName, new List<string> { });
                 }
 
             }
@@ -371,13 +377,13 @@
         {
             if (lastLoadedPatientTypeCategoriesIndex > -1)
             {
-                String categoryKey = patientTypeRoomList.Items[lastLoadedPatientTypeCategoriesIndex].ToString();
+                string categoryKey = patientTypeRoomList.Items[lastLoadedPatientTypeCategoriesIndex].ToString();
 
                 if (patientTypeCategoriesDict.ContainsKey(categoryKey))
                 {
-                    List<String> checkedPatientTypes = new List<String> { };
+                    List<string> checkedPatientTypes = new List<string> { };
 
-                    foreach (KeyValuePair<String, CheckBox> patientType in PatientTypeCheckboxDict)
+                    foreach (KeyValuePair<string, CheckBox> patientType in PatientTypeCheckboxDict)
                     {
                         if ((bool)patientType.Value.IsChecked)
                         {
@@ -400,7 +406,7 @@
         {
             if (lastLoadedTreatmentCategoriesIndex > -1)
             {
-                String categoryName = treatmentRoomList.Items.GetItemAt(lastLoadedTreatmentCategoriesIndex).ToString();
+                string categoryName = treatmentRoomList.Items.GetItemAt(lastLoadedTreatmentCategoriesIndex).ToString();
                 if (treatmentCategoriesDict.ContainsKey(categoryName))
                 {
                     treatmentCategoriesDict[categoryName] = TreatmentList.ToList();
@@ -418,7 +424,7 @@
         {
             if (lastLoadedBalancingCategoriesIndex > -1)
             {
-                String categoryName = balancingRoomList.Items.GetItemAt(lastLoadedBalancingCategoriesIndex).ToString();
+                string categoryName = balancingRoomList.Items.GetItemAt(lastLoadedBalancingCategoriesIndex).ToString();
                 if (balancingCategoriesDict.ContainsKey(categoryName))
                 {
                     balancingCategoriesDict[categoryName] = DifficultyModifierList.ToList();
@@ -436,15 +442,15 @@
         #endregion
 
         #region LoadData
-        private void LoadPatientTypeCategory(String categoryKey = null)
+        private void LoadPatientTypeCategory(string categoryKey = null)
         {
             if (patientTypeRoomList.SelectedIndex > -1)
             {
 
                 if (patientTypeCategoriesDict.ContainsKey(categoryKey))
                 {
-                    List<String> loadedPatientTypeList = patientTypeCategoriesDict[categoryKey];
-                    foreach (KeyValuePair<String, CheckBox> patientType in PatientTypeCheckboxDict)
+                    List<string> loadedPatientTypeList = patientTypeCategoriesDict[categoryKey];
+                    foreach (KeyValuePair<string, CheckBox> patientType in PatientTypeCheckboxDict)
                     {
                         if (loadedPatientTypeList.Contains(patientType.Key))
                         {
@@ -461,7 +467,7 @@
             }
         }
 
-        private void LoadTreatmentCategory(String categoryKey = null)
+        private void LoadTreatmentCategory(string categoryKey = null)
         {
             if (treatmentRoomList.SelectedIndex > -1)
             {
@@ -481,7 +487,7 @@
             }
         }
 
-        private void LoadBalancingCategory(String CategoryKey = null)
+        private void LoadBalancingCategory(string CategoryKey = null)
         {
             if (balancingRoomList.SelectedIndex > -1 && CategoryKey != null && balancingCategoriesDict.ContainsKey(CategoryKey))
             {
@@ -489,7 +495,7 @@
                 DifficultyModifierList.Clear();
                 for (int i = 0; i < balancingCategoriesDict[CategoryKey].Count; i++)
                 {
-                    String difficultyModifier = balancingCategoriesDict[CategoryKey][i];
+                    string difficultyModifier = balancingCategoriesDict[CategoryKey][i];
                     //Add n.0 behind whole numbers
                     if (!difficultyModifier.Contains("."))
                     {
@@ -506,7 +512,7 @@
 
         }
 
-        private void LoadDifficultyModifierData(String diffCategoryValue)
+        private void LoadDifficultyModifierData(string diffCategoryValue)
         {
             LoadedDifficultyModifier = Globals.StringToDouble(diffCategoryValue);
         }
@@ -515,10 +521,10 @@
 
         private void UpdateTreatmentDifficultyModifierList()
         {
-            ObservableCollection<String> treatmentDifficultyModifierList = new ObservableCollection<String> { };
+            ObservableCollection<string> treatmentDifficultyModifierList = new ObservableCollection<string> { };
             if (balancingCategoriesDict.ContainsKey(SelectedTreatmentRoomCategoryKey))
             {
-                foreach (String treatmentDifficultyModifier in balancingCategoriesDict[SelectedTreatmentRoomCategoryKey])
+                foreach (string treatmentDifficultyModifier in balancingCategoriesDict[SelectedTreatmentRoomCategoryKey])
                 {
                     treatmentDifficultyModifierList.Add(treatmentDifficultyModifier);
                 }
@@ -563,7 +569,7 @@
         private void patientTypeRoomList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             StorePatientTypeCategory();
-            String categoryKey = patientTypeRoomList.SelectedItem.ToString();
+            string categoryKey = patientTypeRoomList.SelectedItem.ToString();
             LoadPatientTypeCategory(categoryKey);
 
         }
@@ -599,7 +605,7 @@
         private void treatmentRoomList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             StoreTreatmentCategory();
-            String categoryKey = treatmentRoomList.SelectedItem.ToString();
+            string categoryKey = treatmentRoomList.SelectedItem.ToString();
             LoadTreatmentCategory(categoryKey);
         }
 
@@ -621,7 +627,7 @@
         private void balancingRoomList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             StoreBalancingCategory();
-            String categoryKey = balancingRoomList.SelectedItem.ToString();
+            string categoryKey = balancingRoomList.SelectedItem.ToString();
             LoadBalancingCategory(categoryKey);
         }
 
@@ -630,7 +636,7 @@
             if (difficultyModifierList.SelectedItem != null)
             {
                 ChangeGameValueEnabledState(true);
-                String diffCategoryKey = difficultyModifierList.SelectedItem.ToString();
+                string diffCategoryKey = difficultyModifierList.SelectedItem.ToString();
                 LoadDifficultyModifierData(diffCategoryKey);
             }
             else
@@ -643,7 +649,7 @@
         private void diffModifierRowButtonAdd_Click(object sender, RoutedEventArgs e)
         {
             Double newValue = (Double)diffModifierValue.Value;
-            String newValueStr = String.Format("{0:N1}", newValue);
+            string newValueStr = string.Format("{0:N1}", newValue);
             if (!DifficultyModifierList.Contains(newValueStr))
             {
                 DifficultyModifierList.Add(newValueStr);
@@ -654,7 +660,7 @@
         {
             if (difficultyModifierList.SelectedItem != null)
             {
-                String ValueStr = difficultyModifierList.SelectedItem.ToString();
+                string ValueStr = difficultyModifierList.SelectedItem.ToString();
                 int index = difficultyModifierList.SelectedIndex;
                 if (DifficultyModifierList.Contains(ValueStr))
                 {

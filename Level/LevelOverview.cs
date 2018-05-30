@@ -197,7 +197,15 @@ namespace HM4DesignTool.Level
 
         #region Commands
 
+        /// <summary>
+        /// The reload level command field.
+        /// </summary>
         private ICommand reloadLevelCommand;
+
+        /// <summary>
+        /// The generate level command field.
+        /// </summary>
+        private ICommand generateLevelCommand;
 
         #endregion
 
@@ -763,6 +771,10 @@ namespace HM4DesignTool.Level
         /// </summary>
         public ICommand ReloadLevelCommand => this.reloadLevelCommand ?? (this.reloadLevelCommand = new CommandHandler(this.ReloadLevel, this.canExecuteCommands));
 
+        /// <summary>
+        /// Generate the level command.
+        /// </summary>
+        public ICommand GenerateLevelCommand => this.generateLevelCommand ?? (this.generateLevelCommand = new CommandHandler(this.RandomizeLevel, this.canExecuteCommands));
 
 
         #endregion
@@ -1092,9 +1104,9 @@ namespace HM4DesignTool.Level
             if (this.UseRandomRecommendations)
             {
 
-                int numberOfPatients = Globals.GetGameValues.NumberOfPatientsToInt(this.GetLevelLoaded.GetDifficultyModifier);
+                int numberOfPatients = GameValues.NumberOfPatientsToInt(this.GetLevelLoaded.GetDifficultyModifier);
 
-                int treatmentPerPatients = Globals.GetGameValues.TreatmentPerPatientToInt(this.GetLevelLoaded.GetDifficultyModifier);
+                int treatmentPerPatients = GameValues.TreatmentPerPatientToInt(this.GetLevelLoaded.GetDifficultyModifier);
 
                 int patientTypeCount = Globals.GetSettings.GetPatientChanceList(this.GetLevelLoaded.CategoryKey).Count;
 

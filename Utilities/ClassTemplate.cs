@@ -64,12 +64,13 @@ namespace HM4DesignTool.Utilities
 
         #region Private
 
+        #region Signals
 
+        #endregion
 
         #endregion
 
         #endregion
-
 
         #region Operators
 

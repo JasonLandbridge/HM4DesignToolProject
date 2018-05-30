@@ -1,34 +1,52 @@
-﻿namespace HM4DesignTool.Forms
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RoomExportWindow.xaml.cs" company="Blue Giraffe">
+//   Created by Jason Landbrug as part of an Design internship from 12-02-2018 / 18-06-2018 at Blue Giraffe
+// </copyright>
+// <author> Jason Landbrug </author>
+// <summary>  Global references </summary>
+// --------------------------------------------------------------------------------------------------------------------
+namespace HM4DesignTool.Forms
 {
     using System;
     using System.Collections.Generic;
     using System.Windows;
-    using System.Windows.Controls;
 
     using HM4DesignTool.Data;
 
     /// <summary>
     /// Window used to create a list of level names. 
     /// </summary>
-    public partial class LevelListExport : Window
+    public partial class LevelListExport
     {
+        #region Constructors
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LevelListExport"/> class.
+        /// </summary>
         public LevelListExport()
         {
             this.InitializeComponent();
 
-            //Populate LevelListFilter Dropdown
+            // Populate LevelListFilter Dropdown
             this.levelListFilter.Items.Add("All");
             this.levelListFilter.SelectedIndex = 0;
-            foreach (String category in Globals.RoomCategories)
+            foreach (string category in Globals.RoomCategories)
             {
                 this.levelListFilter.Items.Add(category);
             }
 
-
-            //Populate LevelList
+            // Populate LevelList
             this.LoadLevelList();
         }
 
+        #endregion
+
+        #region Methods
+
+        #region Public
+
+        /// <summary>
+        /// The load level list.
+        /// </summary>
         private void LoadLevelList()
         {
             int roomIndex = this.levelListFilter.SelectedIndex;
@@ -36,61 +54,77 @@
             bool bonusFilter = (bool)this.levelListBonusCheck.IsChecked;
             bool unknownFilter = (bool)this.levelListUnknownCheck.IsChecked;
 
+            Dictionary<string, List<string>> levelDictionary = Globals.GetLevelOverview.GetCategorizedFilteredLevels(roomIndex, storyFilter, bonusFilter, unknownFilter);
 
-            Dictionary<String, List<String>> levelDictionary = Globals.GetLevelOverview.GetCategorizedFilteredLevels(roomIndex, storyFilter, bonusFilter, unknownFilter);
+            string output = string.Empty;
 
-            String Output = String.Empty;
-
-            foreach (KeyValuePair<String, List<String>> category in levelDictionary)
+            foreach (KeyValuePair<string, List<string>> category in levelDictionary)
             {
-                TreeViewItem categoryItem = new TreeViewItem();
-                categoryItem.Header = category.Key;
                 if (category.Value.Count > 0)
                 {
-                    foreach (String levelName in category.Value)
+                    foreach (string levelName in category.Value)
                     {
-
                         if ((bool)this.filterLevelEditorFormat.IsChecked)
                         {
-                            Output = $"{Output}\"{levelName}\",";
+                            output = $"{output}\"{levelName}\",";
                         }
                         else
                         {
-                            Output = $"{Output}{levelName}";
+                            output = $"{output}{levelName}";
 
-                            if ((bool)levelListAddExtension.IsChecked)
+                            if ((bool)this.levelListAddExtension.IsChecked)
                             {
-                                Output = $"{Output}.lua";
+                                output = $"{output}.lua";
                             }
-
                         }
 
-                        Output = $"{Output}{Environment.NewLine}";
-
+                        output = $"{output}{Environment.NewLine}";
                     }
-
                 }
-
             }
 
-            this.levelListDisplay.Text = Output;
+            this.levelListDisplay.Text = output;
         }
 
-        private void UpdateLevelList(object sender, SelectionChangedEventArgs e)
+        #endregion
+
+        #region Private
+
+        #region Signals
+
+        /// <summary>
+        /// Copy to clipboard button click.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void CopyToClipboardButtonClick(object sender, RoutedEventArgs e)
         {
-            this.LoadLevelList();
+            Clipboard.SetText(this.levelListDisplay.Text);
+            this.levelListDisplay.SelectAll();
         }
 
+        /// <summary>
+        /// The update level list.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void UpdateLevelList(object sender, RoutedEventArgs e)
         {
             this.LoadLevelList();
         }
 
-        private void copyToClipboardButton_Click(object sender, RoutedEventArgs e)
-        {
-            Clipboard.SetText(this.levelListDisplay.Text);
-            this.levelListDisplay.SelectAll();
+        #endregion
 
-        }
+        #endregion
+
+        #endregion
     }
 }

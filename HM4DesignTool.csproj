@@ -122,8 +122,8 @@
     <Compile Include="Level\LevelOverview.cs" />
     <Compile Include="Level\Patient.cs" />
     <Compile Include="Level\PatientChance.cs" />
-    <Compile Include="Forms\CustomTreatmentWeightsWindow.xaml.cs">
-      <DependentUpon>CustomTreatmentWeightsWindow.xaml</DependentUpon>
+    <Compile Include="Forms\CustomWeightsWindow.xaml.cs">
+      <DependentUpon>CustomWeightsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\HelpWindow.xaml.cs">
       <DependentUpon>HelpWindow.xaml</DependentUpon>
@@ -135,7 +135,7 @@
     <Compile Include="Level\Treatment.cs" />
     <Compile Include="Utilities\ClassTemplate.cs" />
     <Compile Include="Utilities\CommandHandler.cs" />
-    <Page Include="Forms\CustomTreatmentWeightsWindow.xaml">
+    <Page Include="Forms\CustomWeightsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -4,7 +4,8 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
-		xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"  x:Class="UiWindows.SettingsWindow"
+		xmlns:Data="clr-namespace:HM4DesignTool.Data"
+		x:Class="UiWindows.SettingsWindow"
 		mc:Ignorable="d"
 		Title="Design Tool Settings" Height="768" Width="1280" WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip">
 	<!-- diag:PresentationTraceSources.TraceLevel=High-->
@@ -312,18 +313,17 @@
 							<Label MinWidth="150" Grid.Column="0" Grid.Row="7" MaxHeight="25" Content="CheckoutPerPatient: " Margin="0,5"/>
 							<Label MinWidth="150" Grid.Column="0" Grid.Row="8" MaxHeight="25" Content="TreatmentMinimumTime: " Margin="0,5"/>
 
-							<TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=GlobalValues.DifficultyModifierTreatmentsBased, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False" />
-							<TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=GlobalValues.StartLevelDuration, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
-							<TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=GlobalValues.TimeIncreasePerLevel, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
-							<TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=GlobalValues.InitialTimeBetweenPatients, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
-							<TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=GlobalValues.DecreaseTimeBetweenPatients, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
-							<TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=GlobalValues.InitialTimePerTreatment, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
-							<TextBox Grid.Column="1" Grid.Row="6" Text="{Binding Path=GlobalValues.DecreaseTimePerTreatment, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
-							<TextBox Grid.Column="1" Grid.Row="7" Text="{Binding Path=GlobalValues.CheckoutPerPatient, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
-							<TextBox Grid.Column="1" Grid.Row="8" Text="{Binding Path=GlobalValues.TreatmentMinimumTime, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
+							<TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Source={x:Static Data:GameValues.TreatmentBasedDifficultyModifier}, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False" />
+							<TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Source={x:Static Data:GameValues.StartLevelDuration}, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
+							<TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Source={x:Static Data:GameValues.TimeIncreasePerLevel}, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
+							<TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Source={x:Static Data:GameValues.InitialTimeBetweenPatients}, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
+							<TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Source={x:Static Data:GameValues.DecreaseTimeBetweenPatients}, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
+							<TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Source={x:Static Data:GameValues.InitialTimePerTreatment}, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
+							<TextBox Grid.Column="1" Grid.Row="6" Text="{Binding Source={x:Static Data:GameValues.DecreaseTimePerTreatment}, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
+							<TextBox Grid.Column="1" Grid.Row="7" Text="{Binding Source={x:Static Data:GameValues.CheckoutPerPatient}, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
+							<TextBox Grid.Column="1" Grid.Row="8" Text="{Binding Source={x:Static Data:GameValues.TreatmentMinimumTime}, Mode=OneWay}" Margin="0,5" MaxHeight="25" IsEnabled="False"/>
 
 						</Grid>
-
 					</GroupBox>
 
 				</Grid>

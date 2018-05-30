@@ -993,9 +993,9 @@ namespace HM4DesignTool.Level
         {
             if (this.GetDifficultyModifier > 0)
             {
-                double timePerTreatment = Globals.GetGameValues.TimePerTreatment(this.GetDifficultyModifier);
-                double timeBetweenPatients = Globals.GetGameValues.TimeBetweenPatients(this.GetDifficultyModifier);
-                int checkoutPerPatient = Globals.GetGameValues.CheckoutPerPatient;
+                double timePerTreatment = GameValues.TimePerTreatment(this.GetDifficultyModifier);
+                double timeBetweenPatients = GameValues.TimeBetweenPatients(this.GetDifficultyModifier);
+                int checkoutPerPatient = GameValues.CheckoutPerPatient;
                 int patientDelayMin = Globals.GetLevelOverview.GeneratePatientDelayMin;
                 int patientDelayMax = Globals.GetLevelOverview.GeneratePatientDelayMax;
 

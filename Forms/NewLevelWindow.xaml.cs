@@ -1,4 +1,11 @@
-﻿namespace UiWindows
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="NewLevelWindow.xaml.cs" company="Blue Giraffe">
+//   Created by Jason Landbrug as part of an Design internship from 12-02-2018 / 18-06-2018 at Blue Giraffe
+// </copyright>
+// <author> Jason Landbrug </author>
+// <summary>  Global references </summary>
+// --------------------------------------------------------------------------------------------------------------------
+namespace HM4DesignTool.Forms
 {
     using System.Collections.ObjectModel;
     using System.ComponentModel;
@@ -11,108 +18,57 @@
     using HM4DesignTool.Data;
 
     /// <summary>
-    /// Interaction logic for Window2.xaml
+    /// The new level window.
     /// </summary>
     public partial class NewLevelWindow : INotifyPropertyChanged
     {
+        #region Fields
 
-        private int RoomIndex
+        /// <summary>
+        /// The finished loading.
+        /// </summary>
+        private readonly bool finishedLoading;
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NewLevelWindow"/> class.
+        /// </summary>
+        public NewLevelWindow()
         {
-            get
-            {
-                if (this.levelRoomValue != null)
-                {
-                    return (int)this.levelRoomValue.Value;
-                }
-                else
-                {
-                    return 0;
-                }
+            this.InitializeComponent();
+            this.mainGrid.DataContext = this;
+            this.finishedLoading = true;
+            this.SetRangeState();
 
-            }
-        }
-        private int BranchIndex
-        {
-            get
-            {
-                if (this.levelBranchValue != null)
-                {
-                    return (int)this.levelBranchValue.Value;
-                }
-                else
-                {
-                    return 0;
-                }
-
-            }
-        }
-        private int LevelIndex
-        {
-            get
-            {
-                if (this.levelInstanceValue != null)
-                {
-                    return (int)this.levelInstanceValue.Value;
-                }
-                else
-                {
-                    return 0;
-                }
-
-            }
-        }
-        private int LevelIndexMax
-        {
-            get
-            {
-                if (this.levelInstanceRangeValue != null)
-                {
-                    return (int)this.levelInstanceRangeValue.Value;
-                }
-                else
-                {
-                    return 0;
-                }
-
-            }
-
-        }
-        private string LevelType
-        {
-            get
-            {
-                if (this.levelTypeValue != null)
-                {
-                    return this.levelTypeValue.Text;
-                }
-                else
-                {
-                    return string.Empty;
-                }
-
-            }
-
-        }
-        private bool UseRange
-        {
-            get
-            {
-                if (this.useRangeCheckbox != null)
-                {
-                    return (bool)this.useRangeCheckbox.IsChecked;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            // levelListDisplay.ItemsSource = FileNameList;
         }
 
+        #endregion
+
+        #region Events
+
+        /// <inheritdoc />
+        /// <summary>
+        /// This is used to notify the bound XAML Control to update its value.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        #endregion
+
+        #region Properties
+
+        #region Public
+
+        /// <summary>
+        /// Gets the file name list.
+        /// </summary>
         public ObservableCollection<string> FileNameList
         {
             get
             {
-                ObservableCollection<string> fileList = new ObservableCollection<string> { };
+                ObservableCollection<string> fileList = new ObservableCollection<string>();
                 if (this.UseRange)
                 {
                     for (int i = this.LevelIndex; i <= this.LevelIndexMax; i++)
@@ -128,49 +84,171 @@
                 return fileList;
             }
         }
+
+        /// <summary>
+        /// Gets the file name list box items used to display all the file names to be made.
+        /// </summary>
         public ObservableCollection<ListBoxItem> FileNameListBoxItems
         {
             get
             {
-                ObservableCollection<ListBoxItem> fileItemList = new ObservableCollection<ListBoxItem> { };
+                ObservableCollection<ListBoxItem> fileItemList = new ObservableCollection<ListBoxItem>();
 
                 foreach (string fileName in this.FileNameList)
                 {
-
-                    ListBoxItem item = new ListBoxItem();
-                    item.Content = fileName;
-
-                    if (this.LevelExist(fileName))
-                    {
-                        item.Background = Brushes.IndianRed;
-                    }
-                    else
-                    {
-                        item.Background = Brushes.LightGreen;
-
-                    }
-
-                    fileItemList.Add(item);
-
+                    fileItemList.Add(new ListBoxItem
+                                           {
+                                               Content = fileName,
+                                               Background = LevelExist(fileName) ? Brushes.IndianRed : Brushes.LightGreen
+                                           });
                 }
-
                 return fileItemList;
             }
         }
-        private bool FinishedLoading = false;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region Input
 
-        public NewLevelWindow()
+        /// <summary>
+        /// Gets the branch index.
+        /// </summary>
+        private int BranchIndex
         {
-            this.InitializeComponent();
-            this.mainGrid.DataContext = this;
-            this.FinishedLoading = true;
-            this.SetRangeState();
-
-            // levelListDisplay.ItemsSource = FileNameList;
+            get
+            {
+                if (this.levelBranchValue != null)
+                {
+                    return (int)this.levelBranchValue.Value;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
         }
 
+        /// <summary>
+        /// Gets the level index.
+        /// </summary>
+        private int LevelIndex
+        {
+            get
+            {
+                if (this.levelInstanceValue != null)
+                {
+                    return (int)this.levelInstanceValue.Value;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the level index max.
+        /// </summary>
+        private int LevelIndexMax
+        {
+            get
+            {
+                if (this.levelInstanceRangeValue != null)
+                {
+                    return (int)this.levelInstanceRangeValue.Value;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the level type.
+        /// </summary>
+        private string LevelType
+        {
+            get
+            {
+                if (this.levelTypeValue != null)
+                {
+                    return this.levelTypeValue.Text;
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the room index.
+        /// </summary>
+        private int RoomIndex
+        {
+            get
+            {
+                if (this.levelRoomValue != null)
+                {
+                    return (int)this.levelRoomValue.Value;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether to use range.
+        /// </summary>
+        private bool UseRange
+        {
+            get
+            {
+                if (this.useRangeCheckbox != null)
+                {
+                    return (bool)this.useRangeCheckbox.IsChecked;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        #region Methods
+
+        #region Private
+
+        /// <summary>
+        /// Checks if the level exist.
+        /// </summary>
+        /// <param name="filename">
+        /// The filename.
+        /// </param>
+        /// <returns>
+        /// The <see cref="bool"/>.
+        /// </returns>
+        private static bool LevelExist(string filename)
+        {
+            return filename.Length > 0 && File.Exists(Globals.GetSettings.projectPathLevel + filename);
+        }
+
+        /// <summary>
+        /// The get file name.
+        /// </summary>
+        /// <param name="index">
+        /// The index.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
         private string GetFileName(int index)
         {
             // Get room index
@@ -181,11 +259,11 @@
             // Get branch index
             if (this.BranchIndex < 10)
             {
-                filename += "b0" + this.BranchIndex.ToString();
+                filename += "b0" + this.BranchIndex;
             }
             else
             {
-                filename += "b" + this.BranchIndex.ToString();
+                filename += "b" + this.BranchIndex;
             }
 
             // Get room type
@@ -197,7 +275,7 @@
 
             if (index < 10)
             {
-                filename += "0" + index.ToString();
+                filename += "0" + index;
             }
             else
             {
@@ -208,105 +286,128 @@
             return filename;
         }
 
-        private void SetRangeState()
-        {
-            this.levelInstanceRangeLabel.IsEnabled = this.UseRange;
-            this.levelInstanceRangeValue.IsEnabled = this.UseRange;
-        }
-
+        /// <summary>
+        /// Create the level files for every filename.
+        /// </summary>
         private void CreateLevelFiles()
         {
-            foreach (string FileName in this.FileNameList)
+            foreach (string fileName in this.FileNameList)
             {
-                string path = Globals.GetSettings.projectPathLevel + FileName;
-                if (!this.LevelExist(FileName))
+                string path = Globals.GetSettings.projectPathLevel + fileName;
+                if (!LevelExist(fileName))
                 {
                     File.Create(path).Dispose();
                 }
             }
         }
 
-        private bool LevelExist(string Filename)
-        {
-            if (Filename.Length > 0)
-            {
-                return File.Exists(Globals.GetSettings.projectPathLevel + Filename);
-            }
-            else
-            {
-                return false;
-            }
-        }
-
+        /// <summary>
+        /// Update the level list display.
+        /// </summary>
         private void UpdateLevelList()
         {
             this.OnPropertyChanged("FileNameList");
             this.OnPropertyChanged("FileNameListBoxItems");
         }
 
-        private void levelRoomValue_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        /// <summary>
+        /// Enable or disable the range state.
+        /// </summary>
+        private void SetRangeState()
         {
-            if (this.FinishedLoading)
+            this.levelInstanceRangeLabel.IsEnabled = this.UseRange;
+            this.levelInstanceRangeValue.IsEnabled = this.UseRange;
+        }
+
+        #region Signals
+
+        /// <summary>
+        /// Update whenever a value is changed in a integer up down box.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void UpdateOnValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (this.finishedLoading)
             {
                 this.UpdateLevelList();
             }
         }
 
-        private void levelBranchValue_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        /// <summary>
+        /// Update whenever a selection is changed in a combo box.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void UpdateOnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (this.FinishedLoading)
+            if (this.finishedLoading)
             {
                 this.UpdateLevelList();
             }
         }
 
-        private void levelTypeValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (this.FinishedLoading)
-            {
-                this.UpdateLevelList();
-            }
-        }
-
-        private void levelInstanceValue_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (this.FinishedLoading)
-            {
-                this.UpdateLevelList();
-            }
-        }
-
-        private void levelInstanceRangeValue_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (this.FinishedLoading)
-            {
-                this.UpdateLevelList();
-            }
-        }
-
-        #region Events
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        #endregion
-
-        private void useRangeCheckbox_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.FinishedLoading)
-            {
-                this.SetRangeState();
-                this.UpdateLevelList();
-            }
-
-        }
-
-        private void buttonSave_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Buttons signal to save all displayed filenames. 
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void ButtonSaveClick(object sender, RoutedEventArgs e)
         {
             this.CreateLevelFiles();
             this.UpdateLevelList();
             Globals.GetLevelOverview.UpdateLevelList();
         }
+
+        /// <summary>
+        /// Checkbox signal to enable/disable the range. 
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void UseRangeCheckboxClick(object sender, RoutedEventArgs e)
+        {
+            if (this.finishedLoading)
+            {
+                this.SetRangeState();
+                this.UpdateLevelList();
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        #region INotifyPropertyChanged Members
+
+        /// <summary>
+        /// This is used to notify the bound XAML Control to update its value.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The property Name.
+        /// </param>
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion INotifyPropertyChanged Members
     }
 }

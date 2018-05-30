@@ -13,55 +13,54 @@ namespace HM4DesignTool.Data
     /// <summary>
     /// The Game Values of HM4.
     /// </summary>
-    public class GameValues
+    public static class GameValues
     {
         // TODO Make sure to import the constant values from GSettings
         #region Properties
+        /// <summary>
+        /// Gets or sets the base amount of duration a level lasts in milliseconds.
+        /// </summary>
+        public static int StartLevelDuration { get; set; } = 110000;
 
         /// <summary>
-        /// Gets or sets the difficulty modifier treatments based.
+        /// Gets or sets the time increase per difficulty modifier level in milliseconds.
         /// </summary>
-        public int DifficultyModifierTreatmentsBased { get; set; } = 11;
+        public static int TimeIncreasePerLevel { get; set; } = 4500;
 
         /// <summary>
-        /// Gets or sets the start level duration.
+        /// Gets or sets the initial time in milliseconds between patients.
         /// </summary>
-        public int StartLevelDuration { get; set; } = 110000;
+        public static int InitialTimeBetweenPatients { get; set; } = 11000;
 
         /// <summary>
-        /// Gets or sets the time increase per level.
+        /// Gets or sets the decrease time in milliseconds between patients.
         /// </summary>
-        public int TimeIncreasePerLevel { get; set; } = 4500;
-
-        /// <summary>
-        /// Gets or sets the initial time between patients.
-        /// </summary>
-        public int InitialTimeBetweenPatients { get; set; } = 11000;
-
-        /// <summary>
-        /// Gets or sets the decrease time between patients.
-        /// </summary>
-        public int DecreaseTimeBetweenPatients { get; set; } = 250;
-
-        /// <summary>
-        /// Gets or sets the initial time per treatment.
-        /// </summary>
-        public int InitialTimePerTreatment { get; set; } = 6000;
-
-        /// <summary>
-        /// Gets or sets the decrease time per treatment.
-        /// </summary>
-        public int DecreaseTimePerTreatment { get; set; } = 250;
+        public static int DecreaseTimeBetweenPatients { get; set; } = 250;
 
         /// <summary>
         /// Gets or sets the checkout per patient.
         /// </summary>
-        public int CheckoutPerPatient { get; set; } = 2000;
+        public static int CheckoutPerPatient { get; set; } = 2000;
+
+        /// <summary>
+        /// Gets or sets the initial time per treatment.
+        /// </summary>
+        public static int InitialTimePerTreatment { get; set; } = 6000;
 
         /// <summary>
         /// Gets or sets the treatment minimum time.
         /// </summary>
-        public int TreatmentMinimumTime { get; set; } = 1600;
+        public static int TreatmentMinimumTime { get; set; } = 1600;
+
+        /// <summary>
+        /// Gets or sets the decrease time per treatment.
+        /// </summary>
+        public static int DecreaseTimePerTreatment { get; set; } = 250;
+
+        /// <summary>
+        /// Gets or sets the treatment based difficulty modifier.
+        /// </summary>
+        public static int TreatmentBasedDifficultyModifier { get; set; } = 11;
 
         #endregion
 
@@ -79,19 +78,19 @@ namespace HM4DesignTool.Data
         ///     </see>
         ///     .
         /// </returns>
-        public Dictionary<string, double> GetBalancingData(double difficultyModifier)
+        public static Dictionary<string, double> GetBalancingData(double difficultyModifier)
         {
             Dictionary<string, double> balancingData = new Dictionary<string, double>();
 
             if (difficultyModifier > 0.5)
             {
-                balancingData.Add("averageEntryTimePerPatient", this.AverageEntryTimePerPatient(difficultyModifier));
-                balancingData.Add("timeBetweenPatients", this.TimeBetweenPatients(difficultyModifier));
-                balancingData.Add("numberOfPatients", this.NumberOfPatients(difficultyModifier));
-                balancingData.Add("treatmentPerPatient", this.TreatmentPerPatient(difficultyModifier));
-                balancingData.Add("timePerTreatment", this.TimePerTreatment(difficultyModifier));
-                balancingData.Add("milliSecondsPerLevel", this.MilliSecondsPerLevel(difficultyModifier));
-                balancingData.Add("minutesPerLevel", this.MinutesPerLevel(difficultyModifier));
+                balancingData.Add("averageEntryTimePerPatient", AverageEntryTimePerPatient(difficultyModifier));
+                balancingData.Add("timeBetweenPatients", TimeBetweenPatients(difficultyModifier));
+                balancingData.Add("numberOfPatients", NumberOfPatients(difficultyModifier));
+                balancingData.Add("treatmentPerPatient", TreatmentPerPatient(difficultyModifier));
+                balancingData.Add("timePerTreatment", TimePerTreatment(difficultyModifier));
+                balancingData.Add("milliSecondsPerLevel", MilliSecondsPerLevel(difficultyModifier));
+                balancingData.Add("minutesPerLevel", MinutesPerLevel(difficultyModifier));
 
                 return balancingData;
             }
@@ -114,16 +113,12 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="double"/>.
         /// </returns>
-        public double TreatmentPerPatient(double difficultyModifier)
+        public static double TreatmentPerPatient(double difficultyModifier)
         {
-            if (Math.Round(difficultyModifier / this.DifficultyModifierTreatmentsBased, 2) + 1 > 3.5)
-            {
-                return 3.5;
-            }
-            else
-            {
-                return Math.Round(difficultyModifier / this.DifficultyModifierTreatmentsBased, 2) + 1;
-            }
+            double treatmentPerPatient = Math.Round(difficultyModifier / TreatmentBasedDifficultyModifier, 2) + 1;
+
+            // Never return a value higher than 3.5.
+            return Math.Min(treatmentPerPatient, 3.5);
         }
 
         /// <summary>
@@ -135,9 +130,9 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="int"/>.
         /// </returns>
-        public int TreatmentPerPatientToInt(double difficultyModifier)
+        public static int TreatmentPerPatientToInt(double difficultyModifier)
         {
-            double x = Math.Round(this.TreatmentPerPatient(difficultyModifier), MidpointRounding.AwayFromZero);
+            double x = Math.Round(TreatmentPerPatient(difficultyModifier), MidpointRounding.AwayFromZero);
             return Convert.ToInt32(x);
         }
 
@@ -150,18 +145,12 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="double"/>.
         /// </returns>
-        public double TimePerTreatment(double difficultyModifier)
+        public static double TimePerTreatment(double difficultyModifier)
         {
-            double x = this.InitialTimePerTreatment - (difficultyModifier * this.DecreaseTimePerTreatment);
-
-            if (x < this.TreatmentMinimumTime)
-            {
-                return this.TreatmentMinimumTime;
-            }
-            else
-            {
-                return x;
-            }
+            double x = InitialTimePerTreatment - (difficultyModifier * DecreaseTimePerTreatment);
+            
+            // Never return a value lower than the TreatmentMinimumTime.
+            return Math.Max(x, TreatmentMinimumTime);
         }
 
         /// <summary>
@@ -173,18 +162,12 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="double"/>.
         /// </returns>
-        public double MilliSecondsPerLevel(double difficultyModifier)
+        public static double MilliSecondsPerLevel(double difficultyModifier)
         {
-            double x = this.StartLevelDuration + (difficultyModifier * this.TimeIncreasePerLevel);
+            double x = StartLevelDuration + (difficultyModifier * TimeIncreasePerLevel);
 
-            if (x > 400000)
-            {
-                return 400000;
-            }
-            else
-            {
-                return x;
-            }
+            // Never return a value higher than 400000 ms.
+            return Math.Min(x, 400000);
         }
 
         /// <summary>
@@ -196,9 +179,9 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="double"/>.
         /// </returns>
-        public double MinutesPerLevel(double difficultyModifier)
+        public static double MinutesPerLevel(double difficultyModifier)
         {
-            return this.MilliSecondsPerLevel(difficultyModifier) / 60000;
+            return MilliSecondsPerLevel(difficultyModifier) / 60000;
         }
 
         /// <summary>
@@ -210,9 +193,9 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="double"/>.
         /// </returns>
-        public double TimeBetweenPatients(double difficultyModifier)
+        public static double TimeBetweenPatients(double difficultyModifier)
         {
-            return this.InitialTimeBetweenPatients - (difficultyModifier * this.DecreaseTimeBetweenPatients);
+            return InitialTimeBetweenPatients - (difficultyModifier * DecreaseTimeBetweenPatients);
         }
 
         /// <summary>
@@ -224,11 +207,10 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="double"/>.
         /// </returns>
-        public double AverageEntryTimePerPatient(double difficultyModifier)
+        public static double AverageEntryTimePerPatient(double difficultyModifier)
         {
-            double x = this.TreatmentPerPatient(difficultyModifier) * this.TimePerTreatment(difficultyModifier);
-            x += this.TimeBetweenPatients(difficultyModifier);
-            x += this.CheckoutPerPatient;
+            double x = TreatmentPerPatient(difficultyModifier) * TimePerTreatment(difficultyModifier);
+            x += TimeBetweenPatients(difficultyModifier) + CheckoutPerPatient;
 
             return x;
         }
@@ -242,9 +224,9 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="double"/>.
         /// </returns>
-        public double NumberOfPatients(double difficultyModifier)
+        public static double NumberOfPatients(double difficultyModifier)
         {
-            double x = this.MilliSecondsPerLevel(difficultyModifier) / this.AverageEntryTimePerPatient(difficultyModifier);
+            double x = MilliSecondsPerLevel(difficultyModifier) / AverageEntryTimePerPatient(difficultyModifier);
             return Math.Ceiling(x); // TODO Check if similair to math.ceil in python
         }
 
@@ -257,9 +239,9 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="int"/>.
         /// </returns>
-        public int NumberOfPatientsToInt(double difficultyModifier)
+        public static int NumberOfPatientsToInt(double difficultyModifier)
         {
-            return Convert.ToInt32(this.NumberOfPatients(difficultyModifier));
+            return Convert.ToInt32(NumberOfPatients(difficultyModifier));
         }
 
         #endregion
@@ -278,9 +260,9 @@ namespace HM4DesignTool.Data
         ///     </see>
         ///     .
         /// </returns>
-        public Dictionary<string, double> GetBalancingData(string difficultyModifier)
+        public static Dictionary<string, double> GetBalancingData(string difficultyModifier)
         {
-            return this.GetBalancingData(Globals.StringToDouble(difficultyModifier));
+            return GetBalancingData(Globals.StringToDouble(difficultyModifier));
         }
 
         /// <summary>
@@ -292,9 +274,9 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="double"/>.
         /// </returns>
-        public double TreatmentPerPatient(string difficultyModifier)
+        public static double TreatmentPerPatient(string difficultyModifier)
         {
-            return this.TreatmentPerPatient(Globals.StringToDouble(difficultyModifier));
+            return TreatmentPerPatient(Globals.StringToDouble(difficultyModifier));
         }
 
         /// <summary>
@@ -306,9 +288,9 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="double"/>.
         /// </returns>
-        public double TimePerTreatment(string difficultyModifier)
+        public static double TimePerTreatment(string difficultyModifier)
         {
-            return this.TimePerTreatment(Globals.StringToDouble(difficultyModifier));
+            return TimePerTreatment(Globals.StringToDouble(difficultyModifier));
         }
 
         /// <summary>
@@ -320,9 +302,9 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="double"/>.
         /// </returns>
-        public double MilliSecondsPerLevel(string difficultyModifier)
+        public static double MilliSecondsPerLevel(string difficultyModifier)
         {
-            return this.MilliSecondsPerLevel(Globals.StringToDouble(difficultyModifier));
+            return MilliSecondsPerLevel(Globals.StringToDouble(difficultyModifier));
         }
 
         /// <summary>
@@ -334,9 +316,9 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="double"/>.
         /// </returns>
-        public double MinutesPerLevel(string difficultyModifier)
+        public static double MinutesPerLevel(string difficultyModifier)
         {
-            return this.MinutesPerLevel(Globals.StringToDouble(difficultyModifier));
+            return MinutesPerLevel(Globals.StringToDouble(difficultyModifier));
         }
 
         /// <summary>
@@ -348,9 +330,9 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="double"/>.
         /// </returns>
-        public double TimeBetweenPatients(string difficultyModifier)
+        public static double TimeBetweenPatients(string difficultyModifier)
         {
-            return this.TimeBetweenPatients(Globals.StringToDouble(difficultyModifier));
+            return TimeBetweenPatients(Globals.StringToDouble(difficultyModifier));
         }
 
         /// <summary>
@@ -362,9 +344,9 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="double"/>.
         /// </returns>
-        public double AverageEntryTimePerPatient(string difficultyModifier)
+        public static double AverageEntryTimePerPatient(string difficultyModifier)
         {
-            return this.AverageEntryTimePerPatient(Globals.StringToDouble(difficultyModifier));
+            return AverageEntryTimePerPatient(Globals.StringToDouble(difficultyModifier));
         }
 
         /// <summary>
@@ -376,9 +358,9 @@ namespace HM4DesignTool.Data
         /// <returns>
         /// The <see cref="double"/>.
         /// </returns>
-        public double NumberOfPatients(string difficultyModifier)
+        public static double NumberOfPatients(string difficultyModifier)
         {
-            return this.NumberOfPatients(Globals.StringToDouble(difficultyModifier));
+            return NumberOfPatients(Globals.StringToDouble(difficultyModifier));
         }
 
         #endregion
