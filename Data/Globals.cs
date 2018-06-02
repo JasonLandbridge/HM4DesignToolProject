@@ -17,8 +17,6 @@ namespace HM4DesignTool.Data
     using HM4DesignTool.Forms;
     using HM4DesignTool.Level;
 
-    using SettingsNamespace;
-
     /// <summary>
     /// Globals class which contains global references to important instances and functions. 
     /// </summary>
@@ -147,7 +145,7 @@ namespace HM4DesignTool.Data
                 hexCode = $"#{hexCode}";
             }
 
-            if (hexCode.Length == 7 && IsHexString(hexCode))
+            if (hexCode.Length == 7) // && IsHexString(hexCode)
             {
                 return (Color)ColorConverter.ConvertFromString(hexCode);
             }

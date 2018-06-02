@@ -237,7 +237,7 @@ namespace HM4DesignTool.Forms
         /// </returns>
         private static bool LevelExist(string filename)
         {
-            return filename.Length > 0 && File.Exists(Globals.GetSettings.projectPathLevel + filename);
+            return filename.Length > 0 && File.Exists(Globals.GetSettings.ProjectPathLevel + filename);
         }
 
         /// <summary>
@@ -293,7 +293,7 @@ namespace HM4DesignTool.Forms
         {
             foreach (string fileName in this.FileNameList)
             {
-                string path = Globals.GetSettings.projectPathLevel + fileName;
+                string path = Globals.GetSettings.ProjectPathLevel + fileName;
                 if (!LevelExist(fileName))
                 {
                     File.Create(path).Dispose();

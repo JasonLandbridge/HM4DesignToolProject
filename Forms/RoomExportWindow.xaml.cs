@@ -126,5 +126,10 @@ namespace HM4DesignTool.Forms
         #endregion
 
         #endregion
+
+        private void levelListFilter_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            this.LoadLevelList();
+        }
     }
 }

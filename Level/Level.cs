@@ -1407,7 +1407,7 @@ namespace HM4DesignTool.Level
         {
             string levelScript = Globals.GetLevelOverview.AllowLevelScriptUpdate ? this.GetNewLevelScript : this.LevelScriptBuffer;
 
-            string path = Globals.GetSettings.projectPathLevel + this.FileName;
+            string path = Globals.GetSettings.ProjectPathLevel + this.FileName;
             if (File.Exists(path))
             {
                 File.WriteAllText(path, levelScript);
@@ -1420,7 +1420,7 @@ namespace HM4DesignTool.Level
         /// </summary>
         private void OpenLevelFromFile()
         {
-            string fileName = Globals.GetSettings.projectPathLevel + this.FileName;
+            string fileName = Globals.GetSettings.ProjectPathLevel + this.FileName;
             if (File.Exists(fileName))
             {
                 Process.Start(fileName);

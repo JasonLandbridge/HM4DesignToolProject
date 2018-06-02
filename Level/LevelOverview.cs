@@ -804,7 +804,7 @@ namespace HM4DesignTool.Level
                 levelName += ".lua";
             }
 
-            string levelPath = Globals.GetSettings.projectPathLevel + levelName;
+            string levelPath = Globals.GetSettings.ProjectPathLevel + levelName;
 
             if (File.Exists(levelPath))
             {
@@ -1064,7 +1064,7 @@ namespace HM4DesignTool.Level
         {
             if (this.levelList == null || this.levelList.Count() == 0 || reload)
             {
-                string projectPath = Globals.GetSettings.projectPathLevel;
+                string projectPath = Globals.GetSettings.ProjectPathLevel;
                 if (Directory.Exists(projectPath))
                 {
                     List<string> rawLevelList = new List<string>(Directory.GetFiles(projectPath));

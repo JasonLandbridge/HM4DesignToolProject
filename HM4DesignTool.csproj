@@ -132,6 +132,7 @@
       <DependentUpon>RoomExportWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Level\PatientTrait.cs" />
+    <Compile Include="Level\Station.cs" />
     <Compile Include="Level\Treatment.cs" />
     <Compile Include="Utilities\ClassTemplate.cs" />
     <Compile Include="Utilities\CommandHandler.cs" />
