@@ -48,6 +48,11 @@ namespace HM4DesignTool.Level
         private double difficultyUnlocked;
 
         /// <summary>
+        /// Part of this station
+        /// </summary>
+        private Station stationOwner;
+
+        /// <summary>
         /// The weight.
         /// </summary>
         private int weight;
@@ -434,6 +439,19 @@ namespace HM4DesignTool.Level
             }
         }
 
+        /// <summary>
+        /// Gets or sets this Treatment's Station owner
+        /// </summary>
+        public Station StationOwner
+        {
+            get => this.stationOwner;
+            set
+            {
+                this.stationOwner = value;
+                this.OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #endregion
@@ -526,6 +544,7 @@ namespace HM4DesignTool.Level
             }
 
             outputList.Add(this.DifficultyUnlocked.ToString(CultureInfo.InvariantCulture));
+            outputList.Add(this.StationOwner?.StationName);
             outputList.Add(this.HeartsValue.ToString());
             outputList.Add(this.Weight.ToString());
             outputList.Add(this.Gesture.ToString());
