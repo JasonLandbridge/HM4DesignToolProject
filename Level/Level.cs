@@ -1446,8 +1446,6 @@ namespace HM4DesignTool.Level
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        #endregion INotifyPropertyChanged Members
-
-
+        #endregion
     }
 }

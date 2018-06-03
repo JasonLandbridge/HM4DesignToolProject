@@ -16,10 +16,12 @@ namespace HM4DesignTool.Forms
     using System.Runtime.CompilerServices;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Input;
     using System.Windows.Media;
 
     using HM4DesignTool.Data;
     using HM4DesignTool.Level;
+    using HM4DesignTool.Utilities;
 
     using Ookii.Dialogs.Wpf;
 
@@ -27,12 +29,18 @@ namespace HM4DesignTool.Forms
     /// Interaction logic for SettingsWindow.xaml
     /// Based on How to Data Bind in WPF (C#/XAML) tutorial: https://www.youtube.com/watch?v=545NoF7Sab4
     /// </summary>
-    /// 
-
-
     public partial class SettingsWindow : INotifyPropertyChanged
     {
         #region Fields
+
+        #region General
+
+        /// <summary>
+        /// Only execute commands in this level when this is true.
+        /// </summary>
+        private readonly bool canExecuteCommands;
+
+        #endregion
 
         #region GeneralTabFields
 
@@ -54,10 +62,11 @@ namespace HM4DesignTool.Forms
 
         private int lastLoadedStationCategoriesIndex = -1;
 
-        private Dictionary<string, List<Treatment>>
-            stationCategoriesDict = Globals.GetSettings.GetTreatmentDictionary();
+        private readonly Dictionary<string, List<Station>> stationCategoriesDict = Globals.GetSettings.GetStationDictionary();
 
-        private ObservableCollection<Station> LoadedStationList = new ObservableCollection<Station> { };
+        private ObservableCollection<Station> LoadedStationList = new ObservableCollection<Station>();
+
+        private ObservableCollection<string> stationDifficultyModifierList = new ObservableCollection<string>();
 
         #endregion
 
@@ -70,7 +79,7 @@ namespace HM4DesignTool.Forms
 
         private Color treatmentSelectColor = Colors.White;
 
-        private ObservableCollection<Treatment> LoadedTreatmentList = new ObservableCollection<Treatment> { };
+        private ObservableCollection<Treatment> LoadedTreatmentList = new ObservableCollection<Treatment>();
 
         private ObservableCollection<string> treatmentDifficultyModifierList = new ObservableCollection<string>();
 
@@ -82,9 +91,33 @@ namespace HM4DesignTool.Forms
 
         private Dictionary<string, List<string>> balancingCategoriesDict = Globals.GetSettings.GetBalancingCategories();
 
-        private ObservableCollection<string> LoadedDifficultyModifierList = new ObservableCollection<string> { };
+        private ObservableCollection<string> LoadedDifficultyModifierList = new ObservableCollection<string>();
 
         private double difficultyModifier = 0;
+
+        #endregion
+
+        #region Commands
+
+        /// <summary>
+        /// The add Treatment row command field.
+        /// </summary>
+        private ICommand addTreatmentRowCommand;
+
+        /// <summary>
+        /// The remove Treatment row command field.
+        /// </summary>
+        private ICommand removeTreatmentRowCommand;
+
+        /// <summary>
+        /// The add Station row command field.
+        /// </summary>
+        private ICommand addStationRowCommand;
+
+        /// <summary>
+        /// The remove Station row command field.
+        /// </summary>
+        private ICommand removeStationRowCommand;
 
         #endregion
 
@@ -100,6 +133,7 @@ namespace HM4DesignTool.Forms
 
             this.SetupSettingsWindow();
             this.LoadSaveData();
+            this.canExecuteCommands = true;
         }
 
         #endregion
@@ -134,6 +168,30 @@ namespace HM4DesignTool.Forms
 
         #endregion
 
+        #region StationTabProperties
+
+        public ObservableCollection<Station> StationList
+        {
+            get => this.LoadedStationList;
+            set
+            {
+                this.LoadedStationList = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<string> StationDifficultyModifierList
+        {
+            get => this.stationDifficultyModifierList;
+            set
+            {
+                this.stationDifficultyModifierList = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
         #region TreatmentTabProperties
         public ObservableCollection<Treatment> TreatmentList
         {
@@ -151,7 +209,7 @@ namespace HM4DesignTool.Forms
             set
             {
                 this.treatmentDifficultyModifierList = value;
-                this.OnPropertyChanged("TreatmentDifficultyModifierList");
+                this.OnPropertyChanged();
             }
         }
 
@@ -161,7 +219,7 @@ namespace HM4DesignTool.Forms
             set
             {
                 this.treatmentSelectColor = value;
-                this.OnPropertyChanged("TreatmentSelectColor");
+                this.OnPropertyChanged();
                 this.UpdateTreatmentColor();
             }
         }
@@ -197,12 +255,39 @@ namespace HM4DesignTool.Forms
 
         #endregion
 
+
+        #region Commands
+
+        /// <summary>
+        /// Reload the level command.
+        /// </summary>
+        public ICommand AddTreatmentRowCommand => this.addTreatmentRowCommand ?? (this.addTreatmentRowCommand = new CommandHandler(this.AddTreatmentRow, this.canExecuteCommands));
+
+        /// <summary>
+        /// Generate the level command.
+        /// </summary>
+        public ICommand RemoveTreatmentRowCommand => this.removeTreatmentRowCommand ?? (this.removeTreatmentRowCommand = new CommandHandler(this.RemoveTreatmentRow, this.canExecuteCommands));
+
+        /// <summary>
+        /// Reload the level command.
+        /// </summary>
+        public ICommand AddStationRowCommand => this.addStationRowCommand ?? (this.addStationRowCommand = new CommandHandler(this.AddStationRow, this.canExecuteCommands));
+
+        /// <summary>
+        /// Generate the level command.
+        /// </summary>
+        public ICommand RemoveStationRowCommand => this.removeStationRowCommand ?? (this.removeStationRowCommand = new CommandHandler(this.RemoveStationRow, this.canExecuteCommands));
+
+
+        #endregion
+
+
         #endregion
 
         #region Private
         #region GeneralTabProperties
 
-        private string ProjectDirectoryPathValue
+        public string ProjectDirectoryPathValue
         {
             get => this.projectDirectoryPathValue;
             set
@@ -218,11 +303,11 @@ namespace HM4DesignTool.Forms
             }
         }
 
-        private string ProjectPathScriptValue => this.ProjectDirectoryPathValue + "\\script\\";
+        public string ProjectPathScriptValue => this.ProjectDirectoryPathValue + "\\script\\";
 
-        private string ProjectPathLevelValue => this.ProjectDirectoryPathValue + "\\script\\levels\\";
+        public string ProjectPathLevelValue => this.ProjectDirectoryPathValue + "\\script\\levels\\";
 
-        private string ProjectPathImagesValue => this.ProjectDirectoryPathValue + "\\images\\";
+        public string ProjectPathImagesValue => this.ProjectDirectoryPathValue + "\\images\\";
 
         #endregion
 
@@ -232,7 +317,7 @@ namespace HM4DesignTool.Forms
         {
             get
             {
-                Dictionary<string, CheckBox> patientTypeCheckboxDict = new Dictionary<string, CheckBox> { };
+                Dictionary<string, CheckBox> patientTypeCheckboxDict = new Dictionary<string, CheckBox>();
 
                 foreach (ItemCollection checkList in new List<ItemCollection>
                                                          {
@@ -250,6 +335,27 @@ namespace HM4DesignTool.Forms
                 return patientTypeCheckboxDict;
             }
         }
+
+
+        #endregion
+
+        #region StationTabProperties
+        private string SelectedStationRoomCategoryKey
+        {
+            get
+            {
+                if (this.stationRoomList.Items.Count > 0)
+                {
+                    return this.stationRoomList.SelectedItem.ToString();
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+        }
+
+
 
 
         #endregion
@@ -311,16 +417,14 @@ namespace HM4DesignTool.Forms
 
                 if (!this.patientTypeCategoriesDict.ContainsKey(roomName))
                 {
-                    this.patientTypeCategoriesDict.Add(roomName, new List<string> { });
+                    this.patientTypeCategoriesDict.Add(roomName, new List<string>());
                 }
             }
 
             // Sort and create all checkboxes for the different groups
             foreach (string patientType in this.patientTypeList)
             {
-                CheckBox checkBox = new CheckBox();
-                checkBox.Content = patientType;
-                checkBox.IsChecked = false;
+                CheckBox checkBox = new CheckBox { Content = patientType, IsChecked = false };
                 if (patientType.Contains("_male"))
                 {
                     this.patientTypeMaleCheckList.Items.Add(checkBox);
@@ -341,11 +445,11 @@ namespace HM4DesignTool.Forms
             // set the itemssource
             foreach (string roomName in Globals.RoomCategories)
             {
-                this.treatmentRoomList.Items.Add(roomName);
+                this.stationRoomList.Items.Add(roomName);
 
-                if (!this.treatmentCategoriesDict.ContainsKey(roomName))
+                if (!this.stationCategoriesDict.ContainsKey(roomName))
                 {
-                    this.treatmentCategoriesDict.Add(roomName, new List<Treatment> { });
+                    this.stationCategoriesDict.Add(roomName, new List<Station>());
                 }
             }
 
@@ -361,7 +465,7 @@ namespace HM4DesignTool.Forms
 
                 if (!this.treatmentCategoriesDict.ContainsKey(roomName))
                 {
-                    this.treatmentCategoriesDict.Add(roomName, new List<Treatment> { });
+                    this.treatmentCategoriesDict.Add(roomName, new List<Treatment>());
                 }
             }
 
@@ -376,7 +480,7 @@ namespace HM4DesignTool.Forms
 
                 if (!this.balancingCategoriesDict.ContainsKey(roomName))
                 {
-                    this.balancingCategoriesDict.Add(roomName, new List<string> { });
+                    this.balancingCategoriesDict.Add(roomName, new List<string>());
                 }
             }
 
@@ -386,6 +490,7 @@ namespace HM4DesignTool.Forms
         private void LoadSaveData()
         {
             // Changing the index will automatically load the save data in the UI
+            this.stationRoomList.SelectedIndex = 0;
             this.patientTypeRoomList.SelectedIndex = 0;
             this.treatmentRoomList.SelectedIndex = 0;
             this.balancingRoomList.SelectedIndex = 0;
@@ -398,6 +503,9 @@ namespace HM4DesignTool.Forms
 
             this.StorePatientTypeCategory();
             Globals.GetSettings.SetPatientTypes(this.patientTypeCategoriesDict);
+
+            this.StoreStationCategory();
+            Globals.GetSettings.SetStationCategories(this.stationCategoriesDict);
 
             this.StoreTreatmentCategory();
             Globals.GetSettings.SetTreatmentCategories(this.treatmentCategoriesDict);
@@ -412,11 +520,88 @@ namespace HM4DesignTool.Forms
         #endregion
 
         #region Private
+
+        #region StationTab
+
+        private void AddStationRow()
+        {
+            this.StationList.Add(new Station());
+        }
+
+        private void RemoveStationRow()
+        {
+            if (this.StationList.Count > 0)
+            {
+                bool anythingSelected = false;
+                for (int i = this.StationList.Count - 1; i > 0; i--)
+                {
+                    if (this.StationList[i].IsSelected)
+                    {
+                        this.StationList.RemoveAt(i);
+                        anythingSelected = true;
+                    }
+                }
+
+                if (!anythingSelected)
+                {
+                    this.StationList.Remove(this.StationList.Last());
+                }
+            }
+        }
+
+        #endregion
+
+        #region TreatmentTab
+
+        private void AddTreatmentRow()
+        {
+            this.TreatmentList.Add(new Treatment());
+        }
+
+        private void RemoveTreatmentRow()
+        {
+            if (this.TreatmentList.Count > 0)
+            {
+                bool anythingSelected = false;
+                for (int i = this.TreatmentList.Count - 1; i > 0; i--)
+                {
+                    if (this.TreatmentList[i].IsSelected)
+                    {
+                        this.TreatmentList.RemoveAt(i);
+                        anythingSelected = true;
+                    }
+                }
+
+                if (!anythingSelected)
+                {
+                    this.TreatmentList.Remove(this.TreatmentList.Last());
+                }
+            }
+        }
+
+        #endregion
+
         #region Update
+
+        private void UpdateStationDifficultyModifierList()
+        {
+            ObservableCollection<string> stationDifficultyModifierList = new ObservableCollection<string>();
+            if (this.balancingCategoriesDict.ContainsKey(this.SelectedStationRoomCategoryKey))
+            {
+                foreach (string stationDifficultyModifier in this.balancingCategoriesDict[
+                    this.SelectedStationRoomCategoryKey])
+                {
+                    stationDifficultyModifierList.Add(stationDifficultyModifier);
+                }
+
+                this.StationDifficultyModifierList = stationDifficultyModifierList;
+                this.StationDifficultyUnlockedColumn.ItemsSource = this.StationDifficultyModifierList;
+            }
+        }
 
         private void UpdateTreatmentDifficultyModifierList()
         {
-            ObservableCollection<string> treatmentDifficultyModifierList = new ObservableCollection<string> { };
+            ObservableCollection<string> treatmentDifficultyModifierList = new ObservableCollection<string>();
             if (this.balancingCategoriesDict.ContainsKey(this.SelectedTreatmentRoomCategoryKey))
             {
                 foreach (string treatmentDifficultyModifier in this.balancingCategoriesDict[
@@ -454,7 +639,7 @@ namespace HM4DesignTool.Forms
 
                 if (this.patientTypeCategoriesDict.ContainsKey(categoryKey))
                 {
-                    List<string> checkedPatientTypes = new List<string> { };
+                    List<string> checkedPatientTypes = new List<string>();
 
                     foreach (KeyValuePair<string, CheckBox> patientType in this.PatientTypeCheckboxDict)
                     {
@@ -475,12 +660,29 @@ namespace HM4DesignTool.Forms
             }
         }
 
+        private void StoreStationCategory()
+        {
+            if (this.lastLoadedStationCategoriesIndex > -1)
+            {
+                string categoryName = this.stationRoomList.Items.GetItemAt(this.lastLoadedStationCategoriesIndex).ToString();
+                if (this.stationCategoriesDict.ContainsKey(categoryName))
+                {
+                    this.stationCategoriesDict[categoryName] = this.StationList.ToList();
+                }
+            }
+            else
+            {
+                Console.WriteLine(
+                    "ERROR: settingsWindow.StoreStationCategory, lastLoadedStationCategoriesIndex is -1!");
+            }
+        }
+
+
         private void StoreTreatmentCategory()
         {
             if (this.lastLoadedTreatmentCategoriesIndex > -1)
             {
-                string categoryName = this.treatmentRoomList.Items.GetItemAt(this.lastLoadedTreatmentCategoriesIndex)
-                    .ToString();
+                string categoryName = this.treatmentRoomList.Items.GetItemAt(this.lastLoadedTreatmentCategoriesIndex).ToString();
                 if (this.treatmentCategoriesDict.ContainsKey(categoryName))
                 {
                     this.treatmentCategoriesDict[categoryName] = this.TreatmentList.ToList();
@@ -489,7 +691,7 @@ namespace HM4DesignTool.Forms
             else
             {
                 Console.WriteLine(
-                    "ERROR: settingsWindowStoreTreatmentCategory, lastLoadedTreatmentCategoriesIndex is -1!");
+                    "ERROR: settingsWindow.StoreTreatmentCategory, lastLoadedTreatmentCategoriesIndex is -1!");
             }
         }
 
@@ -497,8 +699,7 @@ namespace HM4DesignTool.Forms
         {
             if (this.lastLoadedBalancingCategoriesIndex > -1)
             {
-                string categoryName = this.balancingRoomList.Items.GetItemAt(this.lastLoadedBalancingCategoriesIndex)
-                    .ToString();
+                string categoryName = this.balancingRoomList.Items.GetItemAt(this.lastLoadedBalancingCategoriesIndex).ToString();
                 if (this.balancingCategoriesDict.ContainsKey(categoryName))
                 {
                     this.balancingCategoriesDict[categoryName] = this.DifficultyModifierList.ToList();
@@ -539,6 +740,27 @@ namespace HM4DesignTool.Forms
                 }
             }
         }
+
+        private void LoadStationCategory(string categoryKey = null)
+        {
+            if (this.stationRoomList.SelectedIndex > -1)
+            {
+                if (this.stationCategoriesDict.ContainsKey(categoryKey))
+                {
+                    List<Station> treatmentDataRows = this.stationCategoriesDict[categoryKey];
+
+                    this.LoadedStationList.Clear();
+                    foreach (Station station in treatmentDataRows)
+                    {
+                        this.LoadedStationList.Add(station);
+                    }
+
+                    this.lastLoadedStationCategoriesIndex = this.stationRoomList.SelectedIndex;
+                    this.UpdateStationDifficultyModifierList();
+                }
+            }
+        }
+
 
         private void LoadTreatmentCategory(string categoryKey = null)
         {
@@ -628,34 +850,19 @@ namespace HM4DesignTool.Forms
 
         #endregion
 
+        #region StationTabSignals
+
+        private void stationRoomList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            this.StoreStationCategory();
+            string categoryKey = this.stationRoomList.SelectedItem.ToString();
+            this.LoadStationCategory(categoryKey);
+
+        }
+
+        #endregion
+
         #region TreatmentTabSignals
-
-        private void treatmentRowButtonAdd_Click(object sender, RoutedEventArgs e)
-        {
-            this.TreatmentList.Add(new Treatment());
-        }
-
-        private void treatmentRowButtonRemove_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.TreatmentList.Count > 0)
-            {
-                bool anythingSelected = false;
-                for (int i = this.TreatmentList.Count - 1; 0 < i; i--)
-                {
-                    if (this.TreatmentList[i].IsSelected)
-                    {
-                        this.TreatmentList.RemoveAt(i);
-                        anythingSelected = true;
-                    }
-                }
-
-                if (!anythingSelected)
-                {
-                    this.TreatmentList.Remove(this.TreatmentList.Last());
-                }
-            }
-        }
-
         private void treatmentRoomList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             this.StoreTreatmentCategory();
@@ -788,5 +995,7 @@ namespace HM4DesignTool.Forms
         }
 
         #endregion
+
+
     }
 }

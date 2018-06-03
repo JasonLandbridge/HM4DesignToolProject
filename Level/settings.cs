@@ -164,6 +164,78 @@ namespace HM4DesignTool.Level
         /// <summary>
         /// Gets or sets the treatment categories dict.
         /// </summary>
+        private Dictionary<string, List<Station>> StationCategoriesDict
+        {
+            get
+            {
+                if (this.globalSettings.StationCategories != null)
+                {
+                    // Convert Dictionary<String, Dictionary<String, List<String>>> -> Dictionary<String, List<Station>>
+                    Dictionary<string, List<Station>> convertedDict = new Dictionary<string, List<Station>>();
+
+                    // Loop over each room/category
+                    foreach (KeyValuePair<string, Dictionary<string, string>> roomCategory in this.globalSettings.StationCategories)
+                    {
+                        List<Station> stationList = new List<Station>();
+
+                        // Loop over each treatment
+                        foreach (KeyValuePair<string, string> stationRow in roomCategory.Value)
+                        {
+                            Station station = new Station(stationRow.Key, stationRow.Value);
+
+                            stationList.Add(station);
+                        }
+
+                        convertedDict.Add(roomCategory.Key, stationList);
+                    }
+
+                    return convertedDict;
+                }
+                else
+                {
+                    return new Dictionary<string, List<Station>>();
+                }
+            }
+
+            set
+            {
+                // Convert Dictionary<String, List<Treatment>> -> Dictionary<String, Dictionary<String, List<String>>>
+                Dictionary<string, Dictionary<string, string>> convertedDict =
+                    new Dictionary<string, Dictionary<string, string>>();
+
+                // Loop over each room/category
+                foreach (KeyValuePair<string, List<Station>> roomCategory in value)
+                {
+                    Dictionary<string, string> treatmentList = new Dictionary<string, string>();
+
+                    // Loop over each treatment
+                    foreach (Station stationRow in roomCategory.Value)
+                    {
+                        if (stationRow?.StationName != null)
+                        {
+                            if (treatmentList.ContainsKey(stationRow.StationName))
+                            {
+                                treatmentList[stationRow.StationName] = stationRow.ToOutput();
+                            }
+                            else
+                            {
+                                treatmentList.Add(stationRow.StationName, stationRow.ToOutput());
+                            }
+                        }
+                    }
+
+                    convertedDict.Add(roomCategory.Key, treatmentList);
+                }
+
+                this.globalSettings.StationCategories = convertedDict;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Gets or sets the treatment categories dict.
+        /// </summary>
         private Dictionary<string, List<Treatment>> TreatmentCategoriesDict
         {
             get
@@ -216,11 +288,11 @@ namespace HM4DesignTool.Level
                         {
                             if (treatmentList.ContainsKey(treatmentRow.TreatmentName))
                             {
-                                treatmentList[treatmentRow.TreatmentName] = treatmentRow.ToString();
+                                treatmentList[treatmentRow.TreatmentName] = treatmentRow.ToOutput();
                             }
                             else
                             {
-                                treatmentList.Add(treatmentRow.TreatmentName, treatmentRow.ToString());
+                                treatmentList.Add(treatmentRow.TreatmentName, treatmentRow.ToOutput());
                             }
                         }
                     }
@@ -413,6 +485,40 @@ namespace HM4DesignTool.Level
 
         #region Stations
 
+        /// <summary>
+        /// Gets the treatment dictionary.
+        /// </summary>
+        /// <param name="categoryKey">
+        /// The category key.
+        /// </param>
+        /// <returns>
+        /// The <see>
+        ///         <cref>Dictionary</cref>
+        ///     </see>
+        ///     .
+        /// </returns>
+        public Dictionary<string, List<Station>> GetStationDictionary(string categoryKey = null)
+        {
+            if (categoryKey != null)
+            {
+                Dictionary<string, List<Station>> filterdStationDict = new Dictionary<string, List<Station>>();  // Room[N] -> List with Treatment Class
+
+                if (this.TreatmentCategoriesDict.ContainsKey(categoryKey))
+                {
+                    filterdStationDict.Add(categoryKey,this.StationCategoriesDict[categoryKey]);
+                }
+                else
+                {
+                    Console.WriteLine("ERROR: Settings.GetTreatmentDictionary, treatmentCategoriesDict does not contain key: " + categoryKey);
+                }
+
+                return filterdStationDict;
+            }
+            else
+            {
+                return this.StationCategoriesDict;
+            }
+        }
 
 
         #endregion
@@ -660,6 +766,11 @@ namespace HM4DesignTool.Level
         public void SetPatientTypes(Dictionary<string, List<string>> patientTypeCategoriesDict)
         {
             this.PatientTypeCategoriesDict = patientTypeCategoriesDict;
+        }
+
+        public void SetStationCategories(Dictionary<string, List<Station>> stationCategoriesDict)
+        {
+            this.StationCategoriesDict = stationCategoriesDict;
         }
 
         /// <summary>

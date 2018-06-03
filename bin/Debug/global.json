@@ -1,5 +1,5 @@
 {
-  "patientTypeCategories": {
+  "PatientTypeCategories": {
     "Room 1": [
       "doctor_male2",
       "normal_male1",
@@ -29,7 +29,34 @@
     ],
     "Room 7": []
   },
-  "treatmentCategories": {
+  "StationCategories": {
+    "Room 1": {},
+    "Room 2": {},
+    "Room 3": {},
+    "Room 4": {},
+    "Room 5": {},
+    "Room 6": {
+      "Bed": "21",
+      "TreatmentChair": "21",
+      "WaitingChair": "21",
+      "MicrowaveCold": "25",
+      "MicrowaveHot": "28.5",
+      "StandingDesk": "25",
+      "GreenOxygenCase": "26",
+      "Calamine": "27",
+      "Tourniquet": "27",
+      "Ibuprofen": "29",
+      "Gloves": "23",
+      "Tube": "23",
+      "Eyewash": "28",
+      "Disinfectant": "28.5",
+      "MouthPiece": "26",
+      "Forceps": "28",
+      "Splint": "29.5",
+      "Xray": "21"
+    }
+  },
+  "TreatmentCategories": {
     "Room 1": {},
     "Room 2": {
       "fdf536563vd": "3,54,0,False,False,#0000FF",
@@ -89,7 +116,7 @@
       "defibrilator": "21,1,15,True,False,#9AC5CB"
     }
   },
-  "balancingCategories": {
+  "BalancingCategories": {
     "Room 1": [
       "1.0",
       "3.0",

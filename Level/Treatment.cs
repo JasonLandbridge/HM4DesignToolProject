@@ -11,448 +11,652 @@ namespace HM4DesignTool.Level
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Globalization;
     using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Windows.Media;
 
     using HM4DesignTool.Data;
 
-    public class Treatment : Object, INotifyPropertyChanged
+    /// <inheritdoc />
+    /// <summary>
+    /// The Treatment object used to hold data about treatments.
+    /// </summary>
+    public class Treatment : object, INotifyPropertyChanged
     {
-        private Patient ParentPatient = null;
-        private Level ParentLevel = null;
-        private String _treatmentName = String.Empty;
-        private Double _difficultyUnlocked = 0;
-        private int _heartsValue = 0;
-        private int _weight = 0;
-        private int _customizedWeight = 0;
-        private bool _gesture = false;
-        private bool _alwaysLast = false;
-        private Color _treatmentColor = Colors.White;
-        private double _weightPercentage = 0;
+        #region Fields
 
-        private bool _isVisible = false;
-        private bool _isSelected = false;
+        /// <summary>
+        /// The parent patient of this treatment.
+        /// </summary>
+        private Patient parentPatient;
 
-        public bool IsSelected
-        {
-            get
-            {
-                return _isSelected;
-            }
-            set
-            {
-                _isSelected = value;
-                OnPropertyChanged("IsSelected");
-            }
-        }
+        /// <summary>
+        /// The parent level of this treatment.
+        /// </summary>
+        private Level parentLevel;
+        #region TreatmentDataFields
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// The treatment name.
+        /// </summary>
+        private string treatmentName = string.Empty;
 
-        public String TreatmentName
-        {
-            get
-            {
-                return _treatmentName;
-            }
-            set
-            {
-                if (_treatmentName != value)
-                {
-                    _treatmentName = value;
-                    OnPropertyChanged("TreatmentName");
-                    OnPropertyChanged("TreatmentColorBrush");
-                    ChangeTreatment();
-                    if (ParentPatient != null && ParentPatient.ParentLevel != null)
-                    {
-                        ParentPatient.ParentLevel.UpdateLevelOutput();
-                    }
-                }
-            }
-        }
-        public Double DifficultyUnlocked
-        {
-            get
-            {
-                return _difficultyUnlocked;
-            }
-            set
-            {
-                _difficultyUnlocked = value;
-                OnPropertyChanged("DifficultyUnlocked");
+        /// <summary>
+        /// The difficulty unlocked.
+        /// </summary>
+        private double difficultyUnlocked;
 
-            }
-        }
-        public String DifficultyUnlockedString
-        {
-            get
-            {
-                String removeMe = _difficultyUnlocked.ToString("N1");
-                return removeMe;
-            }
-            set
-            {
-                DifficultyUnlocked = Convert.ToDouble(value);
-                OnPropertyChanged("DifficultyUnlockedString");
-            }
-        }
-        public int HeartsValue
-        {
-            get
-            {
-                return _heartsValue;
-            }
-            set
-            {
-                _heartsValue = value;
-                OnPropertyChanged("HeartsValue");
+        /// <summary>
+        /// The weight.
+        /// </summary>
+        private int weight;
 
-            }
-        }
-        public int Weight
-        {
-            get
-            {
-                return _weight;
-            }
-            set
-            {
-                _weight = value;
-                OnPropertyChanged("Weight");
+        /// <summary>
+        /// The customized weight.
+        /// </summary>
+        private int customizedWeight;
 
-            }
-        }
-        public int CustomizedWeight
-        {
-            get
-            {
-                return _customizedWeight;
-            }
-            set
-            {
-                _customizedWeight = value;
-                OnPropertyChanged("CustomizedWeight");
-                if (ParentPatient != null && ParentPatient.ParentLevel != null)
-                {
-                    ParentPatient.ParentLevel.UpdateTreatmentWeightPercentage();
-                }
-                else if (ParentLevel != null)
-                {
-                    ParentLevel.UpdateTreatmentWeightPercentage();
-                }
-            }
-        }
+        /// <summary>
+        /// The hearts value.
+        /// </summary>
+        private int heartsValue;
 
+        /// <summary>
+        /// The always last.
+        /// </summary>
+        private bool alwaysLast;
 
-        public bool Gesture
-        {
-            get
-            {
-                return _gesture;
-            }
-            set
-            {
-                _gesture = value;
-                OnPropertyChanged("Gesture");
-            }
-        }
-        public bool AlwaysLast
-        {
-            get
-            {
-                return _alwaysLast;
-            }
-            set
-            {
-                _alwaysLast = value;
-                OnPropertyChanged("AlwaysLast");
+        /// <summary>
+        /// The gesture.
+        /// </summary>
+        private bool gesture;
 
-            }
-        }
-        public Color TreatmentColor
-        {
-            get
-            {
-                return _treatmentColor;
-            }
-            set
-            {
-                _treatmentColor = value;
-                OnPropertyChanged("TreatmentColor");
-                OnPropertyChanged("TreatmentColorBrush");
-                OnPropertyChanged("TreatmentFontColorBrush");
-                OnPropertyChanged("TreatmentColorString");
+        /// <summary>
+        /// The treatment color.
+        /// </summary>
+        private Color treatmentColor = Colors.White;
+        #endregion
 
-            }
-        }
-        public SolidColorBrush TreatmentColorBrush
-        {
-            get
-            {
-                return new SolidColorBrush(TreatmentColor);
-            }
-        }
+        /// <summary>
+        /// The weight percentage.
+        /// </summary>
+        private double weightPercentage;
 
-        public SolidColorBrush TreatmentFontColorBrush
-        {
-            get
-            {
-                int brightness = (int)Math.Sqrt(
-                    this.TreatmentColor.R * TreatmentColor.R * .299 +
-                    TreatmentColor.G * TreatmentColor.G * .587 +
-                    TreatmentColor.B * TreatmentColor.B * .114);
+        /// <summary>
+        /// If this treatment is currently visible in the Patient Overview
+        /// </summary>
+        private bool isVisible;
 
-                if (brightness > 130)
-                {
-                    return new SolidColorBrush(Colors.Black);
-                }
-                else
-                {
-                    return new SolidColorBrush(Colors.White);
-                }
-            }
-        }
+        /// <summary>
+        /// If this treatment is currently selected in the Patient Overview or Settings Window
+        /// </summary>
+        private bool isSelected;
 
-        public String TreatmentColorString
-        {
-            get
-            {
-                return Globals.ColorToHex(TreatmentColor);
-            }
-            set
-            {
-                TreatmentColor = Globals.HexToColor(value);
-            }
-        }
+        #endregion
 
+        #region Constructors
 
-        public double WeightPercentage
-        {
-            get
-            {
-                return _weightPercentage;
-            }
-            set
-            {
-                _weightPercentage = value;
-                OnPropertyChanged("WeightPercentage");
-                OnPropertyChanged("WeightPercentageString");
-            }
-        }
-
-        public bool IsVisible
-        {
-            get
-            {
-                return _isVisible;
-            }
-            set
-            {
-                _isVisible = value;
-                OnPropertyChanged("IsVisible");
-            }
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Treatment"/> class.
+        /// </summary>
         public Treatment()
         {
-            this.TreatmentName = String.Empty;
+            this.TreatmentName = string.Empty;
         }
 
-        public Treatment(String treatmentName, Patient ParentPatient = null)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Treatment"/> class.
+        /// </summary>
+        /// <param name="treatmentName">
+        /// The treatment name.
+        /// </param>
+        /// <param name="parentPatient">
+        /// The parent patient.
+        /// </param>
+        public Treatment(string treatmentName, Patient parentPatient = null)
         {
-            TreatmentName = treatmentName;
-            if (ParentPatient != null)
+            this.TreatmentName = treatmentName;
+            if (parentPatient != null)
             {
-                this.ParentPatient = ParentPatient;
+                this.parentPatient = parentPatient;
             }
         }
 
-        private void ChangeTreatment()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Treatment"/> class.
+        /// </summary>
+        /// <param name="treatmentName">
+        /// The treatment name.
+        /// </param>
+        /// <param name="treatmentDataString">
+        /// The treatment data string.
+        /// </param>
+        public Treatment(string treatmentName, string treatmentDataString)
         {
-            if (TreatmentName != String.Empty && ParentPatient != null && ParentPatient.ParentLevel != null)
-            {
-                int RoomIndex = ParentPatient.RoomIndex;
-                Treatment newTreatment = Globals.GetSettings.GetTreatment(TreatmentName, RoomIndex);
+            List<string> treatmentData = treatmentDataString.Split(',').ToList();
+            this.TreatmentName = treatmentName;
 
-                DifficultyUnlocked = newTreatment.
-                HeartsValue = newTreatment.HeartsValue;
-                Weight = newTreatment.Weight;
-                CustomizedWeight = Weight; //Default to the base weight from settings
-                Gesture = newTreatment.Gesture;
-                AlwaysLast = newTreatment.AlwaysLast;
-                TreatmentColor = newTreatment.TreatmentColor;
-
-            }
-            else
-            {
-                DifficultyUnlocked = 0;
-                Weight = 0;
-                Gesture = false;
-                AlwaysLast = false;
-                TreatmentColor = Colors.White;
-
-            }
-        }
-        #region Overloads
-
-        public Treatment(String treatmentName, String treatmentDataString)
-        {
-            List<String> treatmentData = treatmentDataString.Split(',').ToList<String>();
-            TreatmentName = treatmentName;
-
-            //Used to ensure only the avaliable options are set. 
+            // Used to ensure only the avaliable options are set. 
             for (int index = 0; index < treatmentData.Count; index++)
             {
                 switch (index)
                 {
                     case 0:
                         {
-                            this.DifficultyUnlocked = Convert.ToDouble(treatmentData[0]);
-                            break;
+                            if (treatmentData[0] != string.Empty)
+                            {
+                                this.DifficultyUnlocked = Convert.ToDouble(treatmentData[0]);
+                            }
 
+                            break;
                         }
+
                     case 1:
                         {
-                            this.HeartsValue = Convert.ToInt32(treatmentData[1]);
-                            break;
+                            if (treatmentData[1] != string.Empty)
+                            {
+                                this.HeartsValue = Convert.ToInt32(treatmentData[1]);
+                            }
 
+                            break;
                         }
+
                     case 2:
                         {
-                            this.Weight = Convert.ToInt32(treatmentData[2]);
-                            this.CustomizedWeight = this.Weight;
+                            if (treatmentData[2] != string.Empty)
+                            {
+                                this.Weight = Convert.ToInt32(treatmentData[2]);
+                                this.CustomizedWeight = this.Weight;
+                            }
                             break;
-
                         }
+
                     case 3:
                         {
                             this.Gesture = Convert.ToBoolean(treatmentData[3]);
                             break;
-
                         }
+
                     case 4:
                         {
                             this.AlwaysLast = Convert.ToBoolean(treatmentData[4]);
                             break;
-
                         }
+
                     case 5:
                         {
-                            this.TreatmentColorString = treatmentData[5].ToString();
+                            this.TreatmentColorString = treatmentData[5];
                             break;
                         }
-
-                    default:
-                        break;
                 }
-
             }
-
         }
+
         #endregion
 
+        #region Events
 
-        public List<String> ToList(bool includeTreatmentName = false)
+        /// <inheritdoc />
+        /// <summary>
+        /// This is used to notify the bound XAML Control to update its value.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        #endregion Events
+
+        #region Properties
+
+        #region Public
+
+        /// <summary>
+        /// Gets the weight percentage in string format.
+        /// </summary>
+        public string WeightPercentageString => this.WeightPercentage.ToString("N1") + "%";
+
+        /// <summary>
+        /// Check if this Treatment is empty.
+        /// </summary>
+        public bool IsEmpty => string.IsNullOrEmpty(this.TreatmentName) || this.TreatmentName == string.Empty;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this Treatment is selected.
+        /// </summary>
+        public bool IsSelected
         {
-            List<String> outputList = new List<String> { };
-            if (includeTreatmentName)
+            get => this.isSelected;
+            set
             {
-                outputList.Add(TreatmentName);
+                this.isSelected = value;
+                this.OnPropertyChanged();
             }
-            outputList.Add(DifficultyUnlocked.ToString());
-            outputList.Add(HeartsValue.ToString());
-            outputList.Add(Weight.ToString());
-            outputList.Add(Gesture.ToString());
-            outputList.Add(AlwaysLast.ToString());
-            outputList.Add(TreatmentColorString);
-            return outputList;
         }
 
-        public Dictionary<String, List<String>> ToDictionary()
+        /// <summary>
+        /// Gets or sets the treatment name.
+        /// </summary>
+        public string TreatmentName
         {
-            Dictionary<String, List<String>> outputDict = new Dictionary<String, List<String>> { };
-            outputDict.Add(TreatmentName, this.ToList());
-            return outputDict;
+            get => this.treatmentName;
+            set
+            {
+                if (this.treatmentName != value)
+                {
+                    this.treatmentName = value;
+                    this.OnPropertyChanged();
+                    this.OnPropertyChanged("TreatmentColorBrush");
+                    this.ChangeTreatment();
+                    if (this.parentPatient != null)
+                    {
+                        this.parentPatient.ParentLevel?.UpdateLevelOutput();
+                    }
+                }
+            }
         }
 
-        public override string ToString()
+        /// <summary>
+        /// Gets or sets the difficulty unlocked.
+        /// </summary>
+        public double DifficultyUnlocked
         {
-            return ToString(true);
+            get => this.difficultyUnlocked;
+
+            set
+            {
+                this.difficultyUnlocked = value;
+                this.OnPropertyChanged();
+            }
         }
 
-        public String WeightPercentageString
+        /// <summary>
+        /// Gets or sets the difficulty unlocked string.
+        /// </summary>
+        public string DifficultyUnlockedString
+        {
+            get => this.difficultyUnlocked.ToString("N1");
+
+            set
+            {
+                this.DifficultyUnlocked = Convert.ToDouble(value);
+                this.OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the hearts value.
+        /// </summary>
+        public int HeartsValue
+        {
+            get => this.heartsValue;
+
+            set
+            {
+                this.heartsValue = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the weight.
+        /// </summary>
+        public int Weight
+        {
+            get => this.weight;
+
+            set
+            {
+                this.weight = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the customized weight.
+        /// </summary>
+        public int CustomizedWeight
+        {
+            get => this.customizedWeight;
+
+            set
+            {
+                this.customizedWeight = value;
+                this.OnPropertyChanged();
+                if (this.parentPatient != null && this.parentPatient.ParentLevel != null)
+                {
+                    this.parentPatient.ParentLevel.UpdateTreatmentWeightPercentage();
+                }
+                else
+                {
+                    this.parentLevel?.UpdateTreatmentWeightPercentage();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this Treatment is a gesture.
+        /// </summary>
+        public bool Gesture
+        {
+            get => this.gesture;
+
+            set
+            {
+                this.gesture = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this treatment should always be last in a generated treatment list for patients.
+        /// </summary>
+        public bool AlwaysLast
+        {
+            get => this.alwaysLast;
+
+            set
+            {
+                this.alwaysLast = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the treatment color.
+        /// </summary>
+        public Color TreatmentColor
+        {
+            get => this.treatmentColor;
+
+            set
+            {
+                this.treatmentColor = value;
+                this.OnPropertyChanged();
+                this.OnPropertyChanged("TreatmentColorBrush");
+                this.OnPropertyChanged("TreatmentFontColorBrush");
+                this.OnPropertyChanged("TreatmentColorString");
+            }
+        }
+
+        /// <summary>
+        /// Gets the treatment color brush.
+        /// </summary>
+        public SolidColorBrush TreatmentColorBrush => new SolidColorBrush(this.TreatmentColor);
+
+        /// <summary>
+        /// Gets the treatment font color brush.
+        /// </summary>
+        public SolidColorBrush TreatmentFontColorBrush
         {
             get
             {
-                return WeightPercentage.ToString("N1") + "%";
+                int brightness = (int)Math.Sqrt(
+                    ((this.TreatmentColor.R * this.TreatmentColor.R) * .299) + 
+                    ((this.TreatmentColor.G * this.TreatmentColor.G) * .587) + 
+                    ((this.TreatmentColor.B * this.TreatmentColor.B) * .114));
+                return brightness > 130 ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.White);
             }
         }
 
-        public void UpdatePercentage()
+        /// <summary>
+        /// Gets or sets the treatment color from and to string.
+        /// </summary>
+        public string TreatmentColorString
         {
-            if (ParentPatient != null && ParentPatient.ParentLevel != null)
+            get => Globals.ColorToHex(this.TreatmentColor);
+            set => this.TreatmentColor = Globals.HexToColor(value);
+        }
+
+        /// <summary>
+        /// Gets or sets the weight percentage.
+        /// </summary>
+        public double WeightPercentage
+        {
+            get => this.weightPercentage;
+
+            set
             {
-                WeightPercentage = ParentPatient.ParentLevel.GetTreatmentWeightPercentage(CustomizedWeight);
+                this.weightPercentage = value;
+                this.OnPropertyChanged();
+                this.OnPropertyChanged("WeightPercentageString");
             }
-            else if (ParentLevel != null)
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this treatment is currently visible in the Patient Overview.
+        /// </summary>
+        public bool IsVisible
+        {
+            get => this.isVisible;
+            set
             {
-                WeightPercentage = ParentLevel.GetTreatmentWeightPercentage(CustomizedWeight);
+                this.isVisible = value;
+                this.OnPropertyChanged();
             }
-
         }
 
-        public String ToString(bool includeTreatmentName = false)
-        {
-            return String.Join(",", ToList(includeTreatmentName));
-        }
+        #endregion
 
-        public bool IsEmpty => TreatmentName == null || TreatmentName == "" || TreatmentName == String.Empty;
+        #endregion
 
-        public void SetPatientParent(Patient ParentPatient)
-        {
-            this.ParentPatient = ParentPatient;
-        }
+        #region Methods
 
-        public void SetLevelParent(Level ParentLevel)
-        {
-            this.ParentLevel = ParentLevel;
-        }
-
+        #region Public
 
         #region Operators
-        public override bool Equals(object obj)
-        {
-            var treatment = obj as Treatment;
-            return treatment != null &&
-                   TreatmentName == treatment.TreatmentName;
-        }
 
-        public override int GetHashCode()
-        {
-            return 1629960752 + EqualityComparer<string>.Default.GetHashCode(TreatmentName);
-        }
-
+        /// <summary>
+        /// The == operator.
+        /// </summary>
+        /// <param name="treatment1">
+        /// The treatment 1.
+        /// </param>
+        /// <param name="treatment2">
+        /// The treatment 2.
+        /// </param>
+        /// <returns>
+        /// Return TRUE if both Treatments are EQUAL.
+        /// </returns>
         public static bool operator ==(Treatment treatment1, Treatment treatment2)
         {
             return EqualityComparer<Treatment>.Default.Equals(treatment1, treatment2);
         }
 
+        /// <summary>
+        /// The != operator.
+        /// </summary>
+        /// <param name="treatment1">
+        /// The treatment 1.
+        /// </param>
+        /// <param name="treatment2">
+        /// The treatment 2.
+        /// </param>
+        /// <returns>
+        /// Return TRUE if both Treatments are NOT EQUAL.
+        /// </returns>
         public static bool operator !=(Treatment treatment1, Treatment treatment2)
         {
             return !(treatment1 == treatment2);
         }
+
+        /// <summary>
+        /// The equals.
+        /// </summary>
+        /// <param name="obj">
+        /// The obj.
+        /// </param>
+        /// <returns>
+        /// Return TRUE if both Treatments are EQUAL.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            var treatment = obj as Treatment;
+            return treatment != null && this.TreatmentName == treatment.TreatmentName;
+        }
+
+        /// <summary>
+        /// Gets the hash code.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="int"/>.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            return 1629960752 + EqualityComparer<string>.Default.GetHashCode(this.TreatmentName);
+        }
         #endregion
 
-        #region Events
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        /// <summary>
+        /// Convert all Treatment Data to string format to be stored.
+        /// </summary>
+        /// <param name="includeTreatmentName">
+        /// The include treatment name.
+        /// </param>
+        /// <returns>
+        /// The <see>
+        ///         <cref>List</cref>
+        ///     </see>
+        ///     .
+        /// </returns>
+        public List<string> ToList(bool includeTreatmentName = false)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            List<string> outputList = new List<string>();
+            if (includeTreatmentName)
+            {
+                outputList.Add(this.TreatmentName);
+            }
+
+            outputList.Add(this.DifficultyUnlocked.ToString(CultureInfo.InvariantCulture));
+            outputList.Add(this.HeartsValue.ToString());
+            outputList.Add(this.Weight.ToString());
+            outputList.Add(this.Gesture.ToString());
+            outputList.Add(this.AlwaysLast.ToString());
+            outputList.Add(this.TreatmentColorString);
+            return outputList;
+        }
+
+        /// <summary>
+        /// Return the Treatment as a Dictionary entry
+        /// </summary>
+        /// <returns>
+        /// The <see>
+        ///         <cref>Dictionary</cref>
+        ///     </see>
+        ///     .
+        /// </returns>
+        public Dictionary<string, List<string>> ToDictionary()
+        {
+            return new Dictionary<string, List<string>> { { this.TreatmentName, this.ToList() } };
+        }
+
+        /// <summary>
+        /// The to string.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        public override string ToString()
+        {
+            return this.ToOutput(true);
+        }
+
+        /// <summary>
+        /// Updates the Treatment Weight percentage relative to the other available treatments. 
+        /// </summary>
+        public void UpdatePercentage()
+        {
+            if (this.parentPatient != null && this.parentPatient.ParentLevel != null)
+            {
+                this.WeightPercentage = this.parentPatient.ParentLevel.GetTreatmentWeightPercentage(this.CustomizedWeight);
+            }
+            else if (this.parentLevel != null)
+            {
+                this.WeightPercentage = this.parentLevel.GetTreatmentWeightPercentage(this.CustomizedWeight);
+            }
         }
 
 
+        /// <summary>
+        /// Convert this treament to a String
+        /// </summary>
+        /// <param name="includeTreatmentName">
+        /// Include the treatment name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        public string ToOutput(bool includeTreatmentName = false)
+        {
+            return string.Join(",", this.ToList(includeTreatmentName));
+        }
+
+
+        /// <summary>
+        /// Set the Patient parent.
+        /// </summary>
+        /// <param name="patientParent">
+        /// The parent patient.
+        /// </param>
+        public void SetPatientParent(Patient patientParent)
+        {
+            this.parentPatient = patientParent;
+        }
+
+        /// <summary>
+        /// Set the level parent.
+        /// </summary>
+        /// <param name="levelParent">
+        /// The parent level.
+        /// </param>
+        public void SetLevelParent(Level levelParent)
+        {
+            this.parentLevel = levelParent;
+        }
+        #endregion
+
+        #region Private
+
+        /// <summary>
+        /// Change this Treatment by retrieving the data from the new TreatmentName.
+        /// </summary>
+        private void ChangeTreatment()
+        {
+            if (this.TreatmentName != string.Empty && this.parentPatient != null && this.parentPatient.ParentLevel != null)
+            {
+                int roomIndex = this.parentPatient.RoomIndex;
+                Treatment newTreatment = Globals.GetSettings.GetTreatment(this.TreatmentName, roomIndex);
+                this.DifficultyUnlocked = newTreatment.HeartsValue = newTreatment.HeartsValue;
+                this.Weight = newTreatment.Weight;
+                this.CustomizedWeight = this.Weight; // Default to the base weight from settings
+                this.Gesture = newTreatment.Gesture;
+                this.AlwaysLast = newTreatment.AlwaysLast;
+                this.TreatmentColor = newTreatment.TreatmentColor;
+            }
+            else
+            {
+                this.DifficultyUnlocked = 0;
+                this.Weight = 0;
+                this.Gesture = false;
+                this.AlwaysLast = false;
+                this.TreatmentColor = Colors.White;
+            }
+        }
 
         #endregion
 
-    }
+        #endregion
+        #region INotifyPropertyChanged Members
 
+        /// <summary>
+        /// This is used to notify the bound XAML Control to update its value.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The property Name.
+        /// </param>
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
+    }
 }

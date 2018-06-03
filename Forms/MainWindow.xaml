@@ -17,7 +17,7 @@
 			<ComboBox Margin="5,0" Style="{DynamicResource ComboBoxTest2}" ItemsSource="{Binding Mode=OneWay, ElementName=patientRow, Path=DataContext.TreatmentOptions}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding IsVisible, Mode=TwoWay, Converter={StaticResource VisibilityOfBool}, UpdateSourceTrigger=PropertyChanged}" Width="125">
 				<ComboBox.Resources>
 					<Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
-
+						<Setter Property="Foreground" Value="{Binding TreatmentFontColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 						<Setter Property="Template">
 							<Setter.Value>
 								<ControlTemplate TargetType="ComboBox">
@@ -31,7 +31,7 @@
 															<ColumnDefinition Width="*" />
 														</Grid.ColumnDefinitions>
 														<Border x:Name="Border"  Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1" />
-														<Border Grid.Column="0" Margin="1"  Background="{Binding TreatmentColorBrush, Mode=OneWay, UpdateSourceTrigger=Default, FallbackValue=White}"  BorderBrush="Black" />
+														<Border Grid.Column="0" Margin="1" Background="{Binding TreatmentColorBrush, Mode=OneWay, UpdateSourceTrigger=Default, FallbackValue=White}"  BorderBrush="Black" />
 														<Path x:Name="Arrow" Grid.Column="1"  Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
 													</Grid>
 													<ControlTemplate.Triggers>
@@ -43,7 +43,8 @@
 											</ToggleButton.Template>
 										</ToggleButton>
 										<ContentPresenter Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3"  />
-										<TextBox x:Name="PART_EditableTextBox" Foreground="{Binding TreatmentFontColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+										<TextBox x:Name="PART_EditableTextBox" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+
 										<Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
 											<Grid  Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
 												<Border x:Name="DropDownBorder" Background="White" />
@@ -56,10 +57,34 @@
 								</ControlTemplate>
 							</Setter.Value>
 						</Setter>
-						<Style.Triggers>
-						</Style.Triggers>
 					</Style>
+					<Style TargetType="{x:Type ComboBoxItem}">
+						<Setter Property="Foreground" Value="{Binding TreatmentFontColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate TargetType="ComboBoxItem">
+									<Border
+										Name="Border"
+										Padding="5"
+										Margin="2"
+										BorderThickness="2"
+										CornerRadius="0"
+										BorderBrush="Transparent" >
 
+										<TextBlock Background="{Binding TreatmentColorBrush, Mode=OneWay, UpdateSourceTrigger=Default, FallbackValue=White}" TextAlignment="Center">
+											<ContentPresenter />
+										</TextBlock>
+									</Border>
+									<ControlTemplate.Triggers>
+										<Trigger Property="IsHighlighted" Value="true">
+											<Setter TargetName="Border" Property="BorderBrush" Value="Black"/>
+											<Setter TargetName="Border" Property="Background" Value="{Binding TreatmentColorBrush, Mode=OneWay, UpdateSourceTrigger=Default, FallbackValue=White}"/>
+										</Trigger>
+									</ControlTemplate.Triggers>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
 				</ComboBox.Resources>
 
 			</ComboBox>
