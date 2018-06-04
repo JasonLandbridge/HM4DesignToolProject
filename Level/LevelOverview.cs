@@ -1328,16 +1328,20 @@ namespace HM4DesignTool.Level
 
                     foreach (string levelName in category.Value)
                     {
-                        // Load all levels that are found and display there status in the header.
                         string levelHeader = levelName;
-                        if (!this.LevelExist(levelName))
+
+                        //TODO Create method for loading in all levels correctly
+                        if (IsLevelNameValid(levelName))
                         {
-                            this.AddLevelByName(levelName);
+                            // Load all levels that are found and display there status in the header.
+                            if (!this.LevelExist(levelName))
+                            {
+                                this.AddLevelByName(levelName);
+                            }
+
+                            levelHeader = this.GetLevel(levelName).LevelNameWithStatus;
+
                         }
-
-                        levelHeader = this.GetLevel(levelName).LevelNameWithStatus;
-
-
                         TreeViewItem levelItem = new TreeViewItem { Header = levelHeader };
                         levelItem.Selected += this.LevelListItemSelected;
                         categoryItem.Items.Add(levelItem);
@@ -1347,6 +1351,23 @@ namespace HM4DesignTool.Level
                 }
             }
         }
+
+        private bool IsLevelNameValid(string levelName)
+        {
+            levelName = CleanLevelName(levelName);
+
+            if (levelName.StartsWith("level") && Char.IsDigit(levelName[5]))
+            {
+                return true;
+            }
+            if (levelName.StartsWith("r") && Char.IsDigit(levelName[1]) && levelName[2] == '_')
+            {
+                return true;
+
+            }
+            return false;
+        }
+
         #endregion
 
         #region PatientSimulator

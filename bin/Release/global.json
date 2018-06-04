@@ -220,6 +220,9 @@
     },
     "r6_b02_bonus_02": {
       "applyAdrenaline": 27
+    },
+    "r6_b03_bonus_03": {
+      "takeBlood": 80
     }
   }
 }

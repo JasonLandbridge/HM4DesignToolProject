@@ -1,11 +1,6 @@
 {
   "PatientTypeCategories": {
-    "Room 1": [
-      "doctor_male2",
-      "normal_male1",
-      "teen1_male_casual",
-      "teen2_male_casual"
-    ],
+    "Room 1": [],
     "Room 2": [],
     "Room 3": [
       "doctor_male1",

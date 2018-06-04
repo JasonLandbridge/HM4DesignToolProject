@@ -371,23 +371,37 @@ namespace HM4DesignTool.Level
                         // Assuming the room index is in r2_b04... naming convention]
                         if (this.LevelName.StartsWith("level"))
                         {
-                            int levelIndex = Convert.ToInt16(Globals.FilterToNumerical(this.LevelName.Replace("level", string.Empty)));
-                            while (roomIndex < 100)
+                            string filterdString = Globals.FilterToNumerical(this.LevelName.Replace("level", string.Empty));
+                            int unused;
+                            bool successfullyParsed = int.TryParse(filterdString, out unused);
+                            if (successfullyParsed)
                             {
-                                int minIndex = ((roomIndex - 1) * 10) + 1;
-                                int maxIndex = (roomIndex * 10) + 1;
-
-                                if (Enumerable.Range(minIndex, maxIndex).Contains(levelIndex))
+                                int levelIndex = Convert.ToInt16(filterdString);
+                                while (roomIndex < 100)
                                 {
-                                    break;
-                                }
+                                    int minIndex = ((roomIndex - 1) * 10) + 1;
+                                    int maxIndex = (roomIndex * 10) + 1;
 
-                                roomIndex++;
+                                    if (Enumerable.Range(minIndex, maxIndex).Contains(levelIndex))
+                                    {
+                                        break;
+                                    }
+
+                                    roomIndex++;
+                                }
                             }
                         }
                         else if (this.LevelName.StartsWith("r"))
                         {
-                            roomIndex = Convert.ToInt16(Globals.FilterToNumerical(this.LevelName.Substring(1, 1)));
+
+
+                            string filterdString = Globals.FilterToNumerical(this.LevelName.Substring(1, 1));
+                            int unused;
+                            bool successfullyParsed = int.TryParse(filterdString, out unused);
+                            if (successfullyParsed)
+                            {
+                                roomIndex = Convert.ToInt16(filterdString);
+                            }
                         }
                         else
                         {
