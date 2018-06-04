@@ -371,7 +371,7 @@ namespace HM4DesignTool.Level
                         // Assuming the room index is in r2_b04... naming convention]
                         if (this.LevelName.StartsWith("level"))
                         {
-                            int levelIndex = Convert.ToInt16(this.LevelName.Replace("level", string.Empty));
+                            int levelIndex = Convert.ToInt16(Globals.FilterToNumerical(this.LevelName.Replace("level", string.Empty)));
                             while (roomIndex < 100)
                             {
                                 int minIndex = ((roomIndex - 1) * 10) + 1;

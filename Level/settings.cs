@@ -503,13 +503,13 @@ namespace HM4DesignTool.Level
             {
                 Dictionary<string, List<Station>> filterdStationDict = new Dictionary<string, List<Station>>();  // Room[N] -> List with Treatment Class
 
-                if (this.TreatmentCategoriesDict.ContainsKey(categoryKey))
+                if (this.StationCategoriesDict.ContainsKey(categoryKey))
                 {
-                    filterdStationDict.Add(categoryKey,this.StationCategoriesDict[categoryKey]);
+                    filterdStationDict.Add(categoryKey, this.StationCategoriesDict[categoryKey]);
                 }
                 else
                 {
-                    Console.WriteLine("ERROR: Settings.GetTreatmentDictionary, treatmentCategoriesDict does not contain key: " + categoryKey);
+                    Console.WriteLine("ERROR: Settings.GetStationDictionary, StationCategoriesDict does not contain key: " + categoryKey);
                 }
 
                 return filterdStationDict;
@@ -520,6 +520,91 @@ namespace HM4DesignTool.Level
             }
         }
 
+        /// <summary>
+        /// Get the treatment list
+        /// </summary>
+        /// <param name="categoryKey">
+        /// The category key.
+        /// </param>
+        /// <param name="difficultyModifier">
+        /// The difficulty modifier.
+        /// </param>
+        /// <returns>
+        /// The <see>
+        ///         <cref>List</cref>
+        ///     </see>
+        ///     .
+        /// </returns>
+        public List<Station> GetStationList(string categoryKey, double difficultyModifier = 0)
+        {
+            if (!string.IsNullOrEmpty(categoryKey))
+            {
+                Dictionary<string, List<Station>> stationDictionary = this.GetStationDictionary(categoryKey);
+                if (stationDictionary.ContainsKey(categoryKey))
+                {
+                    switch (difficultyModifier)
+                    {
+                        case 0:
+                            return stationDictionary[categoryKey];
+                        default:
+                            {
+                                // Filter List by the difficulty modifier
+                                return stationDictionary[categoryKey].FindAll(t => t.DifficultyUnlocked <= difficultyModifier);
+                            }
+                    }
+                }
+            }
+
+            return new List<Station>();
+        }
+        /// <summary>
+        /// The get treatment.
+        /// </summary>
+        /// <param name="stationName">
+        /// The treatment name.
+        /// </param>
+        /// <param name="roomIndex">
+        /// The room index.
+        /// </param>
+        /// <returns>
+        /// The <see>
+        ///         <cref>Treatment</cref>
+        ///     </see>
+        ///     .
+        /// </returns>
+        public Station GetStation(string stationName, int roomIndex = -1)
+        {
+            if (roomIndex > -1 && Globals.GetCategoryKey(roomIndex) != string.Empty)
+            {
+                List<Station> treatmentList = this.GetStationList(Globals.GetCategoryKey(roomIndex));
+                if (treatmentList != null && treatmentList.Count > 0)
+                {
+                    foreach (Station s in treatmentList)
+                    {
+                        if (s.StationName == stationName)
+                        {
+                            return s;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Longer method of retrieving the treatment without roomIndex
+                foreach (KeyValuePair<string, List<Station>> category in this.GetStationDictionary())
+                {
+                    foreach (Station station in category.Value)
+                    {
+                        if (station.StationName == stationName)
+                        {
+                            return station;
+                        }
+                    }
+                }
+            }
+
+            return new Station("Unknown");
+        }
 
         #endregion
 

@@ -257,5 +257,17 @@ namespace HM4DesignTool.Data
         #endregion
 
         #endregion
+
+        public static bool IsBooleanValue(string value)
+        {
+            if (value != string.Empty)
+            {
+                return value == "false" || value == "true" || value == "False" || value == "True";
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

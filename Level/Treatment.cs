@@ -158,40 +158,56 @@ namespace HM4DesignTool.Level
                         }
 
                     case 1:
+                        if (treatmentData[1] != string.Empty)
                         {
-                            if (treatmentData[1] != string.Empty)
-                            {
-                                this.HeartsValue = Convert.ToInt32(treatmentData[1]);
-                            }
-
-                            break;
+                            this.StationOwner = new Station(treatmentData[1]);
                         }
+                        break;
 
                     case 2:
                         {
                             if (treatmentData[2] != string.Empty)
                             {
-                                this.Weight = Convert.ToInt32(treatmentData[2]);
-                                this.CustomizedWeight = this.Weight;
+                                this.HeartsValue = Convert.ToInt32(Globals.FilterToNumerical(treatmentData[2]));
                             }
+
                             break;
                         }
 
                     case 3:
                         {
-                            this.Gesture = Convert.ToBoolean(treatmentData[3]);
+                            if (treatmentData[3] != string.Empty)
+                            {
+                                this.Weight = Convert.ToInt32(Globals.FilterToNumerical(treatmentData[3]));
+                                this.CustomizedWeight = this.Weight;
+                            }
                             break;
                         }
 
                     case 4:
                         {
-                            this.AlwaysLast = Convert.ToBoolean(treatmentData[4]);
+                            if (treatmentData[4] != string.Empty && Globals.IsBooleanValue(treatmentData[4]))
+                            {
+                                this.Gesture = Convert.ToBoolean(treatmentData[4]);
+                            }
                             break;
                         }
 
                     case 5:
                         {
-                            this.TreatmentColorString = treatmentData[5];
+                            if (treatmentData[5] != string.Empty && Globals.IsBooleanValue(treatmentData[5]))
+                            {
+                                this.AlwaysLast = Convert.ToBoolean(treatmentData[5]);
+                            }
+                            break;
+                        }
+
+                    case 6:
+                        {
+                            if (treatmentData[6] != string.Empty)
+                            {
+                                this.TreatmentColorString = treatmentData[6];
+                            }
                             break;
                         }
                 }
@@ -395,8 +411,8 @@ namespace HM4DesignTool.Level
             get
             {
                 int brightness = (int)Math.Sqrt(
-                    ((this.TreatmentColor.R * this.TreatmentColor.R) * .299) + 
-                    ((this.TreatmentColor.G * this.TreatmentColor.G) * .587) + 
+                    ((this.TreatmentColor.R * this.TreatmentColor.R) * .299) +
+                    ((this.TreatmentColor.G * this.TreatmentColor.G) * .587) +
                     ((this.TreatmentColor.B * this.TreatmentColor.B) * .114));
                 return brightness > 130 ? new SolidColorBrush(Colors.Black) : new SolidColorBrush(Colors.White);
             }
@@ -452,6 +468,11 @@ namespace HM4DesignTool.Level
             }
         }
 
+        public string StationOwnerString
+        {
+            get => this.StationOwner?.StationName;
+            set => this.StationOwner = new Station(value);
+        }
         #endregion
 
         #endregion

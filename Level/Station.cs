@@ -7,6 +7,9 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using System.Windows.Media;
+
+    using HM4DesignTool.Data;
 
     public class Station
     {
@@ -33,6 +36,7 @@
         public Station(string stationName)
         {
             this.StationName = stationName;
+
         }
 
         public Station(string stationName, string stationDataString)
@@ -58,7 +62,22 @@
             }
         }
 
-
+        /// <summary>
+        /// Change this Treatment by retrieving the data from the new TreatmentName.
+        /// </summary>
+        private void ChangeTreatment()
+        {
+            if (this.StationName != string.Empty)
+            {
+                // int roomIndex = this.parentPatient.RoomIndex;
+                Station newStation = Globals.GetSettings.GetStation(this.StationName);
+                this.DifficultyUnlocked = newStation.DifficultyUnlocked;
+            }
+            else
+            {
+                this.DifficultyUnlocked = 0;
+            }
+        }
 
         #endregion
         #region Events

@@ -77,11 +77,14 @@ namespace HM4DesignTool.Forms
         private Dictionary<string, List<Treatment>> treatmentCategoriesDict =
             Globals.GetSettings.GetTreatmentDictionary();
 
+
         private Color treatmentSelectColor = Colors.White;
 
         private ObservableCollection<Treatment> LoadedTreatmentList = new ObservableCollection<Treatment>();
 
         private ObservableCollection<string> treatmentDifficultyModifierList = new ObservableCollection<string>();
+
+        private ObservableCollection<string> stationTreatmentList = new ObservableCollection<string>();
 
         #endregion
 
@@ -213,6 +216,16 @@ namespace HM4DesignTool.Forms
             }
         }
 
+        public ObservableCollection<string> StationTreatmentList
+        {
+            get => this.stationTreatmentList;
+            set
+            {
+                this.stationTreatmentList = value;
+               // this.StationTreatmentColumn.ItemsSource = value;
+                this.OnPropertyChanged();
+            }
+        }
         public Color TreatmentSelectColor
         {
             get => this.treatmentSelectColor;
@@ -604,14 +617,27 @@ namespace HM4DesignTool.Forms
             ObservableCollection<string> treatmentDifficultyModifierList = new ObservableCollection<string>();
             if (this.balancingCategoriesDict.ContainsKey(this.SelectedTreatmentRoomCategoryKey))
             {
-                foreach (string treatmentDifficultyModifier in this.balancingCategoriesDict[
-                    this.SelectedTreatmentRoomCategoryKey])
+                foreach (string treatmentDifficultyModifier in this.balancingCategoriesDict[this.SelectedTreatmentRoomCategoryKey])
                 {
                     treatmentDifficultyModifierList.Add(treatmentDifficultyModifier);
                 }
 
                 this.TreatmentDifficultyModifierList = treatmentDifficultyModifierList;
                 this.difficultyUnlockedColumn.ItemsSource = this.TreatmentDifficultyModifierList;
+            }
+        }
+
+        private void UpdateStationTreatmentList()
+        {
+            ObservableCollection<string> stationTreatmentList = new ObservableCollection<string>();
+            if (this.stationCategoriesDict.ContainsKey(this.SelectedTreatmentRoomCategoryKey))
+            {
+                foreach (Station station in this.stationCategoriesDict[this.SelectedTreatmentRoomCategoryKey])
+                {
+                    stationTreatmentList.Add(station.StationName);
+                }
+
+                this.StationTreatmentList = stationTreatmentList;
             }
         }
 
@@ -778,6 +804,7 @@ namespace HM4DesignTool.Forms
 
                     this.lastLoadedTreatmentCategoriesIndex = this.treatmentRoomList.SelectedIndex;
                     this.UpdateTreatmentDifficultyModifierList();
+                    this.UpdateStationTreatmentList();
                 }
             }
         }

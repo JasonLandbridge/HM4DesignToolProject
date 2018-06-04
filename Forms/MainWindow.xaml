@@ -150,7 +150,7 @@
 				</Grid.ColumnDefinitions>
 				<CheckBox MinWidth="20" Grid.Column="0" HorizontalAlignment="Center" Margin="5,0" VerticalContentAlignment="Center" IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 				<TextBox TextWrapping="Wrap" Text="{Binding PatientName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Margin="5,5,0,5" Width="200" MinWidth="100" IsReadOnlyCaretVisible="False" VerticalContentAlignment="Center" IsEnabled="True" IsReadOnly="True"/>
-				<Button Content="R" Grid.Column="2" Margin="5" Width="30" MinWidth="20" Padding="5" Command="{Binding RandomizeWeightCommand}" CommandParameter="{Binding}"/>
+				<Button Content="R" Grid.Column="2" Margin="5" Width="30" MinWidth="20" Padding="5" Command="{Binding RandomizeWeightCommand}"/>
 				<Label Content="{Binding Weight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" Margin="0" Width="50" MinWidth="25" VerticalContentAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"/>
 				<Slider Grid.Column="4" Margin="5" VerticalContentAlignment="Stretch" VerticalAlignment="Center" Value="{Binding Weight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Maximum="100" LargeChange="5" SmallChange="1" Cursor="Hand"/>
 				<Label Content="{Binding PercentageString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="5" Margin="0" VerticalContentAlignment="Center" Width="100" HorizontalAlignment="Left"/>
@@ -457,7 +457,7 @@
 
 										</Grid.ColumnDefinitions>
 
-										<CheckBox x:Name="showAvailableTreatmentsCheck" Content="Show available treatments" Grid.Column="0" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,5,0,5" IsChecked="{Binding ShowAvailableTreatmentsCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+										<!--<CheckBox x:Name="ShowAvailableTreatmentsCheck" Content="Show available treatments" Grid.Column="0" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,5,0,5" IsChecked="{Binding ShowAvailableTreatmentsCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />-->
 										<CheckBox x:Name="uniqueTreatmentsCheckBox" Content="Unique Treatments Only Per Patient" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,5,0,5" IsEnabled="False" IsChecked="True" Visibility="Hidden"/>
 										<Button x:Name="customTreatmentWeightsButton" Content="Level Custom Treatment Weights" Grid.Column="2" Grid.Row="0" Click="CustomTreatmentWeightsButtonClick" Padding="10,1" />
 									</Grid>
@@ -465,9 +465,9 @@
 								</Grid>
 							</GroupBox>
 
-							<GroupBox Grid.Column="2" Header="Available Treatments" Visibility="{Binding DataContext.ShowAvailableTreatmentsCheck, Mode=OneWay, Converter={StaticResource VisibilityOfBool}, RelativeSource={RelativeSource Self}, FallbackValue=Collapsed}">
+							<!-- <GroupBox Grid.Column="2" Header="Available Treatments" Visibility="{Binding DataContext.ShowAvailableTreatmentsCheck, Mode=OneWay, Converter={StaticResource VisibilityOfBool}, RelativeSource={RelativeSource Self}, FallbackValue=Collapsed}">
 								<TextBox x:Name="previewAvailableTreatments" Margin="0,5" Text="{Binding GetLevelLoaded.TreatmentsAvailableString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"  TextWrapping="Wrap" MinWidth="250"/>
-							</GroupBox>
+							</GroupBox> -->
 						</Grid>
 					</TabItem>
 					<TabItem Header="Patient Overview" IsEnabled="{Binding Path=LevelOverviewActive}">

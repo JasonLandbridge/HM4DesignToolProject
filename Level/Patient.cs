@@ -672,7 +672,7 @@ namespace HM4DesignTool.Level
         {
             // Clean up the patientData
             patientData = System.Text.RegularExpressions.Regex.Replace(patientData, @"\s+", string.Empty);
-            patientData = patientData.Replace("\t", string.Empty);
+            patientData = patientData.Replace("\t", string.Empty).Replace("--", string.Empty);
             patientData = Globals.RemoveFirstComma(patientData);
 
             // Parse the delay
