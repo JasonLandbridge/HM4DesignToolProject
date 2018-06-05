@@ -338,13 +338,13 @@
 							<Label MinWidth="150" Grid.Column="0" Grid.Row="5" MaxHeight="25" Content="Milisecond per Level: " Margin="0,5"/>
 							<Label MinWidth="150" Grid.Column="0" Grid.Row="6" MaxHeight="25" Content="Minutes per Level: " Margin="0,5"/>
 
-							<TextBox x:Name="averageEntryTimePerPatientValue" Grid.Column="1" Grid.Row="0" Text="{Binding Path=AverageEntryTimePerPatient, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25" />
-							<TextBox x:Name="timeBetweenPatientsValue" Grid.Column="1" Grid.Row="1" Text="{Binding Path=TimeBetweenPatients, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25"/>
-							<TextBox x:Name="numberOfPatientsValue" Grid.Column="1" Grid.Row="2" Text="{Binding Path=NumberOfPatients, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25"/>
-							<TextBox x:Name="treatmentPerPatientValue" Grid.Column="1" Grid.Row="3" Text="{Binding Path=TreatmentPerPatient, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25"/>
-							<TextBox x:Name="timePerTreatmentValue" Grid.Column="1" Grid.Row="4" Text="{Binding Path=TimePerTreatment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25"/>
-							<TextBox x:Name="milliSecondsPerLevelValue" Grid.Column="1" Grid.Row="5" Text="{Binding Path=MilliSecondsPerLevel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25"/>
-							<TextBox x:Name="minutesPerLevelValue" Grid.Column="1" Grid.Row="6" Text="{Binding Path=MinutesPerLevel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25"/>
+							<TextBox x:Name="averageEntryTimePerPatientValue" Grid.Column="1" Grid.Row="0" Text="{Binding Path=AverageEntryTimePerPatient, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25" IsReadOnly="True" />
+							<TextBox x:Name="timeBetweenPatientsValue" Grid.Column="1" Grid.Row="1" Text="{Binding Path=TimeBetweenPatients, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25" IsReadOnly="True"/>
+							<TextBox x:Name="numberOfPatientsValue" Grid.Column="1" Grid.Row="2" Text="{Binding Path=NumberOfPatients, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25" IsReadOnly="True"/>
+							<TextBox x:Name="treatmentPerPatientValue" Grid.Column="1" Grid.Row="3" Text="{Binding Path=TreatmentPerPatient, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25" IsReadOnly="True"/>
+							<TextBox x:Name="timePerTreatmentValue" Grid.Column="1" Grid.Row="4" Text="{Binding Path=TimePerTreatment, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25" IsReadOnly="True"/>
+							<TextBox x:Name="milliSecondsPerLevelValue" Grid.Column="1" Grid.Row="5" Text="{Binding Path=MilliSecondsPerLevel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25" IsReadOnly="True"/>
+							<TextBox x:Name="minutesPerLevelValue" Grid.Column="1" Grid.Row="6" Text="{Binding Path=MinutesPerLevel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" MaxHeight="25" IsReadOnly="True"/>
 
 
 						</Grid>

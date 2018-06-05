@@ -8,7 +8,7 @@
 		xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
 		xmlns:Data="clr-namespace:HM4DesignTool.Data"
 		mc:Ignorable="d"
-		Title="HM4 Design Tool" Height="768" Width="1280" Closed="WindowClosed">
+		Title="HM4 Design Tool" Height="1080" Width="1920" Closed="WindowClosed">
 	<!-- diag:PresentationTraceSources.TraceLevel=High-->
 	<Window.Resources>
 
@@ -174,7 +174,11 @@
 
 				</MenuItem>
 				<MenuItem x:Name="menuItemSettings" Header="_Settings" Click="MenuItemOpenSettings"/>
-				<MenuItem Header="_View"/>
+				<MenuItem Header="_View">
+					<MenuItem x:Name="MenuItemShowCurrentPreview"  Header="Show Current Preview" HorizontalAlignment="Left" IsCheckable="True" Click="MenuItemUpdatePreview" Visibility="Hidden" />
+					<MenuItem x:Name="MenuItemShowAfterPreview" Header="Show After Preview" HorizontalAlignment="Left" IsCheckable="True" Click="MenuItemUpdatePreview" Visibility="Hidden"/>
+
+				</MenuItem>
 				<MenuItem Header="_Help" Click="MenuItemOpenHelp"/>
 
 			</Menu>
@@ -243,12 +247,9 @@
 			<Grid x:Name="levelDataLayout" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" >
 				<Grid.RowDefinitions>
 					<RowDefinition/>
+					<RowDefinition Height="Auto" />
 					<RowDefinition/>
-					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition/>
-				</Grid.ColumnDefinitions>
 				<!--Level Overview Tabs-->
 				<TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
 					<TabItem Header="General">
@@ -259,7 +260,7 @@
 								<ColumnDefinition Width="Auto"/>
 							</Grid.ColumnDefinitions>
 							<!-- Design Data Group-->
-							<GroupBox Grid.Column="0" Header="Design Data" HorizontalAlignment="Stretch" Margin="0,5" VerticalAlignment="Stretch">
+							<GroupBox Grid.Column="0" Header="Design Data" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Stretch">
 								<Grid HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch">
 									<Grid.RowDefinitions>
 										<RowDefinition Height="Auto"/>
@@ -316,13 +317,13 @@
 										</Grid.ColumnDefinitions>
 										<Label MinWidth="100" Grid.Column="0" Grid.Row="0" Content="HM4 Design Tool Data: " />
 										<CheckBox Grid.Column="1" Grid.Row="0" Content="Insert Data" VerticalContentAlignment="Center" IsChecked="{Binding InsertDesignData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-										<TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Text="{Binding GetLevelLoaded.DesignToolDataString, Mode=OneWay}"/>
+										<TextBox Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Text="{Binding GetLevelLoaded.DesignToolDataString, Mode=OneWay}" IsReadOnly="True"/>
 									</Grid>
 								</Grid>
 							</GroupBox>
 
 							<!-- Random Data Group-->
-							<GroupBox Grid.Column="1" Header="Level Generating Options" HorizontalAlignment="Stretch" Margin="0,5" VerticalAlignment="Stretch" >
+							<GroupBox Grid.Column="1" Header="Level Generating Options" HorizontalAlignment="Stretch" Margin="5" VerticalAlignment="Stretch" >
 								<!--IsEnabled="{Binding RandomGroupEnabled, Mode=OneWay, UpdateSourceTrigger=PropertyChanged} -->
 								<Grid HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" >
 									<Grid.RowDefinitions>
@@ -601,8 +602,10 @@
 						</Grid>
 					</TabItem>
 				</TabControl>
+				<GridSplitter Grid.Row="1" ResizeDirection="Rows" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Height="5"/>
+
 				<!-- Level Script Previews-->
-				<Grid x:Name="previewSplitContainer" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch">
+				<Grid x:Name="previewSplitContainer" HorizontalAlignment="Stretch" Grid.Row="2" VerticalAlignment="Stretch">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"/>
 						<RowDefinition/>
@@ -612,6 +615,7 @@
 						<ColumnDefinition Width="Auto"/>
 						<ColumnDefinition/>
 					</Grid.ColumnDefinitions>
+
 					<Label x:Name="currentPreviewLabel" Grid.Column="0" Grid.Row="0" Content="Current Preview"/>
 					<Grid Grid.Column="2" Grid.Row="0">
 						<Grid.ColumnDefinitions>
@@ -622,9 +626,9 @@
 						<CheckBox x:Name="autoUpdateCheckbox" Grid.Column="1" Grid.Row="0" IsChecked="{Binding AllowLevelScriptUpdate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}" Content="Auto Update" Margin="0,0,10,0" VerticalAlignment="Center" />
 					</Grid>
 
-					<TextBox x:Name="currentPreviewTextBox" Text="{Binding Path=GetLevelLoaded.GetCurrentLevelScript, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=''}" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="Wrap" />
-					<GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Width="5" Grid.RowSpan="2"/>
-					<TextBox x:Name="afterPreviewTextBox" Text="{Binding Path=GetLevelLoaded.LevelScriptBuffer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=''}" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" TextWrapping="Wrap"/>
+					<TextBox x:Name="currentPreviewTextBox" Text="{Binding Path=GetLevelLoaded.GetCurrentLevelScript, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=''}" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5" TextWrapping="Wrap" IsReadOnly="True"  />
+					<GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Width="5" Grid.RowSpan="2" UseLayoutRounding="True" ResizeDirection="Columns"/>
+					<TextBox x:Name="afterPreviewTextBox" Text="{Binding Path=GetLevelLoaded.LevelScriptBuffer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=''}" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" TextWrapping="Wrap"/>
 
 				</Grid>
 			</Grid>
