@@ -136,6 +136,7 @@
     <Compile Include="Level\Treatment.cs" />
     <Compile Include="Utilities\ClassTemplate.cs" />
     <Compile Include="Utilities\CommandHandler.cs" />
+    <Compile Include="Utilities\GridHelpers.cs" />
     <Page Include="Forms\CustomWeightsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

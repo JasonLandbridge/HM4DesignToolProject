@@ -12,67 +12,54 @@
 		Title="HM4 Design Tool" Height="768" Width="1280" Closed="WindowClosed">
 	<!-- diag:PresentationTraceSources.TraceLevel=High-->
 	<Window.Resources>
-
-		<!-- PatientRowTreatmentTemplate -->
-		<DataTemplate x:Key="PatientRowTreatmentTemplate">
-			<StackPanel Orientation="Horizontal">
-				<Label Visibility="{Binding Converter={StaticResource VisibilityOfBool}, Source={x:Static Data:Globals.GetLevelOverview}, Path=ShowStationsNextToTreatments, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,5,0"
-					   Width="60"
-					   
-				       Content="{Binding StationString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-				       Padding="5,5,5,1"
-				        />
-
-				<ComboBox Margin="5,0" Style="{DynamicResource ComboBoxTest2}" ItemsSource="{Binding DataContext.TreatmentOptions, ElementName=patientRow, Mode=OneWay}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="125" AutomationProperties.Name="test">
-					<ComboBox.Resources>
-						<Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
-							<Setter Property="Foreground" Value="{Binding TreatmentFontColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-							<Setter Property="Template">
-								<Setter.Value>
-									<ControlTemplate TargetType="{x:Type ComboBox}">
+		<Style x:Key="TreatmentComboBoxStyle" TargetType="{x:Type ComboBox}">
+			<Setter Property="Foreground" Value="{Binding TreatmentFontColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ComboBox}">
+						<Grid>
+							<ToggleButton Grid.Column="2" Focusable="false" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" >
+								<ToggleButton.Template>
+									<ControlTemplate>
 										<Grid>
-											<ToggleButton Grid.Column="2" Focusable="false" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" >
-												<ToggleButton.Template>
-													<ControlTemplate>
-														<Grid>
-															<Grid.ColumnDefinitions>
-																<ColumnDefinition Width="5*" />
-																<ColumnDefinition Width="*" />
-															</Grid.ColumnDefinitions>
-															<Border x:Name="Border"  Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1" />
-															<Border Grid.Column="0" Margin="1" Background="{Binding TreatmentColorBrush, FallbackValue=White, Mode=OneWay, UpdateSourceTrigger=Default}"  BorderBrush="Black" />
-															<Path x:Name="Arrow" Grid.Column="1"  Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
-														</Grid>
-														<ControlTemplate.Triggers>
-															<Trigger Property="IsMouseOver" Value="true">
-																<Setter TargetName="Border" Property="Background" Value="AliceBlue" />
-															</Trigger>
-														</ControlTemplate.Triggers>
-													</ControlTemplate>
-												</ToggleButton.Template>
-											</ToggleButton>
-											<ContentPresenter x:Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3"  />
-											<TextBox x:Name="PART_EditableTextBox" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
-
-											<Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
-												<Grid  x:Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-													<Border x:Name="DropDownBorder" Background="White" />
-													<ScrollViewer SnapsToDevicePixels="True">
-														<StackPanel IsItemsHost="True" />
-													</ScrollViewer>
-												</Grid>
-											</Popup>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="5*" />
+												<ColumnDefinition Width="*" />
+											</Grid.ColumnDefinitions>
+											<Border x:Name="Border"  Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1" />
+											<Border Grid.Column="0" Margin="1" Background="{Binding TreatmentColorBrush, FallbackValue=White, Mode=OneWay, UpdateSourceTrigger=Default}"  BorderBrush="Black" />
+											<Path x:Name="Arrow" Grid.Column="1"  Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
 										</Grid>
+										<ControlTemplate.Triggers>
+											<Trigger Property="IsMouseOver" Value="true">
+												<Setter TargetName="Border" Property="Background" Value="AliceBlue" />
+											</Trigger>
+										</ControlTemplate.Triggers>
 									</ControlTemplate>
-								</Setter.Value>
-							</Setter>
-						</Style>
-						<Style TargetType="{x:Type ComboBoxItem}">
-							<Setter Property="Foreground" Value="{Binding TreatmentFontColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-							<Setter Property="Template">
-								<Setter.Value>
-									<ControlTemplate TargetType="{x:Type ComboBoxItem}">
-										<Border
+								</ToggleButton.Template>
+							</ToggleButton>
+							<ContentPresenter x:Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3"  />
+							<TextBox x:Name="PART_EditableTextBox" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+
+							<Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
+								<Grid  x:Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+									<Border x:Name="DropDownBorder" Background="White" />
+									<ScrollViewer SnapsToDevicePixels="True">
+										<StackPanel IsItemsHost="True" />
+									</ScrollViewer>
+								</Grid>
+							</Popup>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style TargetType="{x:Type ComboBoxItem}">
+			<Setter Property="Foreground" Value="{Binding TreatmentFontColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ComboBoxItem}">
+						<Border
 										x:Name="Border"
 										Padding="5"
 										Margin="2"
@@ -80,22 +67,35 @@
 										CornerRadius="0"
 										BorderBrush="Transparent" >
 
-											<TextBlock Background="{Binding TreatmentColorBrush, FallbackValue=White, Mode=OneWay, UpdateSourceTrigger=Default}" TextAlignment="Center"><InlineUIContainer>
+							<TextBlock Background="{Binding TreatmentColorBrush, FallbackValue=White, Mode=OneWay, UpdateSourceTrigger=Default}" TextAlignment="Center"><InlineUIContainer>
 												<ContentPresenter />
 											</InlineUIContainer></TextBlock>
-										</Border>
-										<ControlTemplate.Triggers>
-											<Trigger Property="IsHighlighted" Value="true">
-												<Setter TargetName="Border" Property="BorderBrush" Value="Black"/>
-												<Setter TargetName="Border" Property="Background" Value="{Binding TreatmentColorBrush, FallbackValue=White, Mode=OneWay, UpdateSourceTrigger=Default}"/>
-											</Trigger>
-										</ControlTemplate.Triggers>
-									</ControlTemplate>
-								</Setter.Value>
-							</Setter>
-						</Style>
-					</ComboBox.Resources>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsHighlighted" Value="true">
+								<Setter TargetName="Border" Property="BorderBrush" Value="Black"/>
+								<Setter TargetName="Border" Property="Background" Value="{Binding TreatmentColorBrush, FallbackValue=White, Mode=OneWay, UpdateSourceTrigger=Default}"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="SimulateHeaderFont" TargetType="{x:Type Label}">
+			<Setter Property="FontSize" Value="14" />
+			<Setter Property="FontFamily" Value="Calibri" />
+			<Setter Property="FontWeight" Value="Heavy" />
+		</Style>
 
+		<!-- PatientRowTreatmentTemplate -->
+		<DataTemplate x:Key="PatientRowTreatmentTemplate">
+			<StackPanel Orientation="Horizontal">
+				<Label Visibility="{Binding Converter={StaticResource VisibilityOfBool}, Source={x:Static Data:Globals.GetLevelOverview}, Path=ShowStationsNextToTreatments, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,5,0"
+					   Width="60"
+				       Content="{Binding StationString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+				       Padding="5,5,5,1"
+				        />
+				<ComboBox Margin="5,0" Style="{DynamicResource TreatmentComboBoxStyle}" ItemsSource="{Binding DataContext.TreatmentOptions, ElementName=patientRow, Mode=OneWay}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="125">
 					<ComboBox.Visibility>
 						<Binding Converter="{StaticResource VisibilityOfBool}" Mode="TwoWay" Path="IsVisible" UpdateSourceTrigger="PropertyChanged"/>
 					</ComboBox.Visibility>
@@ -147,6 +147,33 @@
 				<Button  Grid.Column="9" Content="Traits" MinWidth="80" Command="{Binding OpenTraitsWindowCommand}"/>
 			</Grid>
 		</DataTemplate>
+
+		<!-- PatientSimulateRowTreatmentTemplate -->
+		<DataTemplate x:Key="PatientSimulateRowTreatmentTemplate">
+			<StackPanel Orientation="Horizontal">
+				<Label Visibility="{Binding Converter={StaticResource VisibilityOfBool}, Source={x:Static Data:Globals.GetLevelOverview}, Path=ShowStationsNextToTreatments, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,5,0"
+				       Width="60"
+				       Content="{Binding StationString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+				       Padding="5,5,5,1"
+				/>
+				<ComboBox Margin="5,0" Style="{DynamicResource TreatmentComboBoxStyle}" ItemsSource="{Binding DataContext.TreatmentOptions, ElementName=patientSimulateTreatmentRow, Mode=OneWay}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="125">
+					<ComboBox.Visibility>
+						<Binding Converter="{StaticResource VisibilityOfBool}" Mode="TwoWay" Path="IsVisible" UpdateSourceTrigger="PropertyChanged"/>
+					</ComboBox.Visibility>
+				</ComboBox>
+			</StackPanel>
+		</DataTemplate>
+		<!--PatientSimulateRowControlTemplate-->
+		<DataTemplate x:Key="PatientSimulateRowControlTemplate">
+			<ItemsControl x:Name="patientSimulateTreatmentRow" ItemTemplate="{DynamicResource PatientSimulateRowTreatmentTemplate}" ItemsSource="{Binding TreatmentCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" >
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+			</ItemsControl>
+		</DataTemplate>
+
 		<!--PatientChancesRowTemplate-->
 		<DataTemplate x:Key="PatientChancesRowTemplate">
 			<Grid Margin="0,5">
@@ -610,6 +637,111 @@
 
 							<Slider Grid.Row="1" />
 						</Grid>
+					</TabItem>
+
+					<TabItem Header="New Simulator" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="54" IsEnabled="{Binding LevelOverviewActive}">
+						<Grid Background="#FFE5E5E5">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="150"/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+
+
+
+							<ScrollViewer HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="0" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" >
+
+								<StackPanel >
+
+									<Grid x:Name="PatientSimulateHeaderGrid"  ShowGridLines="True"/>
+
+									<Separator Height="5"></Separator>
+									<ItemsControl x:Name="PatientSimulateGrid" Grid.IsSharedSizeScope="True" ItemTemplate="{DynamicResource PatientSimulateRowControlTemplate}"  ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate >
+												<Grid ShowGridLines="True">
+													<Grid.RowDefinitions>
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+													</Grid.RowDefinitions>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+													</Grid.ColumnDefinitions>
+												</Grid>
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+
+										<ItemsControl.ItemContainerStyle>
+											<Style>
+												<!-- https://stackoverflow.com/a/11000466 -->
+												<Setter Property="Grid.Column" Value="{Binding PatientIndex}" />
+												<Setter Property="Grid.Row" Value="{Binding PatientIndex}" />
+
+												<!-- Can either use a DataTrigger to determine these values, or store them on the object itself -->
+												<Setter Property="Grid.RowSpan" Value="1" />
+												<Setter Property="Grid.ColumnSpan" Value="{Binding TreatmentCount}" />
+
+											</Style>
+										</ItemsControl.ItemContainerStyle>
+									</ItemsControl>
+
+								</StackPanel>
+
+
+
+							</ScrollViewer>
+
+
+						</Grid>
+					</TabItem>
+					<TabItem Header="TabItem" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="54">
+						<Grid Background="#FFE5E5E5"/>
 					</TabItem>
 				</TabControl>
 				<GridSplitter Grid.Row="1" ResizeDirection="Rows" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Height="5"/>

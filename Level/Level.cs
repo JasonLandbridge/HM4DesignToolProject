@@ -1034,7 +1034,7 @@ namespace HM4DesignTool.Level
                         else
                         {
                             // Take the patientTreatmentCount from two patients ago. 
-                            patientTreatmentCount = this.PatientCollection[patientIndex - 2].GetTreatmentCount;
+                            patientTreatmentCount = this.PatientCollection[patientIndex - 2].ValidTreatmentCount;
                         }
 
                         if (patientTreatmentCount > -1)

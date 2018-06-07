@@ -6,13 +6,19 @@
 // <summary>  The main window for the Design Tool </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Windows;
+using System.Windows.Controls;
+
 namespace HM4DesignTool.Forms
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Media;
 
     using HM4DesignTool.Data;
 
@@ -39,7 +45,104 @@ namespace HM4DesignTool.Forms
             this.mainLayout.DataContext = Globals.GetLevelOverview;
             this.levelControls.DataContext = Globals.GetLevelOverview;
             this.OnPropertyChanged("PatientRowDataTemplate");
+            UpdatePatientSimulateGrid();
         }
+
+
+        public void UpdatePatientSimulateGrid()
+        {
+
+            Grid newGrid = this.PatientSimulateHeaderGrid;
+            // newGrid.IsItemsHost = true;
+
+
+            for (int i = 0; i < 20; i++)
+            {
+                ColumnDefinition c1 = new ColumnDefinition { Width = new GridLength(200, GridUnitType.Pixel) };
+                newGrid.ColumnDefinitions.Add(c1);
+            }
+            for (int i = 0; i < 1; i++)
+            {
+                RowDefinition r1 = new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) };
+                newGrid.RowDefinitions.Add(r1);
+            }
+
+
+            for (int i = 0; i < 40; i++)
+            {
+
+                string columnName = (i * 5).ToString() + " Seconds";
+                Label label = new Label { Content = columnName };
+                label.FontWeight = new FontWeight();
+                label.Style = this.FindResource("SimulateHeaderFont") as Style;
+
+                Grid.SetRow(label, 0);
+                Grid.SetColumn(label, i);
+
+                newGrid.Children.Add(label);
+
+            }
+
+            //object grid = FindItemsPanel(PatientSimulateGrid);
+
+            //newGrid = (Grid)grid;
+
+
+            //for (int i = 0; i < 15; i++)
+            //{
+            //    RowDefinition r1 = new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) };
+
+            //    newGrid.RowDefinitions.Add(r1);
+            //}
+
+
+
+            ////this.PatientSimulateHeaderGrid = newGrid;
+        }
+
+        private object FindItemsPanel(Visual visual)
+
+        {
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(visual); i++)
+
+            {
+
+                Visual child = VisualTreeHelper.GetChild(visual, i) as Visual;
+
+                if (child != null)
+
+                {
+
+                    if (child is object && VisualTreeHelper.GetParent(child) is ItemsPresenter)
+
+                    {
+
+                        object temp = child;
+
+                        return (object)temp;
+
+                    }
+                    object panel = FindItemsPanel(child);
+
+                    if (panel != null)
+
+                    {
+
+                        object temp = panel;
+
+                        return (object)temp; // return the panel up the call stack
+
+                    }
+
+                }
+
+            }
+
+            return default(object);
+
+        }
+
 
         #endregion
 
@@ -240,4 +343,8 @@ namespace HM4DesignTool.Forms
 
 
     }
+
+
+
+
 }

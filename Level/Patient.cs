@@ -38,6 +38,7 @@ namespace HM4DesignTool.Level
         /// The parent level field.
         /// </summary>
         private Level parentLevel;
+
         #endregion
 
         #region PatientData
@@ -136,6 +137,8 @@ namespace HM4DesignTool.Level
         #region Public
         #region PatientData
 
+        public int PatientIndex => this.ParentLevel.PatientCollection.IndexOf(this);
+
         public bool IsSelected
         {
             get => this.isSelected;
@@ -197,10 +200,12 @@ namespace HM4DesignTool.Level
 
         #region Treatment
 
+        public int TreatmentCount => this.TreatmentCollection.Count;
+
         /// <summary>
         /// Gets the valid treatment count.
         /// </summary>
-        public int GetTreatmentCount
+        public int ValidTreatmentCount
         {
             get
             {
@@ -588,7 +593,7 @@ namespace HM4DesignTool.Level
         /// </returns>
         public string ToOutput()
         {
-            if (this.GetTreatmentCount > 0)
+            if (this.ValidTreatmentCount > 0)
             {
                 string output = "\t{";
 
