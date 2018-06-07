@@ -169,8 +169,10 @@
 							<DataGrid x:Name="stationDataGridView"    DataGridCell.Selected="DataGrid_GotFocus" ItemsSource="{Binding Path=StationList}" Grid.Column="0" Grid.Row="0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" UseLayoutRounding="False" CanUserReorderColumns="False" CanUserResizeColumns="False" MinColumnWidth="75" ColumnHeaderHeight="30" Margin="5" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="Cell" EnableRowVirtualization="False" CanUserResizeRows="False" HeadersVisibility="Column" CanUserAddRows="False"  >
 								<DataGrid.Columns>
 									<DataGridCheckBoxColumn Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Select" MaxWidth="70" MinWidth="50"/>
-									<DataGridTextColumn Binding="{Binding StationName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Station Name" MinWidth="50" Width="*"/>
+									<DataGridTextColumn Binding="{Binding StationName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Station Full Name" MinWidth="50" Width="*"/>
+									<DataGridTextColumn Binding="{Binding StationShortName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Station Short Name" MinWidth="50" Width="*"/>
 									<DataGridComboBoxColumn x:Name="StationDifficultyUnlockedColumn" ItemsSource="{Binding DataContext.StationDifficultyModifierList, RelativeSource={RelativeSource AncestorType=Grid}}" SelectedValuePath="DifficultyUnlockedString"  TextBinding="{Binding DifficultyUnlockedString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Difficulty Unlocked" Width="*"/>
+							
 									<DataGridTextColumn Binding="{Binding TreatmentColorString, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"  Header="Color Value" Width="*" Visibility="Hidden">
 										<DataGridTextColumn.ElementStyle>
 											<Style TargetType="{x:Type TextBlock}">
@@ -235,7 +237,7 @@
 									<DataGridCheckBoxColumn Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Select" MaxWidth="70" MinWidth="50"/>
 									<DataGridTextColumn Binding="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Treatment Name" MinWidth="50" Width="*"/>
 									<DataGridComboBoxColumn x:Name="difficultyUnlockedColumn" ItemsSource="{Binding DataContext.TreatmentDifficultyModifierList, RelativeSource={RelativeSource AncestorType=Grid}}" SelectedValuePath="DifficultyUnlockedString"  TextBinding="{Binding DifficultyUnlockedString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Difficulty Unlocked" Width="*"/>
-									<!--<DataGridComboBoxColumn x:Name="StationTreatmentColumn" ItemsSource="{Binding DataContext.StationTreatmentList, RelativeSource={RelativeSource AncestorType=Grid}}" SelectedValuePath="StationOwnerString"  TextBinding="{Binding StationOwnerString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Station" Width="*"/>-->
+									<DataGridComboBoxColumn x:Name="StationTreatmentColumn" ItemsSource="{Binding DataContext.StationTreatmentList, RelativeSource={RelativeSource AncestorType=Grid}}" SelectedValuePath="StationOwnerString"  TextBinding="{Binding StationOwnerString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Station" Width="*"/>
 									<DataGridTextColumn Binding="{Binding HeartsValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Hearts Value" Width="*"/>
 									<DataGridTextColumn Binding="{Binding Weight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Base Weight" Width="*" MaxWidth="80"/>
 									<DataGridCheckBoxColumn Binding="{Binding Gesture, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Gesture" Width="*" MaxWidth="60"/>

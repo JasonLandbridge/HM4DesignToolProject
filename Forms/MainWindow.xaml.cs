@@ -237,21 +237,6 @@ namespace HM4DesignTool.Forms
 
         #endregion INotifyPropertyChanged Members
 
-        private void MenuItemUpdatePreview(object sender, RoutedEventArgs e)
-        {
-            bool currentPreviewShown = this.MenuItemShowCurrentPreview.IsChecked;
-            bool afterPreviewShown = this.MenuItemShowAfterPreview.IsChecked;
 
-            if (currentPreviewShown)
-            {
-                currentPreviewTextBox.Visibility = Visibility.Visible;
-                currentPreviewLabel.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                currentPreviewTextBox.Visibility = Visibility.Collapsed;
-                currentPreviewLabel.Visibility = Visibility.Collapsed;
-            }
-        }
     }
 }

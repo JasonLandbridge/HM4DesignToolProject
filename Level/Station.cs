@@ -18,10 +18,15 @@
 
         private string stationName = string.Empty;
 
+        private string stationShortName = string.Empty;
+
+
         /// <summary>
         /// The difficulty unlocked.
         /// </summary>
         private double difficultyUnlocked;
+
+
         #endregion
 
 
@@ -36,13 +41,13 @@
         public Station(string stationName)
         {
             this.StationName = stationName;
-
+            ChangeStation();
         }
 
         public Station(string stationName, string stationDataString)
         {
-            List<string> stationData = stationDataString.Split(',').ToList();
             this.StationName = stationName;
+            List<string> stationData = stationDataString.Split(',').ToList();
 
             // Used to ensure only the avaliable options are set. 
             for (int index = 0; index < stationData.Count; index++)
@@ -51,9 +56,21 @@
                 {
                     case 0:
                         {
+                            // Station Short Name
                             if (stationData[0] != string.Empty)
                             {
-                                this.DifficultyUnlocked = Convert.ToDouble(stationData[0]);
+                                this.StationShortName = stationData[0];
+                            }
+
+                            break;
+                        }
+
+                    case 1:
+                        {
+                            // Difficulty Unlocked
+                            if (stationData[1] != string.Empty)
+                            {
+                                this.DifficultyUnlocked = Convert.ToDouble(stationData[1]);
                             }
 
                             break;
@@ -62,19 +79,26 @@
             }
         }
 
+        private void SetStationFromList()
+        {
+
+        }
+
         /// <summary>
         /// Change this Treatment by retrieving the data from the new TreatmentName.
         /// </summary>
-        private void ChangeTreatment()
+        private void ChangeStation()
         {
             if (this.StationName != string.Empty)
             {
                 // int roomIndex = this.parentPatient.RoomIndex;
                 Station newStation = Globals.GetSettings.GetStation(this.StationName);
+                this.StationShortName = newStation.StationShortName;
                 this.DifficultyUnlocked = newStation.DifficultyUnlocked;
             }
             else
             {
+                this.StationShortName = string.Empty;
                 this.DifficultyUnlocked = 0;
             }
         }
@@ -114,6 +138,31 @@
             }
         }
 
+        public string StationShortName
+        {
+            get => this.stationShortName;
+            set
+            {
+                this.stationShortName = value;
+                OnPropertyChanged();
+
+            }
+        }
+
+        public string DisplayStationName
+        {
+            get
+            {
+                if (this.StationShortName != string.Empty)
+                {
+                    return this.StationShortName;
+                }
+                else
+                {
+                    return this.StationName;
+                }
+            }
+        }
         /// <summary>
         /// Gets or sets the difficulty unlocked.
         /// </summary>
@@ -187,8 +236,9 @@
             {
                 outputList.Add(this.StationName);
             }
+            outputList.Add(this.StationShortName);
 
-            outputList.Add(this.DifficultyUnlocked.ToString(CultureInfo.InvariantCulture));
+            outputList.Add(this.DifficultyUnlocked.ToString("N1"));
             return outputList;
         }
         #endregion

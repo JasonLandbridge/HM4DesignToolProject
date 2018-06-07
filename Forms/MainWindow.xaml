@@ -1,4 +1,4 @@
-﻿<Window x:Class="HM4DesignTool.Forms.MainWindow"
+﻿<Window
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,87 +7,100 @@
 		xmlns:local="clr-namespace:HM4DesignTool.Forms"
 		xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
 		xmlns:Data="clr-namespace:HM4DesignTool.Data"
+		xmlns:controlzex="urn:controlzex" x:Class="HM4DesignTool.Forms.MainWindow"
 		mc:Ignorable="d"
-		Title="HM4 Design Tool" Height="1080" Width="1920" Closed="WindowClosed">
+		Title="HM4 Design Tool" Height="768" Width="1280" Closed="WindowClosed">
 	<!-- diag:PresentationTraceSources.TraceLevel=High-->
 	<Window.Resources>
 
 		<!-- PatientRowTreatmentTemplate -->
 		<DataTemplate x:Key="PatientRowTreatmentTemplate">
-			<ComboBox Margin="5,0" Style="{DynamicResource ComboBoxTest2}" ItemsSource="{Binding Mode=OneWay, ElementName=patientRow, Path=DataContext.TreatmentOptions}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding IsVisible, Mode=TwoWay, Converter={StaticResource VisibilityOfBool}, UpdateSourceTrigger=PropertyChanged}" Width="125">
-				<ComboBox.Resources>
-					<Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
-						<Setter Property="Foreground" Value="{Binding TreatmentFontColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-						<Setter Property="Template">
-							<Setter.Value>
-								<ControlTemplate TargetType="ComboBox">
-									<Grid>
-										<ToggleButton Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" >
-											<ToggleButton.Template>
-												<ControlTemplate>
-													<Grid>
-														<Grid.ColumnDefinitions>
-															<ColumnDefinition Width="5*" />
-															<ColumnDefinition Width="*" />
-														</Grid.ColumnDefinitions>
-														<Border x:Name="Border"  Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1" />
-														<Border Grid.Column="0" Margin="1" Background="{Binding TreatmentColorBrush, Mode=OneWay, UpdateSourceTrigger=Default, FallbackValue=White}"  BorderBrush="Black" />
-														<Path x:Name="Arrow" Grid.Column="1"  Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
-													</Grid>
-													<ControlTemplate.Triggers>
-														<Trigger Property="ToggleButton.IsMouseOver" Value="true">
-															<Setter TargetName="Border" Property="Background" Value="AliceBlue" />
-														</Trigger>
-													</ControlTemplate.Triggers>
-												</ControlTemplate>
-											</ToggleButton.Template>
-										</ToggleButton>
-										<ContentPresenter Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3"  />
-										<TextBox x:Name="PART_EditableTextBox" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+			<StackPanel Orientation="Horizontal">
+				<Label Visibility="{Binding Converter={StaticResource VisibilityOfBool}, Source={x:Static Data:Globals.GetLevelOverview}, Path=ShowStationsNextToTreatments, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,5,0"
+					   Width="60"
+					   
+				       Content="{Binding StationString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+				       Padding="5,5,5,1"
+				        />
 
-										<Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
-											<Grid  Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-												<Border x:Name="DropDownBorder" Background="White" />
-												<ScrollViewer SnapsToDevicePixels="True">
-													<StackPanel IsItemsHost="True" />
-												</ScrollViewer>
-											</Grid>
-										</Popup>
-									</Grid>
-								</ControlTemplate>
-							</Setter.Value>
-						</Setter>
-					</Style>
-					<Style TargetType="{x:Type ComboBoxItem}">
-						<Setter Property="Foreground" Value="{Binding TreatmentFontColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-						<Setter Property="Template">
-							<Setter.Value>
-								<ControlTemplate TargetType="ComboBoxItem">
-									<Border
-										Name="Border"
+				<ComboBox Margin="5,0" Style="{DynamicResource ComboBoxTest2}" ItemsSource="{Binding DataContext.TreatmentOptions, ElementName=patientRow, Mode=OneWay}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="125" AutomationProperties.Name="test">
+					<ComboBox.Resources>
+						<Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
+							<Setter Property="Foreground" Value="{Binding TreatmentFontColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate TargetType="{x:Type ComboBox}">
+										<Grid>
+											<ToggleButton Grid.Column="2" Focusable="false" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" >
+												<ToggleButton.Template>
+													<ControlTemplate>
+														<Grid>
+															<Grid.ColumnDefinitions>
+																<ColumnDefinition Width="5*" />
+																<ColumnDefinition Width="*" />
+															</Grid.ColumnDefinitions>
+															<Border x:Name="Border"  Grid.ColumnSpan="2" BorderBrush="Black" BorderThickness="1" />
+															<Border Grid.Column="0" Margin="1" Background="{Binding TreatmentColorBrush, FallbackValue=White, Mode=OneWay, UpdateSourceTrigger=Default}"  BorderBrush="Black" />
+															<Path x:Name="Arrow" Grid.Column="1"  Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
+														</Grid>
+														<ControlTemplate.Triggers>
+															<Trigger Property="IsMouseOver" Value="true">
+																<Setter TargetName="Border" Property="Background" Value="AliceBlue" />
+															</Trigger>
+														</ControlTemplate.Triggers>
+													</ControlTemplate>
+												</ToggleButton.Template>
+											</ToggleButton>
+											<ContentPresenter x:Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3"  />
+											<TextBox x:Name="PART_EditableTextBox" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+
+											<Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
+												<Grid  x:Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+													<Border x:Name="DropDownBorder" Background="White" />
+													<ScrollViewer SnapsToDevicePixels="True">
+														<StackPanel IsItemsHost="True" />
+													</ScrollViewer>
+												</Grid>
+											</Popup>
+										</Grid>
+									</ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+						<Style TargetType="{x:Type ComboBoxItem}">
+							<Setter Property="Foreground" Value="{Binding TreatmentFontColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate TargetType="{x:Type ComboBoxItem}">
+										<Border
+										x:Name="Border"
 										Padding="5"
 										Margin="2"
 										BorderThickness="2"
 										CornerRadius="0"
 										BorderBrush="Transparent" >
 
-										<TextBlock Background="{Binding TreatmentColorBrush, Mode=OneWay, UpdateSourceTrigger=Default, FallbackValue=White}" TextAlignment="Center">
-											<ContentPresenter />
-										</TextBlock>
-									</Border>
-									<ControlTemplate.Triggers>
-										<Trigger Property="IsHighlighted" Value="true">
-											<Setter TargetName="Border" Property="BorderBrush" Value="Black"/>
-											<Setter TargetName="Border" Property="Background" Value="{Binding TreatmentColorBrush, Mode=OneWay, UpdateSourceTrigger=Default, FallbackValue=White}"/>
-										</Trigger>
-									</ControlTemplate.Triggers>
-								</ControlTemplate>
-							</Setter.Value>
-						</Setter>
-					</Style>
-				</ComboBox.Resources>
+											<TextBlock Background="{Binding TreatmentColorBrush, FallbackValue=White, Mode=OneWay, UpdateSourceTrigger=Default}" TextAlignment="Center"><InlineUIContainer>
+												<ContentPresenter />
+											</InlineUIContainer></TextBlock>
+										</Border>
+										<ControlTemplate.Triggers>
+											<Trigger Property="IsHighlighted" Value="true">
+												<Setter TargetName="Border" Property="BorderBrush" Value="Black"/>
+												<Setter TargetName="Border" Property="Background" Value="{Binding TreatmentColorBrush, FallbackValue=White, Mode=OneWay, UpdateSourceTrigger=Default}"/>
+											</Trigger>
+										</ControlTemplate.Triggers>
+									</ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</ComboBox.Resources>
 
-			</ComboBox>
+					<ComboBox.Visibility>
+						<Binding Converter="{StaticResource VisibilityOfBool}" Mode="TwoWay" Path="IsVisible" UpdateSourceTrigger="PropertyChanged"/>
+					</ComboBox.Visibility>
+				</ComboBox>
+			</StackPanel>
 		</DataTemplate>
 		<!--PatientRowControlTemplate-->
 		<DataTemplate x:Key="PatientRowControlTemplate" >
@@ -175,14 +188,12 @@
 				</MenuItem>
 				<MenuItem x:Name="menuItemSettings" Header="_Settings" Click="MenuItemOpenSettings"/>
 				<MenuItem Header="_View">
-					<MenuItem x:Name="MenuItemShowCurrentPreview"  Header="Show Current Preview" HorizontalAlignment="Left" IsCheckable="True" Click="MenuItemUpdatePreview" Visibility="Hidden" />
-					<MenuItem x:Name="MenuItemShowAfterPreview" Header="Show After Preview" HorizontalAlignment="Left" IsCheckable="True" Click="MenuItemUpdatePreview" Visibility="Hidden"/>
-
+					<MenuItem x:Name="MenuItemShowStationOnTreatment"  Header="Show Stations next to Treatments" HorizontalAlignment="Left" IsCheckable="True" IsChecked="{Binding Source={x:Static Data:Globals.GetLevelOverview}, Path=ShowStationsNextToTreatments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 				</MenuItem>
 				<MenuItem Header="_Help" Click="MenuItemOpenHelp"/>
 
 			</Menu>
-			<StackPanel></StackPanel>
+			<StackPanel/>
 		</DockPanel>
 
 		<!-- Main Layout -->
@@ -211,7 +222,7 @@
 				<!-- Level List Filters-->
 				<GroupBox Header="Filters" HorizontalAlignment="Stretch" Margin="0,0,0,0" Grid.Row="1">
 					<StackPanel x:Name="filterLayout" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="0,0,0,0">
-						<ComboBox x:Name="levelListFilter" SelectedIndex="{Binding LevelListFilterSelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=0}" ItemsSource="{Binding LevelListFilterItems, Mode=OneWay, UpdateSourceTrigger=Default}" />
+						<ComboBox x:Name="levelListFilter" SelectedIndex="{Binding LevelListFilterSelectedIndex, FallbackValue=0, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding LevelListFilterItems, Mode=OneWay, UpdateSourceTrigger=Default}" />
 						<Grid x:Name="filterCheckLayout" Margin="0,5" >
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition/>
@@ -227,7 +238,7 @@
 				</GroupBox>
 
 				<!--Level Controls-->
-				<Grid x:Name="levelControls" Grid.Row="2" IsEnabled="{Binding Path=LevelOverviewActive}">
+				<Grid x:Name="levelControls" Grid.Row="2" IsEnabled="{Binding LevelOverviewActive}">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition/>
 						<ColumnDefinition/>
@@ -236,7 +247,7 @@
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
-					<Button x:Name="reloadLevel" Grid.Column="0" Grid.Row="0" Content="Reload" Margin="5" Width="50" Command="{Binding Path=ReloadLevelCommand}" />
+					<Button x:Name="reloadLevel" Grid.Column="0" Grid.Row="0" Content="Reload" Margin="5" Width="50" Command="{Binding ReloadLevelCommand}" />
 					<Button x:Name="buttonOpenLevelScript" Grid.Column="1" Grid.Row="0" Content="Open" Margin="5" Width="50" Command="{Binding GetLevelLoaded.OpenLevelFromFileCommand}"/>
 					<Button x:Name="buttonSaveLevelScript" Grid.Column="2" Grid.Row="0" Content="Save" Margin="5" Width="50" Command="{Binding GetLevelLoaded.SaveLevelToFileCommand}" />
 
@@ -253,7 +264,7 @@
 				<!--Level Overview Tabs-->
 				<TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
 					<TabItem Header="General">
-						<Grid Background="#FFF" IsEnabled="{Binding Path=LevelOverviewActive}">
+						<Grid Background="#FFF" IsEnabled="{Binding LevelOverviewActive}">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition/>
 								<ColumnDefinition/>
@@ -285,12 +296,12 @@
 										<Label MinWidth="100" Grid.Column="0" Grid.Row="3" Content="Level Type: " Margin="0,5"/>
 										<Label MinWidth="100" Grid.Column="0" Grid.Row="4" Content="Gameplay Character: " Margin="0,5"/>
 
-										<wpfTool:IntegerUpDown x:Name="roomIndexValue" MinWidth="100" Grid.Column="1" Grid.Row="0" Margin="5,5" Value="{Binding RoomIndex, UpdateSourceTrigger=PropertyChanged, FallbackValue=-1}" DefaultValue="0"/>
+										<wpfTool:IntegerUpDown x:Name="roomIndexValue" MinWidth="100" Grid.Column="1" Grid.Row="0" Margin="5,5" Value="{Binding RoomIndex, FallbackValue=-1, UpdateSourceTrigger=PropertyChanged}" DefaultValue="0"/>
 										<Grid Grid.Column="1" Grid.Row="1" Margin="0,5">
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition/>
 											</Grid.ColumnDefinitions>
-											<ComboBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="5,0" VerticalAlignment="Stretch" ItemsSource="{Binding Path=DifficultyModifierList, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding DifficultyModifierString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+											<ComboBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="5,0" VerticalAlignment="Stretch" ItemsSource="{Binding DifficultyModifierList, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding DifficultyModifierString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 											<!-- <wpfTool:DecimalUpDown Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Visibility="{Binding ElementName=difficultyModifierCheckBox, Path=IsChecked}"/> -->
 										</Grid>
 										<Grid Grid.Column="1" Grid.Row="2" Margin="0,5">
@@ -300,8 +311,8 @@
 												<ColumnDefinition/>
 											</Grid.ColumnDefinitions>
 										</Grid>
-										<ComboBox x:Name="levelTypeDropDown" Grid.Column="1" Grid.Row="3"  Margin="5,5" ItemsSource="{Binding Source={x:Static Data:Globals.GetLevelTypes}, Mode=OneWay}" SelectedIndex="0" SelectedValue="{Binding GetLevelLoaded.GetLevelTypeString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-										<TextBox Grid.Row="4" Grid.Column="1" Margin="5,5" Text="{Binding GetLevelLoaded.GameplayCharacter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged }"/>
+										<ComboBox x:Name="levelTypeDropDown" Grid.Column="1" Grid.Row="3"  Margin="5,5" ItemsSource="{Binding Mode=OneWay, Source={x:Static Data:Globals.GetLevelTypes}}" SelectedIndex="0" SelectedValue="{Binding GetLevelLoaded.GetLevelTypeString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+										<TextBox Grid.Row="4" Grid.Column="1" Margin="5,5" Text="{Binding GetLevelLoaded.GameplayCharacter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
 
 									</Grid>
@@ -342,7 +353,7 @@
 											<ColumnDefinition/>
 											<ColumnDefinition Width="Auto"/>
 										</Grid.ColumnDefinitions>
-										<CheckBox x:Name="useRecommendationsCheckBox" Grid.Column="1" Content="Recommendations" Margin="0,0,10,0" IsChecked="{Binding UseRandomRecommendations, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}"/>
+										<CheckBox x:Name="useRecommendationsCheckBox" Grid.Column="1" Content="Recommendations" Margin="0,0,10,0" IsChecked="{Binding UseRandomRecommendations, FallbackValue=true, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 									</Grid>
 									<!-- Random Patient Chances Group-->
 									<GroupBox Header="Patient Chances" HorizontalAlignment="Stretch" Margin="0,5" VerticalAlignment="Stretch" Grid.Row="1">
@@ -354,7 +365,7 @@
 												<ColumnDefinition/>
 												<ColumnDefinition/>
 											</Grid.ColumnDefinitions>
-											<CheckBox Content="Number of Patient Types" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GeneratePatientTypeCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}" />
+											<CheckBox Content="Number of Patient Types" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GeneratePatientTypeCheck, FallbackValue=true, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 											<Grid Grid.Column="1" Grid.Row="1" Margin="0,5">
 												<Grid.RowDefinitions>
 													<RowDefinition Height="20"/>
@@ -385,7 +396,7 @@
 												<ColumnDefinition/>
 											</Grid.ColumnDefinitions>
 											<!-- Random Data - Patients -->
-											<CheckBox Content="Number of Patients" Grid.Column="0" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GeneratePatientsCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}" />
+											<CheckBox Content="Number of Patients" Grid.Column="0" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GeneratePatientsCheck, FallbackValue=true, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 											<Grid Grid.Column="1" Grid.Row="0" Margin="0,5">
 												<Grid.RowDefinitions>
 													<RowDefinition Height="20"/>
@@ -400,7 +411,7 @@
 												<wpfTool:IntegerUpDown Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5,0" Value="{Binding GeneratePatientsMax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0" Maximum="50" AllowTextInput="False"/>
 											</Grid>
 											<!-- Random Data - Delay -->
-											<CheckBox Content="Delay between Patients" Grid.Column="0" Grid.Row="1" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GeneratePatientDelayCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}" />
+											<CheckBox Content="Delay between Patients" Grid.Column="0" Grid.Row="1" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GeneratePatientDelayCheck, FallbackValue=true, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 											<Grid Grid.Column="1" Grid.Row="1" Margin="0,5">
 												<Grid.RowDefinitions>
 													<RowDefinition Height="20"/>
@@ -416,7 +427,7 @@
 											</Grid>
 
 											<!-- Random Data - Treatments -->
-											<CheckBox Content="Number of Treatments" Grid.Column="0" Grid.Row="2" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GenerateTreatmentsCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}"/>
+											<CheckBox Content="Number of Treatments" Grid.Column="0" Grid.Row="2" VerticalContentAlignment="Center" Margin="10,0,0,0" IsChecked="{Binding GenerateTreatmentsCheck, FallbackValue=true, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 											<Grid Grid.Column="1" Grid.Row="2" Margin="0,5">
 												<Grid.RowDefinitions>
 													<RowDefinition Height="20"/>
@@ -462,7 +473,7 @@
 										<CheckBox x:Name="uniqueTreatmentsCheckBox" Content="Unique Treatments Only Per Patient" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center" Margin="10,5,0,5" IsEnabled="False" IsChecked="True" Visibility="Hidden"/>
 										<Button x:Name="customTreatmentWeightsButton" Content="Level Custom Treatment Weights" Grid.Column="2" Grid.Row="0" Click="CustomTreatmentWeightsButtonClick" Padding="10,1" />
 									</Grid>
-									<Button x:Name="generateLevelButton" Grid.Row="6" Content="Generate Level" Margin="0,5" Padding="1,5" Command="{Binding Path=GenerateLevelCommand}"/>
+									<Button x:Name="generateLevelButton" Grid.Row="6" Content="Generate Level" Margin="0,5" Padding="1,5" Command="{Binding GenerateLevelCommand}"/>
 								</Grid>
 							</GroupBox>
 
@@ -471,7 +482,7 @@
 							</GroupBox> -->
 						</Grid>
 					</TabItem>
-					<TabItem Header="Patient Overview" IsEnabled="{Binding Path=LevelOverviewActive}">
+					<TabItem Header="Patient Overview" IsEnabled="{Binding LevelOverviewActive}">
 						<TabItem.Background>
 							<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
 								<GradientStop Color="#FFF0F0F0" Offset="0"/>
@@ -542,7 +553,7 @@
 
 						</Grid>
 					</TabItem>
-					<TabItem Header="Patient Chances" IsEnabled="{Binding Path=LevelOverviewActive}">
+					<TabItem Header="Patient Chances" IsEnabled="{Binding LevelOverviewActive}">
 						<Grid Background="#FFF">
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto"/>
@@ -563,7 +574,7 @@
 									<ColumnDefinition Width="Auto"/>
 									<ColumnDefinition Width="18"/>
 								</Grid.ColumnDefinitions>
-								<CheckBox x:Name="selectAllPatientChancesCheckbox" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="20" Margin="5,0" CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" Click="SelectAllPatientChancesCheckboxClick" IsChecked="True"/>
+								<CheckBox x:Name="selectAllPatientChancesCheckbox" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="20" Margin="5,0" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}" Click="SelectAllPatientChancesCheckboxClick" IsChecked="True"/>
 								<Label Content="Patient Name" Grid.Column="1" Margin="5,0,0,0" Width="200" MinWidth="100" VerticalContentAlignment="Center" FontWeight="Bold"/>
 								<Label Content=" " Grid.Column="2" Margin="10,5" Width="20" MinWidth="20"/>
 								<Label Content="Weight" Grid.Column="3" Margin="0" VerticalContentAlignment="Center" FontWeight="Bold"/>
@@ -588,15 +599,14 @@
 
 						</Grid>
 					</TabItem>
-					<TabItem Header="Simulator" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" IsEnabled="{Binding Path=LevelOverviewActive}">
+					<TabItem Header="Simulator" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" IsEnabled="{Binding LevelOverviewActive}">
 						<Grid Background="#FFE5E5E5">
 							<Grid.RowDefinitions>
 								<RowDefinition/>
 								<RowDefinition Height="Auto"/>
 							</Grid.RowDefinitions>
 
-							<DataGrid x:Name="patientSimulatorGrid" Grid.Row="0"  FrozenColumnCount="1" SelectionUnit="Cell" CanUserDeleteRows="False" CanUserAddRows="False" AutoGenerateColumns="False" CanUserSortColumns="False">
-							</DataGrid>
+							<DataGrid x:Name="patientSimulatorGrid" Grid.Row="0"  FrozenColumnCount="1" SelectionUnit="Cell" CanUserDeleteRows="False" CanUserAddRows="False" AutoGenerateColumns="False" CanUserSortColumns="False"/>
 
 							<Slider Grid.Row="1" />
 						</Grid>
@@ -623,12 +633,12 @@
 							<ColumnDefinition Width="Auto"/>
 						</Grid.ColumnDefinitions>
 						<Label x:Name="afterPreviewLabel" Grid.Column="0" Grid.Row="0" Content="After Preview"/>
-						<CheckBox x:Name="autoUpdateCheckbox" Grid.Column="1" Grid.Row="0" IsChecked="{Binding AllowLevelScriptUpdate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=true}" Content="Auto Update" Margin="0,0,10,0" VerticalAlignment="Center" />
+						<CheckBox x:Name="autoUpdateCheckbox" Grid.Column="1" Grid.Row="0" IsChecked="{Binding AllowLevelScriptUpdate, FallbackValue=true, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Auto Update" Margin="0,0,10,0" VerticalAlignment="Center" />
 					</Grid>
 
-					<TextBox x:Name="currentPreviewTextBox" Text="{Binding Path=GetLevelLoaded.GetCurrentLevelScript, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=''}" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5" TextWrapping="Wrap" IsReadOnly="True"  />
+					<TextBox x:Name="currentPreviewTextBox" Text="{Binding GetLevelLoaded.GetCurrentLevelScript, FallbackValue='', Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="5" TextWrapping="Wrap" IsReadOnly="True"  />
 					<GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Width="5" Grid.RowSpan="2" UseLayoutRounding="True" ResizeDirection="Columns"/>
-					<TextBox x:Name="afterPreviewTextBox" Text="{Binding Path=GetLevelLoaded.LevelScriptBuffer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=''}" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" TextWrapping="Wrap"/>
+					<TextBox x:Name="afterPreviewTextBox" Text="{Binding GetLevelLoaded.LevelScriptBuffer, FallbackValue='', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" TextWrapping="Wrap"/>
 
 				</Grid>
 			</Grid>

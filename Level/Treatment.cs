@@ -465,14 +465,37 @@ namespace HM4DesignTool.Level
             {
                 this.stationOwner = value;
                 this.OnPropertyChanged();
+                this.OnPropertyChanged("StationString");
+
             }
         }
 
-        public string StationOwnerString
+        public string StationString
         {
-            get => this.StationOwner?.StationName;
-            set => this.StationOwner = new Station(value);
+            get
+            {
+                if (this.StationOwner != null)
+                {
+                    return $"{this.StationOwner.DisplayStationName} => ";
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+            set
+            {
+                if (this.StationOwner != null)
+                {
+                    this.StationOwner.StationName = value;
+                }
+                else
+                {
+                    this.StationOwner = new Station(value);
+                }
+            }
         }
+
         #endregion
 
         #endregion
@@ -564,7 +587,7 @@ namespace HM4DesignTool.Level
                 outputList.Add(this.TreatmentName);
             }
 
-            outputList.Add(this.DifficultyUnlocked.ToString(CultureInfo.InvariantCulture));
+            outputList.Add(this.DifficultyUnlocked.ToString("N1"));
             outputList.Add(this.StationOwner?.StationName);
             outputList.Add(this.HeartsValue.ToString());
             outputList.Add(this.Weight.ToString());
@@ -665,6 +688,7 @@ namespace HM4DesignTool.Level
                 int roomIndex = this.parentPatient.RoomIndex;
                 Treatment newTreatment = Globals.GetSettings.GetTreatment(this.TreatmentName, roomIndex);
                 this.DifficultyUnlocked = newTreatment.HeartsValue = newTreatment.HeartsValue;
+                this.StationOwner = newTreatment.StationOwner;
                 this.Weight = newTreatment.Weight;
                 this.CustomizedWeight = this.Weight; // Default to the base weight from settings
                 this.Gesture = newTreatment.Gesture;
@@ -674,6 +698,7 @@ namespace HM4DesignTool.Level
             else
             {
                 this.DifficultyUnlocked = 0;
+                this.StationOwner = null;
                 this.Weight = 0;
                 this.Gesture = false;
                 this.AlwaysLast = false;

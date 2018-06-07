@@ -501,7 +501,7 @@ namespace HM4DesignTool.Level
         {
             if (categoryKey != null)
             {
-                Dictionary<string, List<Station>> filterdStationDict = new Dictionary<string, List<Station>>();  // Room[N] -> List with Treatment Class
+                Dictionary<string, List<Station>> filterdStationDict = new Dictionary<string, List<Station>>();  // Room[N] -> List with Station Class
 
                 if (this.StationCategoriesDict.ContainsKey(categoryKey))
                 {
@@ -576,10 +576,10 @@ namespace HM4DesignTool.Level
         {
             if (roomIndex > -1 && Globals.GetCategoryKey(roomIndex) != string.Empty)
             {
-                List<Station> treatmentList = this.GetStationList(Globals.GetCategoryKey(roomIndex));
-                if (treatmentList != null && treatmentList.Count > 0)
+                List<Station> stationList = this.GetStationList(Globals.GetCategoryKey(roomIndex));
+                if (stationList != null && stationList.Count > 0)
                 {
-                    foreach (Station s in treatmentList)
+                    foreach (Station s in stationList)
                     {
                         if (s.StationName == stationName)
                         {

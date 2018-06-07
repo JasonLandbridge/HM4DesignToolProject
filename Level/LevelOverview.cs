@@ -62,6 +62,8 @@ namespace HM4DesignTool.Level
         /// </summary>
         private bool showAvailableTreatmentsCheck;
 
+        private bool showStationsNextToTreatments;
+
         private int roomIndexValue;
 
         private double difficultyModifierValue;
@@ -372,6 +374,18 @@ namespace HM4DesignTool.Level
                 this.OnPropertyChanged("GetTreatmentsAvailableString");
             }
         }
+
+        public bool ShowStationsNextToTreatments
+        {
+            get => this.showStationsNextToTreatments;
+
+            set
+            {
+                this.showStationsNextToTreatments = value;
+                this.OnPropertyChanged();
+            }
+        }
+
 
         #region ItemCollections
 

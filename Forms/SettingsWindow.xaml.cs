@@ -222,7 +222,7 @@ namespace HM4DesignTool.Forms
             set
             {
                 this.stationTreatmentList = value;
-               // this.StationTreatmentColumn.ItemsSource = value;
+                this.StationTreatmentColumn.ItemsSource = value;
                 this.OnPropertyChanged();
             }
         }
@@ -503,8 +503,8 @@ namespace HM4DesignTool.Forms
         private void LoadSaveData()
         {
             // Changing the index will automatically load the save data in the UI
-            this.stationRoomList.SelectedIndex = 0;
             this.patientTypeRoomList.SelectedIndex = 0;
+            this.stationRoomList.SelectedIndex = 0;
             this.treatmentRoomList.SelectedIndex = 0;
             this.balancingRoomList.SelectedIndex = 0;
         }
