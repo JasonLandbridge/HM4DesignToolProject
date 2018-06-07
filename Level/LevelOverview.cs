@@ -221,6 +221,8 @@ namespace HM4DesignTool.Level
         public LevelOverview()
         {
             this.canExecuteCommands = true;
+
+            this.ShowStationsNextToTreatments = Globals.GetSettings.ShowStationNextToTreatment;
         }
         #endregion
 

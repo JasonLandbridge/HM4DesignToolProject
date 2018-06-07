@@ -205,6 +205,7 @@ namespace HM4DesignTool.Forms
             Globals.GetSettings.RoomFilterBonusCheck = (bool)this.levelListBonusCheck.IsChecked;
             Globals.GetSettings.RoomFilterUnknownCheck = (bool)this.levelListUnknownCheck.IsChecked;
 
+            Globals.GetSettings.ShowStationNextToTreatment = Globals.GetLevelOverview.ShowStationsNextToTreatments;
             if (this.levelListDisplay.Items.Count > 0)
             {
                 TreeViewItem categoryItem = this.levelListDisplay.Items[0] as TreeViewItem;

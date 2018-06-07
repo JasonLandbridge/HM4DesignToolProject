@@ -135,6 +135,16 @@ namespace HM4DesignTool.Level
             set => this.personalSettings.RoomFilterUnknownCheck = value;
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the room filter unknown is checked.
+        /// </summary>
+        public bool ShowStationNextToTreatment
+        {
+            get => this.personalSettings.ShowStationNextToTreatment;
+
+            set => this.personalSettings.ShowStationNextToTreatment = value;
+        }
+        
         #endregion
 
         #endregion
@@ -967,6 +977,7 @@ namespace HM4DesignTool.Level
         /// </summary>
         public bool RoomFilterUnknownCheck { get; set; } = true;
 
+        public bool ShowStationNextToTreatment { get; set; } = false;
         #endregion
 
         #endregion
