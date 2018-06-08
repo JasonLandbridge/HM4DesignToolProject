@@ -1023,7 +1023,15 @@ namespace HM4DesignTool.Level
 
                         if (patientIndex == 0)
                         {
-                            patient.Delay = 1000;
+                            if (this.GetLevelType != LevelTypeEnum.TimeTrial)
+                            {
+                                patient.Delay = 1000;
+                            }
+                            else
+                            {
+                                patient.Delay = Globals.GetRandom.Next(1000, 9999);
+                            }
+
                             continue;
                         }
 

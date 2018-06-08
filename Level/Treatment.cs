@@ -466,7 +466,21 @@ namespace HM4DesignTool.Level
                 this.stationOwner = value;
                 this.OnPropertyChanged();
                 this.OnPropertyChanged("StationString");
+                this.OnPropertyChanged("StationName");
 
+            }
+        }
+
+        public string StationName
+        {
+            get
+            {
+                return this.StationOwner.StationName;
+            }
+            set
+            {
+                this.StationOwner.StationName = value;
+                this.OnPropertyChanged();
             }
         }
 

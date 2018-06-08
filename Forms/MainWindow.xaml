@@ -244,7 +244,7 @@
 				</Grid.ColumnDefinitions>
 				<!-- Level List -->
 				<GroupBox Header="Level List" VerticalAlignment="Stretch" Margin="0,0,0,0">
-					<TreeView x:Name="levelListDisplay" Margin="0" ItemsSource="{Binding LevelListDisplayCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="216" />
+					<TreeView x:Name="levelListDisplay" Margin="0" ItemsSource="{Binding LevelListDisplayCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="216" Cursor="Hand" Focusable="False" />
 				</GroupBox>
 				<!-- Level List Filters-->
 				<GroupBox Header="Filters" HorizontalAlignment="Stretch" Margin="0,0,0,0" Grid.Row="1">
@@ -290,7 +290,7 @@
 				</Grid.RowDefinitions>
 				<!--Level Overview Tabs-->
 				<TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-					<TabItem Header="General">
+					<TabItem Header="General" Width="120">
 						<Grid Background="#FFF" IsEnabled="{Binding LevelOverviewActive}">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition/>
@@ -509,7 +509,7 @@
 							</GroupBox> -->
 						</Grid>
 					</TabItem>
-					<TabItem Header="Patient Overview" IsEnabled="{Binding LevelOverviewActive}">
+					<TabItem Header="Patient Overview" IsEnabled="{Binding LevelOverviewActive}" Width="120">
 						<TabItem.Background>
 							<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
 								<GradientStop Color="#FFF0F0F0" Offset="0"/>
@@ -580,7 +580,7 @@
 
 						</Grid>
 					</TabItem>
-					<TabItem Header="Patient Chances" IsEnabled="{Binding LevelOverviewActive}">
+					<TabItem Header="Patient Chances" IsEnabled="{Binding LevelOverviewActive}" Width="120">
 						<Grid Background="#FFF">
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto"/>
@@ -626,7 +626,7 @@
 
 						</Grid>
 					</TabItem>
-					<TabItem Header="Simulator" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" IsEnabled="{Binding LevelOverviewActive}">
+					<TabItem Visibility="Collapsed" Header="Simulator" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" IsEnabled="{Binding LevelOverviewActive}">
 						<Grid Background="#FFE5E5E5">
 							<Grid.RowDefinitions>
 								<RowDefinition/>
@@ -639,7 +639,7 @@
 						</Grid>
 					</TabItem>
 
-					<TabItem Header="New Simulator" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="54" IsEnabled="{Binding LevelOverviewActive}">
+					<TabItem Header="Simulator" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="120" IsEnabled="{Binding LevelOverviewActive}">
 						<Grid Background="#FFE5E5E5">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="150"/>
@@ -739,9 +739,6 @@
 
 
 						</Grid>
-					</TabItem>
-					<TabItem Header="TabItem" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="54">
-						<Grid Background="#FFE5E5E5"/>
 					</TabItem>
 				</TabControl>
 				<GridSplitter Grid.Row="1" ResizeDirection="Rows" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Height="5"/>

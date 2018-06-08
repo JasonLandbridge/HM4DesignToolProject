@@ -29,14 +29,9 @@
     ],
     "Room 6": [
       "curvy_male_casual",
-      "normal_male",
-      "normal_male1",
-      "senior_male1",
       "senior_male_casual",
       "teen1_male_casual",
-      "curvy_female",
-      "curvy_female1",
-      "senior_female",
+      "normal_female_casual",
       "teen1_female_casual"
     ],
     "Room 7": []
@@ -121,7 +116,7 @@
       "donate": "9.0,,1,35,False,False,#D9EAD3",
       "examineBody": "9.0,,1,40,False,False,#C9DAF8",
       "examineOrgan": "13.0,,1,30,False,False,#FCE5CD",
-      "examineTissue": "175.0,,1,25,False,False,#7DB1B0",
+      "examineTissue": "17.5,,1,25,False,False,#7DB1B0",
       "fingernail": "16.0,,1,20,False,False,#6D9EEB",
       "fingerprint": "9.0,,1,40,False,False,#00FF00",
       "folderDental": "13.0,,1,35,False,False,#93C47D",
@@ -180,7 +175,7 @@
       "applyBandaid": "28.0,StandingDesk,1,20,False,False,#F4CCCC",
       "applyColdPack": "26.0,StandingDesk,1,20,False,False,#CC0000",
       "applyDisinfectant": "28.5,TreatmentChair,1,20,False,False,#6AA84F",
-      "applyEyeWash": "28.0,TreatmentChair,1,40,False,False,#D9EAD3",
+      "applyEyeWash": "28.0,TreatmentChair,1,30,False,False,#D9EAD3",
       "applyHotBalm": "21.0,TreatmentChair,1,40,False,False,#D9EAD3",
       "applyHotPack": "28.5,StandingDesk,1,20,False,False,#CC0000",
       "applyLotion": "27.0,TreatmentChair,1,20,False,False,#6AA84F",
@@ -196,7 +191,7 @@
       "stitchTreatment": "28.0,StandingDesk,1,10,True,False,#FF0000",
       "takeBlood": "23.0,TreatmentChair,1,40,False,False,#6AA84F",
       "useThermometer": "27.0,StandingDesk,1,20,False,False,#F4CCCC",
-      "xrayTreatment": "21.0,Xray,1,15,False,False,#C27BA0",
+      "xrayTreatment": "21.0,Xray,1,15,False,True,#C27BA0",
       "defibrilator": "21.0,Bed,1,15,True,False,#9AC5CB"
     }
   },
