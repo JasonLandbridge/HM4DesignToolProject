@@ -424,6 +424,7 @@ namespace HM4DesignTool.Level
                 this.designToolData.Roomindex = value;
                 this.OnPropertyChanged("DesignToolDataString");
                 this.OnPropertyChanged("GetDifficultyModifier");
+                this.UpdatePatientTreatments();
                 this.UpdateLevelOutput();
             }
         }
@@ -1195,6 +1196,14 @@ namespace HM4DesignTool.Level
             this.OnPropertyChanged("PatientList");
             this.OnPropertyChanged("PatientCollection");
 
+            this.UpdatePatientTreatments();
+
+            this.UpdateLevelOutput();
+        }
+
+
+        public void UpdatePatientTreatments()
+        {
             foreach (Patient patient in this.PatientCollection)
             {
                 if (patient != null)
@@ -1202,8 +1211,6 @@ namespace HM4DesignTool.Level
                     patient.TreatmentsUpdated();
                 }
             }
-
-            this.UpdateLevelOutput();
         }
 
         /// <summary>

@@ -561,6 +561,7 @@ namespace HM4DesignTool.Level
         public void TreatmentsUpdated()
         {
             this.OnPropertyChanged("TreatmentCollection");
+            this.OnPropertyChanged("TreatmentOptions");
         }
 
         #endregion
