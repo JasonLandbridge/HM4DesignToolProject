@@ -65,6 +65,13 @@ namespace HM4DesignTool.Level
 
         #region Constructors
 
+        public PatientChance(string patientName)
+        {
+            this.PatientName = patientName;
+            this.Weight = 0;
+            this.canExecuteCommands = true;
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PatientChance"/> class, Object to store the PatientType with the Weight it can occur.
         /// </summary>
@@ -80,6 +87,14 @@ namespace HM4DesignTool.Level
             this.Weight = weight;
             this.canExecuteCommands = true;
         }
+
+        public PatientChance(string patientName, string weight = "0")
+        {
+            this.PatientName = patientName;
+            this.Weight = Globals.StringToInt(weight);
+            this.canExecuteCommands = true;
+        }
+
 
         #endregion Constructors
 

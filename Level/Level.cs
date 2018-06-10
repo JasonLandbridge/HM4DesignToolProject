@@ -18,6 +18,7 @@ namespace HM4DesignTool.Level
     using System.Globalization;
     using System.IO;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Windows.Input;
 
     using HM4DesignTool.Data;
@@ -102,6 +103,9 @@ namespace HM4DesignTool.Level
         #endregion PatientChance
 
         #region LevelScript
+
+        private List<string> additionalText = new List<string>(new string[20]);
+
 
         /// <summary>
         /// LevelScript buffer which in bound to the Front-End.
@@ -545,11 +549,19 @@ namespace HM4DesignTool.Level
             {
                 string output = string.Empty;
 
+                if (this.additionalText.Count > 0)
+                {
+                    output += $"{this.additionalText[0]}";
+                }
+
                 if (Globals.GetLevelOverview.InsertDesignData)
                 {
-                    output += this.designToolData.ToString();
-                    output += Environment.NewLine;
+                    output += $"{this.designToolData}\n";
+                }
 
+                if (this.additionalText.Count > 1)
+                {
+                    output += $"{this.additionalText[1]}";
                 }
 
                 // Output an optional GamePlay character.
@@ -1219,38 +1231,52 @@ namespace HM4DesignTool.Level
         /// </summary>
         private void ParseRawText()
         {
-            string rawLevelText = this.GetCurrentLevelScript;
-
-            // Clean up the text by removing tabs, enters and spaces and special characters.
-            rawLevelText = rawLevelText.Replace("\t", string.Empty).Replace("\r", string.Empty).Replace("{\n", "{")
-                .Replace(" ", string.Empty).Replace("\n\n", string.Empty);
-
-            // Parse possible GamePlayCharacters
-            rawLevelText = this.ParseGameplayCharacter(rawLevelText);
+            string rawText = this.GetCurrentLevelScript;
+            int addtionalTextIndex = 0;
 
             // Parse DesignToolData embeded in file.
-            string startDesignToolData = "--[[HM4DesignToolData:";
-            string endDesignToolData = "--]]";
-            if (rawLevelText.Contains(startDesignToolData) && rawLevelText.Contains(endDesignToolData))
+            string designDataText = Data.GetDesignData(rawText);
+            if (designDataText != string.Empty)
             {
-                int startDesignToolDataIndex = rawLevelText.IndexOf(startDesignToolData, StringComparison.Ordinal);
-                int endDesignToolDataIndex = rawLevelText.IndexOf(endDesignToolData, StringComparison.Ordinal) + endDesignToolData.Length;
-
-                if (startDesignToolDataIndex > -1 && endDesignToolDataIndex - endDesignToolData.Length > -1
-                                                  && startDesignToolDataIndex < endDesignToolDataIndex)
+                int designStartIndex = rawText.IndexOf(designDataText, 0);
+                if (designStartIndex > 0)
                 {
-                    string designToolDataText = rawLevelText.Substring(
-                        startDesignToolDataIndex,
-                        endDesignToolDataIndex - startDesignToolDataIndex);
-                    this.designToolData.ParseDesignData(designToolDataText);
-                    rawLevelText = rawLevelText.Replace(designToolDataText, string.Empty);
+                    this.additionalText[addtionalTextIndex] = rawText.SelectString(0, designStartIndex);
+                    rawText = rawText.Replace(this.additionalText[addtionalTextIndex], string.Empty);
+                    addtionalTextIndex++;
                 }
+                
+                this.ParseDesignData(rawText);
             }
 
-            rawLevelText = this.ParsePatientChances(rawLevelText);
+            // Parse possible GamePlayCharacters
+            this.ParseGameplayCharacter(rawText);
 
-            string unused = this.ParsePatientTriggers(rawLevelText);
+            this.ParsePatientChances(rawText);
 
+            ParseResult patientTriggerResult = this.ParsePatientTriggers(rawText);
+
+            //TODO Needs advice how to store text after everything. 
+           
+           //if (patientTriggerResult.ParseSucces)
+           //{
+
+           //    string levelDesc = "levelDesc.triggers";
+           //    int start = rawText.IndexOf(levelDesc) + levelDesc.Length;
+           //    int end = Data.FindClosingBracket(rawText, start);
+
+           //    this.additionalText[addtionalTextIndex] = rawText.SelectString(end, rawText.Length - 1);
+           //}
+
+
+        }
+
+
+        private void ParseDesignData(string rawLevelText)
+        {
+            rawLevelText = Data.FilterRawText(rawLevelText);
+
+            this.designToolData.ParseDesignData(Data.GetDesignData(rawLevelText));
         }
 
         /// <summary>
@@ -1264,17 +1290,10 @@ namespace HM4DesignTool.Level
         /// </returns>
         private string ParseGameplayCharacter(string rawLevelText)
         {
-            const string GameplayCharacterStartText = "levelDesc.gameplayCharacterId=\"";
-            const string GameplayCharacterEndText = "\"";
-            if (rawLevelText.Contains(GameplayCharacterStartText))
+            string gameplayCharacterText = Data.GetTableText(rawLevelText, "gameplayCharacterId");
+            if (gameplayCharacterText != string.Empty)
             {
-                int startGameplayCharacterIndex = rawLevelText.IndexOf(GameplayCharacterStartText, StringComparison.Ordinal)
-                                                  + GameplayCharacterStartText.Length;
-                int endGameplayCharacterIndex = rawLevelText.IndexOf(GameplayCharacterEndText, startGameplayCharacterIndex, StringComparison.Ordinal);
-
-                this.GameplayCharacter = rawLevelText.Substring(startGameplayCharacterIndex, endGameplayCharacterIndex - startGameplayCharacterIndex);
-
-                rawLevelText = rawLevelText.Replace($"{GameplayCharacterStartText}{this.GameplayCharacter}{GameplayCharacterEndText}", string.Empty);
+                this.GameplayCharacter = gameplayCharacterText;
             }
 
             // Assuming the levelDesc.decoId is the same GameplayCharacter then just remove it. 
@@ -1290,6 +1309,7 @@ namespace HM4DesignTool.Level
             return rawLevelText;
         }
 
+
         /// <summary>
         /// Parse the patient chances into workable PatientChance objects
         /// </summary>
@@ -1299,57 +1319,26 @@ namespace HM4DesignTool.Level
         /// <returns>
         /// The <see cref="string"/> left over rawLevelText that can be parsed by other functions.
         /// </returns>
-        private string ParsePatientChances(string rawLevelText)
+        private void ParsePatientChances(string rawLevelText)
         {
-            // Parse the PatientChances section.
-            const string StartPatientChancesText = "levelDesc.patientChances=";
-            const string EndPatientChancesText = "}";
-            if (rawLevelText.Contains(StartPatientChancesText) && rawLevelText.Contains(EndPatientChancesText))
+            List<string> patientChanceList = Data.GetPatientChancesTable(rawLevelText);
+
+            this.PatientChanceList.Clear();
+
+
+            if (patientChanceList != null && patientChanceList.Count > 0)
             {
-                int startPatientChancesIndex = rawLevelText.IndexOf(StartPatientChancesText, StringComparison.Ordinal);
-                int endPatientChancesIndex = rawLevelText.IndexOf(EndPatientChancesText, StringComparison.Ordinal) + EndPatientChancesText.Length;
-
-                if (startPatientChancesIndex > -1 && endPatientChancesIndex - EndPatientChancesText.Length > -1 && startPatientChancesIndex < endPatientChancesIndex)
+                foreach (string patientChance in patientChanceList)
                 {
-                    // Do some extra formatting and cleaning up.
-                    string patientsChancesRawText = rawLevelText.Substring(startPatientChancesIndex, endPatientChancesIndex - startPatientChancesIndex);
-                    rawLevelText = rawLevelText.Remove(startPatientChancesIndex, endPatientChancesIndex);
-
-                    // Filter all new lines, remove the unnecessary text
-                    patientsChancesRawText = patientsChancesRawText.Replace("/n", string.Empty);
-                    patientsChancesRawText = patientsChancesRawText.Replace(StartPatientChancesText, string.Empty).Replace(",}", "}");
-                    patientsChancesRawText = patientsChancesRawText.Trim(' ').Replace("=", ":");
-
-                    // Translate to workable Dictionary, use double because some weights have been set als float. Always save back as an integer. 
-                    Dictionary<string, double> patientChancesDict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, double>>(patientsChancesRawText);
-
-                    foreach (KeyValuePair<string, double> patientChance in patientChancesDict)
+                    string[] parameters = Regex.Split(patientChance, "=");
+                    if (parameters.Length > 1)
                     {
-                        bool patientChanceExist = false;
-
-                        foreach (PatientChance patientChanceListItem in this.PatientChanceList)
-                        {
-                            if (patientChanceListItem.PatientName == patientChance.Key)
-                            {
-                                patientChanceExist = true;
-                                patientChanceListItem.Weight = Convert.ToInt32(patientChance.Value);
-                                break;
-                            }
-                        }
-
-                        // Create new entry if patientChance does not exist.
-                        if (!patientChanceExist)
-                        {
-                            PatientChance newPatientChance = new PatientChance(patientChance.Key, Convert.ToInt32(patientChance.Value));
-                            newPatientChance.ParentLevel = this;
-                            this.PatientChanceList.Add(newPatientChance);
-                        }
+                        this.PatientChanceList.Add(new PatientChance(parameters[0], parameters[1]));
                     }
+
                 }
             }
 
-            // Return to continue parsing in other functions
-            return rawLevelText;
         }
 
         /// <summary>
@@ -1358,64 +1347,28 @@ namespace HM4DesignTool.Level
         /// <param name="rawLevelText">
         /// The raw level text.
         /// </param>
-        /// <returns>
-        /// The <see cref="string"/> left over rawLevelText that can be parsed by other functions.
-        /// </returns>
-        private string ParsePatientTriggers(string rawLevelText)
+        private ParseResult ParsePatientTriggers(string rawLevelText)
         {
-            // Parse the PatientList with treatments
-            const string StartPatientTriggerText = "levelDesc.triggers=";
-            const string EndPatientTriggerText = "},\n}";
-            string[] delimiter = { "},\n" };
+            ParseResult parseResult = new ParseResult();
 
-            if (rawLevelText.Contains(StartPatientTriggerText) && rawLevelText.Contains(EndPatientTriggerText))
+            List<string> patientTriggerList = Data.GetPatientTriggersTable(rawLevelText);
+
+            this.PatientCollection.Clear();
+
+            if (patientTriggerList != null && patientTriggerList.Count > 0)
             {
-                // Determin the exact range of the text we need to parse.
-                int startPatientTriggerIndex = rawLevelText.IndexOf(StartPatientTriggerText, StringComparison.Ordinal);
-                int endPatientTriggerIndex = rawLevelText.IndexOf(EndPatientTriggerText, StringComparison.Ordinal) + EndPatientTriggerText.Length;
-
-                if (startPatientTriggerIndex > -1 && endPatientTriggerIndex - EndPatientTriggerText.Length > -1 && startPatientTriggerIndex < endPatientTriggerIndex)
+                foreach (string patientTrigger in patientTriggerList)
                 {
-                    string patientsTriggersRawText = rawLevelText.Substring(startPatientTriggerIndex, endPatientTriggerIndex - startPatientTriggerIndex);
-
-                    // Filter all new lines, remove the unnecessary text
-                    patientsTriggersRawText = patientsTriggersRawText.Replace(StartPatientTriggerText, string.Empty).TrimEnd('}');
-
-                    // Remove the first new line
-                    if (patientsTriggersRawText.StartsWith("\n"))
-                    {
-                        patientsTriggersRawText = patientsTriggersRawText.Remove(0, 2);
-                    }
-
-                    if (patientsTriggersRawText.StartsWith("{{"))
-                    {
-                        patientsTriggersRawText = patientsTriggersRawText.Remove(0, 1);
-                    }
-
-                    // Split into seperate items divided by PatientTrigger
-                    List<string> patientTriggers = patientsTriggersRawText.Split(delimiter, StringSplitOptions.RemoveEmptyEntries).ToList();
-
-                    for (int i = 0; i < patientTriggers.Count; i++)
-                    {
-                        // Remove all newlines ("\n") and tabs ("\t")
-                        string correctedEntry = patientTriggers[i].Replace("\n", string.Empty).Replace("\t", string.Empty);
-
-                        // Add the delimiter back again at the end. 
-                        patientTriggers[i] = $"{correctedEntry}}}";
-                    }
-
-                    // Create all the patients
-                    foreach (string patientTrigger in patientTriggers)
-                    {
-                        if (patientTrigger.Length > 5)
-                        {
-                            this.AddPatient(patientTrigger);
-                        }
-                    }
+                    this.AddPatient(patientTrigger);
                 }
+                parseResult.ParseSucces = true;
+            }
+            else
+            {
+                parseResult.ParseSucces = false;
             }
 
-            return rawLevelText;
+            return parseResult;
         }
 
         #endregion ParseData

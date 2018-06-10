@@ -522,6 +522,25 @@ namespace HM4DesignTool.Level
             }
         }
 
+
+        /// <summary>
+        /// Set the treatments from List(string Treatment Name).
+        /// </summary>
+        /// <param name="listTreatment">
+        /// The treatment list.
+        /// </param>
+        public void SetTreatments(List<string> listTreatment)
+        {
+            List<Treatment> treatmentList = new List<Treatment>();
+            foreach (string treatment in listTreatment)
+            {
+                treatmentList.Add(new Treatment(treatment, this));
+            }
+
+            this.SetTreatments(treatmentList);
+        }
+            
+
         /// <summary>
         /// Set the treatments from List(Treatment).
         /// </summary>
@@ -675,94 +694,50 @@ namespace HM4DesignTool.Level
         /// </param>
         private void ParsePatientData(string patientData)
         {
-            // Clean up the patientData
-            patientData = System.Text.RegularExpressions.Regex.Replace(patientData, @"\s+", string.Empty);
-            patientData = patientData.Replace("\t", string.Empty).Replace("--", string.Empty);
-            patientData = Globals.RemoveFirstComma(patientData);
+            patientData = patientData.Replace("\"", string.Empty);
 
-            // Parse the delay
-            string delayText = "delay=";
-            if (patientData.Contains(delayText))
+            List<string> parameterList = new List<string> { "delay", "weight", "todo" };
+            for (int i = 0; i < parameterList.Count; i++)
             {
-                int startIndex = patientData.IndexOf(delayText, StringComparison.Ordinal) + delayText.Length;
-                int endIndex = patientData.IndexOf(",", StringComparison.Ordinal);
-                if (startIndex > -1 && endIndex > -1)
+                if (patientData.Contains(parameterList[i]))
                 {
-                    string delayString = patientData.Substring(startIndex, endIndex - startIndex);
-                    delayString = Globals.FilterToNumerical(delayString);
-                    if (delayString != string.Empty)
-                    {
-                        this.delay = Convert.ToInt32(delayString);
-                    }
-                    else
-                    {
-                        Console.WriteLine("ERROR: Level.ParsePatientData, Failed to parse delayString, was none!");
-                    }
+                    string text = Data.GetVariable(patientData, parameterList[i]);
+                    text = Globals.RemoveFirstComma(text);
 
-                    patientData = patientData.Remove(startIndex - delayText.Length, endIndex);
-                }
-            }
-
-            // Parse the weight
-            patientData = Globals.RemoveFirstComma(patientData);
-            string weightText = "weight=";
-            if (patientData.Contains(weightText))
-            {
-                int startIndex = patientData.IndexOf(weightText, StringComparison.Ordinal) + weightText.Length;
-                int endIndex = patientData.IndexOf(",", StringComparison.Ordinal);
-                if (startIndex > -1 && endIndex > 0)
-                {
-                    string weightString = patientData.Substring(startIndex, endIndex - startIndex);
-                    weightString = Globals.FilterToNumerical(weightString);
-                    if (weightString != string.Empty)
+                    if (text != string.Empty)
                     {
-                        this.weight = Convert.ToInt32(weightString);
-                    }
-                    else
-                    {
-                        Console.WriteLine("ERROR: Level.ParsePatientData, Failed to parse weightString, was none!");
-                        this.weight = -1;
-                    }
-
-                    patientData = patientData.Remove(startIndex - weightText.Length, endIndex);
-                }
-            }
-
-            // Parse the treatment list
-            patientData = Globals.RemoveFirstComma(patientData);
-            string treatmentStartText = "todo={";
-            string treatmentEndText = "}";
-            if (patientData.Contains(treatmentStartText))
-            {
-                int startIndex = patientData.IndexOf(treatmentStartText, StringComparison.Ordinal) + treatmentStartText.Length;
-                int endIndex = patientData.IndexOf(treatmentEndText, startIndex, StringComparison.Ordinal);
-                if (startIndex > -1 && endIndex > -1)
-                {
-                    string rawTreatments = patientData.Substring(startIndex, endIndex - startIndex);
-                    rawTreatments = rawTreatments.Replace("\"", string.Empty);
-                    List<string> treatmentListString = rawTreatments.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-
-                    // Convert found treatments to Treatment Objects
-                    for (int i = 0;
-                         i < Math.Max(treatmentListString.Count, Globals.GetLevelOverview.MaxTreatmentsVisible);
-                         i++)
-                    {
-                        if (i < treatmentListString.Count)
+                        switch (i)
                         {
-                            this.AddTreatment(treatmentListString[i]);
-                        }
-                        else
-                        {
-                            this.AddTreatment();
-                        }
-                    }
+                            // Delay
+                            case 0:
+                                this.Delay = Globals.StringToInt(text);
+                                break;
 
-                    patientData = patientData.Remove(startIndex - treatmentStartText.Length, endIndex);
+                            // Weight
+                            case 1:
+                                this.Weight = Globals.StringToInt(text);
+                                break;
+
+                            // Treatments
+                            case 2:
+                                this.SetTreatments(text.Split(',').ToList());
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    }
+                    // Remove found entries to later still store any unindexed text. 
+                    patientData = patientData.Replace($"{parameterList[i]}={text}", string.Empty);
+                    patientData = patientData.Replace($"{parameterList[i]}={{{text}}}", string.Empty);
+
+                    patientData = Globals.RemoveFirstComma(patientData);
                 }
             }
 
             // If there is remaining data then it is probably traits that have been added.
-            patientData = Globals.RemoveFirstComma(patientData);
+           
             if (patientData.Length > 5)
             {
                 patientData = patientData.Trim().Replace("=", ":");
@@ -773,7 +748,7 @@ namespace HM4DesignTool.Level
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine($"ERROR: Level.ParsePatientData, failed to parse patientData: {patientData}");
+                    Console.WriteLine($"ERROR: Patient.ParsePatientData, failed to parse patientData: {patientData}");
                 }
             }
         }

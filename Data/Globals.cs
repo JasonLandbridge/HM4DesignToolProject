@@ -190,6 +190,42 @@ namespace HM4DesignTool.Data
             }
         }
 
+
+
+        public static int StringToInt(string intString)
+        {
+           return Convert.ToInt32(FilterToNumerical(intString));
+        }
+
+        public static LevelTypeEnum StringToLevelType(string levelType)
+        {
+            switch (levelType)
+            {
+                case "Bonus":
+                    return LevelTypeEnum.Bonus;
+
+                case "Story":
+                    return LevelTypeEnum.Story;
+
+                case "MiniGame":
+                    return LevelTypeEnum.MiniGame;
+
+                case "TimeTrial":
+                    return LevelTypeEnum.TimeTrial;
+
+                case "Oliver":
+                    return LevelTypeEnum.OliverOne;
+
+                case "OliverOne":
+                    return LevelTypeEnum.OliverOne;
+
+                case "OliverAll":
+                    return LevelTypeEnum.OliverAll;
+
+                default:
+                    return LevelTypeEnum.Unknown;
+            }
+        }
         #endregion
 
         #region Filters
@@ -237,6 +273,18 @@ namespace HM4DesignTool.Data
 
         #region Checks
 
+        public static bool IsBooleanValue(string value)
+        {
+            if (value != string.Empty)
+            {
+                return value == "false" || value == "true" || value == "False" || value == "True";
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Test if the string is a valid hexcode.
         /// </summary>
@@ -257,17 +305,5 @@ namespace HM4DesignTool.Data
         #endregion
 
         #endregion
-
-        public static bool IsBooleanValue(string value)
-        {
-            if (value != string.Empty)
-            {
-                return value == "false" || value == "true" || value == "False" || value == "True";
-            }
-            else
-            {
-                return false;
-            }
-        }
     }
 }

@@ -14,6 +14,7 @@ namespace HM4DesignTool.Level
     using System.ComponentModel;
     using System.Linq;
     using System.Runtime.CompilerServices;
+    using System.Text.RegularExpressions;
 
     using HM4DesignTool.Data;
 
@@ -28,12 +29,6 @@ namespace HM4DesignTool.Level
         /// The difficulty level text.
         /// </summary>
         private const string DifficultyLevelText = "DifficultyLevel:";
-
-        /// <summary>
-        /// The end design tool data text.
-        /// </summary>
-        private const string EndDesignToolDataText = "--]]";
-
         /// <summary>
         /// The level type text.
         /// </summary>
@@ -43,11 +38,6 @@ namespace HM4DesignTool.Level
         /// The room index text.
         /// </summary>
         private const string RoomIndexText = "RoomIndex:";
-
-        /// <summary>
-        /// The start design tool data text.
-        /// </summary>
-        private const string StartDesignToolDataText = "--[[HM4DesignToolData:";
 
         /// <summary>
         /// The difficulty level.
@@ -75,6 +65,16 @@ namespace HM4DesignTool.Level
         #endregion Events
 
         #region Properties
+
+        /// <summary>
+        /// The start design tool data text.
+        /// </summary>
+        public static string StartDesignToolDataText { get; } = "--[[HM4DesignToolData:";
+
+        /// <summary>
+        /// The end design tool data text.
+        /// </summary>
+        public static string EndDesignToolDataText { get; } = "--]]";
 
         /// <summary>
         /// Gets or sets the Difficulty level.
@@ -134,9 +134,10 @@ namespace HM4DesignTool.Level
         public void ParseDesignData(string designToolData)
         {
             designToolData = designToolData.Replace("\t", string.Empty).Replace("\r", string.Empty).Replace(" ", string.Empty);
+
             designToolData = designToolData.Replace(StartDesignToolDataText, string.Empty).Replace(EndDesignToolDataText, string.Empty);
-            string[] delimiter = { "\n" };
-            List<string> designToolList = designToolData.Split(delimiter, StringSplitOptions.None).ToList();
+
+            List<string> designToolList = Regex.Split(designToolData, ",").Where(s => s != string.Empty).ToList();
 
             foreach (string entry in designToolList)
             {
@@ -145,53 +146,31 @@ namespace HM4DesignTool.Level
                 if (textItem.Contains(RoomIndexText))
                 {
                     textItem = textItem.Replace(RoomIndexText, string.Empty);
-                    textItem = Globals.FilterToNumerical(textItem);
-                    this.Roomindex = Convert.ToInt32(textItem);
+                    this.Roomindex = Globals.StringToInt(textItem);
                 }
 
                 if (textItem.Contains(DifficultyLevelText))
                 {
                     textItem = textItem.Replace(DifficultyLevelText, string.Empty);
-                    this.DifficultyLevel = (float)Convert.ToDouble(textItem);
+                    try
+                    {
+                        this.DifficultyLevel = Convert.ToDouble(textItem);
+                        Console.WriteLine("Converted '{0}' to {1}.", textItem, this.DifficultyLevel);
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Unable to convert '{0}' to a Double.", textItem);
+                    }
+                    catch (OverflowException)
+                    {
+                        Console.WriteLine("'{0}' is outside the range of a Double.", textItem);
+                    }
                 }
 
                 if (textItem.Contains(LevelTypeText))
                 {
                     textItem = textItem.Replace(LevelTypeText, string.Empty);
-                    switch (textItem)
-                    {
-                        case "Bonus":
-                            this.LevelType = LevelTypeEnum.Bonus;
-                            break;
-
-                        case "Story":
-                            this.LevelType = LevelTypeEnum.Story;
-                            break;
-
-                        case "MiniGame":
-                            this.LevelType = LevelTypeEnum.MiniGame;
-                            break;
-
-                        case "TimeTrial":
-                            this.LevelType = LevelTypeEnum.TimeTrial;
-                            break;
-
-                        case "Oliver":
-                            this.LevelType = LevelTypeEnum.OliverOne;
-                            break;
-
-                        case "OliverOne":
-                            this.LevelType = LevelTypeEnum.OliverOne;
-                            break;
-
-                        case "OliverAll":
-                            this.LevelType = LevelTypeEnum.OliverAll;
-                            break;
-
-                        default:
-                            this.LevelType = LevelTypeEnum.Unknown;
-                            break;
-                    }
+                    this.LevelType = Globals.StringToLevelType(textItem);
                 }
             }
         }
@@ -204,24 +183,24 @@ namespace HM4DesignTool.Level
         /// </returns>
         public override string ToString()
         {
-            string output = StartDesignToolDataText + Environment.NewLine;
+            string output = $"{StartDesignToolDataText}\n";
 
             if (this.Roomindex > 0)
             {
-                output += RoomIndexText + " \t" + this.Roomindex.ToString() + Environment.NewLine;
+                output += $"{RoomIndexText} \t {this.Roomindex},\n";
             }
 
             if (this.DifficultyLevel > 0)
             {
-                output += DifficultyLevelText + " \t" + this.DifficultyLevel + Environment.NewLine;
+                output += $"{DifficultyLevelText} \t {this.DifficultyLevel},\n";
             }
 
             if (this.LevelType > 0)
             {
-                output += LevelTypeText + " \t" + this.LevelType.ToString() + Environment.NewLine;
+                output += $"{LevelTypeText} \t {this.LevelType},\n";
             }
 
-            output += EndDesignToolDataText + Environment.NewLine;
+            output += $"{EndDesignToolDataText}\n";
             return output;
         }
 

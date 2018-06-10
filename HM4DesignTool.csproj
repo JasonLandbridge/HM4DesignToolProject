@@ -112,9 +112,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Data\Data.cs" />
     <Compile Include="Data\Enum.cs" />
     <Compile Include="Data\GameValues.cs" />
     <Compile Include="Data\Globals.cs" />
+    <Compile Include="Data\ParseResult.cs" />
     <Compile Include="Forms\TraitsWindow.xaml.cs">
       <DependentUpon>TraitsWindow.xaml</DependentUpon>
     </Compile>
@@ -136,6 +138,8 @@
     <Compile Include="Level\Treatment.cs" />
     <Compile Include="Utilities\ClassTemplate.cs" />
     <Compile Include="Utilities\CommandHandler.cs" />
+    <None Include="Utilities\Form1.cs" />
+    <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\GridHelpers.cs" />
     <Page Include="Forms\CustomWeightsWindow.xaml">
       <SubType>Designer</SubType>
