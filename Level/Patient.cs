@@ -13,6 +13,7 @@ namespace HM4DesignTool.Level
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Windows.Input;
 
     using HM4DesignTool.Data;
@@ -82,7 +83,7 @@ namespace HM4DesignTool.Level
         /// <summary>
         /// The patient trait list for this patient.
         /// </summary>
-        private List<PatientTrait> patientTraitList = new List<PatientTrait>();
+        private ObservableCollection<PatientTrait> patientTraitList = new ObservableCollection<PatientTrait>();
 
         #endregion
 
@@ -310,28 +311,15 @@ namespace HM4DesignTool.Level
         }
 
         /// <summary>
-        /// Gets or sets the PatientTrait list.
-        /// </summary>
-        public List<PatientTrait> PatientTraitList
-        {
-            get => this.patientTraitList;
-            set
-            {
-                this.patientTraitList = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the list with all the Patient objects in this level converted to an ObservableCollection.
         /// </summary>
         public ObservableCollection<PatientTrait> PatientTraitCollection
         {
-            get => new ObservableCollection<PatientTrait>(this.PatientTraitList);
+            get => this.patientTraitList;
 
             set
             {
-                this.PatientTraitList = value.ToList();
+                this.patientTraitList = value;
                 this.OnPropertyChanged();
                 this.UpdatePatientTraitString();
             }
@@ -447,7 +435,7 @@ namespace HM4DesignTool.Level
             var patient = obj as Patient;
             return patient != null && this.PatientName == patient.PatientName && this.Delay == patient.Delay && this.Weight == patient.Weight &&
                    EqualityComparer<ObservableCollection<Treatment>>.Default.Equals(this.TreatmentCollection, patient.TreatmentCollection) &&
-                   EqualityComparer<List<PatientTrait>>.Default.Equals(this.PatientTraitList, patient.PatientTraitList);
+                   EqualityComparer<ObservableCollection<PatientTrait>>.Default.Equals(this.PatientTraitCollection, patient.PatientTraitCollection);
         }
 
         /// <inheritdoc />
@@ -458,7 +446,7 @@ namespace HM4DesignTool.Level
             hashCode = (hashCode * -1521134295) + this.Delay.GetHashCode();
             hashCode = (hashCode * -1521134295) + this.Weight.GetHashCode();
             hashCode = (hashCode * -1521134295) + EqualityComparer<ObservableCollection<Treatment>>.Default.GetHashCode(this.TreatmentCollection);
-            hashCode = (hashCode * -1521134295) + EqualityComparer<List<PatientTrait>>.Default.GetHashCode(this.PatientTraitList);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<ObservableCollection<PatientTrait>>.Default.GetHashCode(this.PatientTraitCollection);
             return hashCode;
         }
         #endregion
@@ -585,7 +573,7 @@ namespace HM4DesignTool.Level
         {
             string output = string.Empty;
 
-            foreach (PatientTrait patientTrait in this.PatientTraitList)
+            foreach (PatientTrait patientTrait in this.PatientTraitCollection)
             {
                 output += patientTrait.ToString();
             }
@@ -634,14 +622,16 @@ namespace HM4DesignTool.Level
                     output = $"{output}, weight = {this.weight.ToString()}";
                 }
 
-                if (this.TreatmentCollection != null && this.TreatmentCollection.Count() > 0)
+                if (this.TreatmentCollection != null && this.TreatmentCollection.Count > 0)
                 {
                     output = $"{output}, todo = {{{this.TreatmentListString}}}";
                 }
 
-                if (this.patientTraitList.Count > 0)
+                if (this.PatientTraitCollection.Count > 0)
                 {
-                    foreach (PatientTrait patientTrait in this.patientTraitList)
+                    output += ", ";
+
+                    foreach (PatientTrait patientTrait in this.PatientTraitCollection)
                     {
                         output += patientTrait.ToString();
                     }
@@ -667,15 +657,16 @@ namespace HM4DesignTool.Level
         public void OpenTraitsWindow()
         {
             // Make sure at least 10 entries are avalible. 
-            if (this.PatientTraitList.Count <= 10)
+            if (this.PatientTraitCollection.Count <= 10)
             {
-                for (; this.PatientTraitList.Count <= 10;)
+                for (; this.PatientTraitCollection.Count <= 10;)
                 {
-                    this.PatientTraitList.Add(new PatientTrait());
+                    this.PatientTraitCollection.Add(new PatientTrait());
                 }
             }
 
-            TraitsWindow dialog = new TraitsWindow { DataContext = this };
+            TraitsWindow dialog = new TraitsWindow { PatientParent = this };
+            dialog.PatientParent = this;
             bool? unused = dialog.ShowDialog();
         }
 
@@ -738,17 +729,22 @@ namespace HM4DesignTool.Level
 
             // If there is remaining data then it is probably traits that have been added.
            
-            if (patientData.Length > 5)
+            if (patientData != string.Empty && patientData.Length > 0)
             {
-                patientData = patientData.Trim().Replace("=", ":");
-                try
+                List<string> traitsList = Regex.Split(patientData, ",").Where(s => s != string.Empty).ToList();
+                this.PatientTraitCollection.Clear();
+
+                foreach (string trait in traitsList)
                 {
-                    Dictionary<string, string> unused =
-                        Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(patientData);
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine($"ERROR: Patient.ParsePatientData, failed to parse patientData: {patientData}");
+                    List<string> valueList = Regex.Split(trait, "=").Where(s => s != string.Empty).ToList();
+                    if (valueList.Count == 2)
+                    {
+                        this.PatientTraitCollection.Add(new PatientTrait(valueList[0], valueList[1]));
+                    }else if (valueList.Count == 1)
+                    {
+                        this.PatientTraitCollection.Add(new PatientTrait(valueList[0]));
+
+                    }
                 }
             }
         }

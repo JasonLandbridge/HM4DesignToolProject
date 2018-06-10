@@ -16,7 +16,7 @@
 			<ColumnDefinition/>
 			<ColumnDefinition Width="Auto"/>
 		</Grid.ColumnDefinitions>
-		<DataGrid ItemsSource="{Binding PatientTraitCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" SelectionUnit="Cell" SelectionMode="Single">
+		<DataGrid ItemsSource="{Binding PatientTraitCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" SelectionUnit="Cell" SelectionMode="Single" CellEditEnding="DataGrid_CellEditEnding">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Property" Width="*" Binding="{Binding Property, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 				<DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

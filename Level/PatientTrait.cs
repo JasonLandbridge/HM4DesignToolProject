@@ -1,6 +1,9 @@
 ﻿namespace HM4DesignTool.Level
 {
+    using System;
     using System.ComponentModel;
+
+    using HM4DesignTool.Data;
 
     public class PatientTrait
     {
@@ -34,6 +37,12 @@
 
         }
 
+        public PatientTrait(string Property)
+        {
+            this.Property = Property;
+            this.Value = string.Empty;
+        }
+
         public PatientTrait(string Property, string Value)
         {
             this.Property = Property;
@@ -44,7 +53,14 @@
         {
             if (this.Property != string.Empty && this.Value != string.Empty)
             {
-                return $"{this.Property} = {this.Value},";
+                if (Globals.IsBooleanValue(this.Value))
+                {
+                    return $" {this.Property} = {this.Value},";
+                }
+                else
+                {
+                    return $" {this.Property} = \"{this.Value}\",";
+                }
             }
             else
             {

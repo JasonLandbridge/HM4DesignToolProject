@@ -194,7 +194,14 @@ namespace HM4DesignTool.Data
 
         public static int StringToInt(string intString)
         {
-           return Convert.ToInt32(FilterToNumerical(intString));
+            if (intString != string.Empty && intString != "None")
+            {
+                return Convert.ToInt32(FilterToNumerical(intString));
+            }
+            else
+            {
+                return -1;
+            }
         }
 
         public static LevelTypeEnum StringToLevelType(string levelType)

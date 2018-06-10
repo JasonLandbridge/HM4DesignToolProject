@@ -155,15 +155,15 @@ namespace HM4DesignTool.Level
                     try
                     {
                         this.DifficultyLevel = Convert.ToDouble(textItem);
-                        Console.WriteLine("Converted '{0}' to {1}.", textItem, this.DifficultyLevel);
+                       // Console.WriteLine("Converted '{0}' to {1}.", textItem, this.DifficultyLevel);
                     }
                     catch (FormatException)
                     {
-                        Console.WriteLine("Unable to convert '{0}' to a Double.", textItem);
+                       Console.WriteLine("Unable to convert '{0}' to a Double.", textItem);
                     }
                     catch (OverflowException)
                     {
-                        Console.WriteLine("'{0}' is outside the range of a Double.", textItem);
+                       Console.WriteLine("'{0}' is outside the range of a Double.", textItem);
                     }
                 }
 
