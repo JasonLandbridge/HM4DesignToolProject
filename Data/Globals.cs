@@ -92,6 +92,21 @@ namespace HM4DesignTool.Data
         }
 
         /// <summary>
+        /// Gets the treatment types in a string list.
+        /// </summary>
+        public static List<string> GetTreatmentTypes
+        {
+            get
+            {
+                IEnumerable<TreatmentTypeEnum> output = Enum.GetValues(typeof(TreatmentTypeEnum)).Cast<TreatmentTypeEnum>();
+                List<string> treatmentTypes = new List<string>();
+                treatmentTypes.AddRange(output.Select(treatmentType => treatmentType.ToString()));
+                return treatmentTypes;
+            }
+        }
+
+
+        /// <summary>
         /// Gets a string list of the room categories.
         /// Adding a room here is enough to make the tool functional with additional rooms.
         /// </summary>
@@ -190,13 +205,34 @@ namespace HM4DesignTool.Data
             }
         }
 
+        public static bool StringToBool(string boolString)
+        {
+            if (IsBooleanValue(boolString))
+            {
+                bool unused;
+                if (bool.TryParse(boolString, out unused))
+                {
+                    return bool.Parse(boolString);
+                }
+            }
 
+            return false;
+        }
 
         public static int StringToInt(string intString)
         {
             if (intString != string.Empty && intString != "None")
             {
-                return Convert.ToInt32(FilterToNumerical(intString));
+                intString = FilterToNumerical(intString);
+                int temp;
+
+                if (int.TryParse(intString, out temp))
+                {
+                    return int.Parse(intString);
+                }
+                return -1;
+
+
             }
             else
             {

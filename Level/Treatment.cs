@@ -43,6 +43,11 @@ namespace HM4DesignTool.Level
         private string treatmentName = string.Empty;
 
         /// <summary>
+        /// The treatment type.
+        /// </summary>
+        private TreatmentTypeEnum treatmentType = TreatmentTypeEnum.Unknown;
+
+        /// <summary>
         /// The difficulty unlocked.
         /// </summary>
         private double difficultyUnlocked;
@@ -149,26 +154,29 @@ namespace HM4DesignTool.Level
                 {
                     case 0:
                         {
-                            if (treatmentData[0] != string.Empty)
+                            if (treatmentData[index] != string.Empty)
                             {
-                                this.DifficultyUnlocked = Convert.ToDouble(treatmentData[0]);
+                                this.TreatmentTypeString = treatmentData[index];
+                            }
+                            break;
+                        }
+
+
+                    case 1:
+                        {
+                            if (treatmentData[index] != string.Empty)
+                            {
+                                this.DifficultyUnlockedString = treatmentData[index];
                             }
 
                             break;
                         }
 
-                    case 1:
-                        if (treatmentData[1] != string.Empty)
-                        {
-                            this.StationOwner = new Station(treatmentData[1]);
-                        }
-                        break;
-
                     case 2:
                         {
-                            if (treatmentData[2] != string.Empty)
+                            if (treatmentData[index] != string.Empty)
                             {
-                                this.HeartsValue = Convert.ToInt32(Globals.FilterToNumerical(treatmentData[2]));
+                                this.StationOwner = new Station(treatmentData[index]);
                             }
 
                             break;
@@ -176,40 +184,54 @@ namespace HM4DesignTool.Level
 
                     case 3:
                         {
-                            if (treatmentData[3] != string.Empty)
+                            if (treatmentData[index] != string.Empty)
                             {
-                                this.Weight = Convert.ToInt32(Globals.FilterToNumerical(treatmentData[3]));
-                                this.CustomizedWeight = this.Weight;
+
+                                this.HeartsValue = Globals.StringToInt(treatmentData[index]);
                             }
+
                             break;
                         }
 
                     case 4:
                         {
-                            if (treatmentData[4] != string.Empty && Globals.IsBooleanValue(treatmentData[4]))
+                            if (treatmentData[index] != string.Empty)
                             {
-                                this.Gesture = Convert.ToBoolean(treatmentData[4]);
+                                this.Weight = Globals.StringToInt(treatmentData[index]);
+                                this.CustomizedWeight = this.Weight;
                             }
                             break;
                         }
 
                     case 5:
                         {
-                            if (treatmentData[5] != string.Empty && Globals.IsBooleanValue(treatmentData[5]))
+                            if (treatmentData[index] != string.Empty && Globals.IsBooleanValue(treatmentData[index]))
                             {
-                                this.AlwaysLast = Convert.ToBoolean(treatmentData[5]);
+                                this.Gesture = Globals.StringToBool(treatmentData[index]);
                             }
                             break;
                         }
 
                     case 6:
                         {
-                            if (treatmentData[6] != string.Empty)
+                            if (treatmentData[index] != string.Empty && Globals.IsBooleanValue(treatmentData[index]))
                             {
-                                this.TreatmentColorString = treatmentData[6];
+                                this.AlwaysLast = Globals.StringToBool(treatmentData[index]);
                             }
                             break;
                         }
+
+                    case 7:
+                        {
+                            if (treatmentData[index] != string.Empty)
+                            {
+                                this.TreatmentColorString = treatmentData[index];
+                            }
+                            break;
+                        }
+
+                    default:
+                        break;
                 }
             }
         }
@@ -276,6 +298,29 @@ namespace HM4DesignTool.Level
         }
 
         /// <summary>
+        /// Gets or sets The treatment type.
+        /// </summary>
+        public TreatmentTypeEnum TreatmentType
+        {
+            get => this.treatmentType;
+            set
+            {
+                this.treatmentType = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+
+        public string TreatmentTypeString
+        {
+            get => Enum.GetName(typeof(TreatmentTypeEnum), this.TreatmentType);
+            set
+            {
+                this.TreatmentType = (TreatmentTypeEnum)Enum.Parse(typeof(TreatmentTypeEnum), value);
+                this.OnPropertyChanged();
+            }
+        }
+        /// <summary>
         /// Gets or sets the difficulty unlocked.
         /// </summary>
         public double DifficultyUnlocked
@@ -294,11 +339,11 @@ namespace HM4DesignTool.Level
         /// </summary>
         public string DifficultyUnlockedString
         {
-            get => this.difficultyUnlocked.ToString("N1");
+            get => this.DifficultyUnlocked.ToString("N1");
 
             set
             {
-                this.DifficultyUnlocked = Convert.ToDouble(value);
+                this.DifficultyUnlocked = Globals.StringToDouble(value);
                 this.OnPropertyChanged();
             }
         }
@@ -509,7 +554,6 @@ namespace HM4DesignTool.Level
                 }
             }
         }
-
         #endregion
 
         #endregion
@@ -600,7 +644,7 @@ namespace HM4DesignTool.Level
             {
                 outputList.Add(this.TreatmentName);
             }
-
+            outputList.Add(this.TreatmentTypeString);
             outputList.Add(this.DifficultyUnlocked.ToString("N1"));
             outputList.Add(this.StationOwner?.StationName);
             outputList.Add(this.HeartsValue.ToString());
@@ -701,6 +745,7 @@ namespace HM4DesignTool.Level
             {
                 int roomIndex = this.parentPatient.RoomIndex;
                 Treatment newTreatment = Globals.GetSettings.GetTreatment(this.TreatmentName, roomIndex);
+                this.treatmentType = newTreatment.TreatmentType;
                 this.DifficultyUnlocked = newTreatment.HeartsValue = newTreatment.HeartsValue;
                 this.StationOwner = newTreatment.StationOwner;
                 this.Weight = newTreatment.Weight;
@@ -711,6 +756,7 @@ namespace HM4DesignTool.Level
             }
             else
             {
+                this.treatmentType = TreatmentTypeEnum.Unknown;
                 this.DifficultyUnlocked = 0;
                 this.StationOwner = null;
                 this.Weight = 0;

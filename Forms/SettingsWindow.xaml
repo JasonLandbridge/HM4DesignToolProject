@@ -236,6 +236,7 @@
 								<DataGrid.Columns>
 									<DataGridCheckBoxColumn Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Select" MaxWidth="70" MinWidth="50"/>
 									<DataGridTextColumn Binding="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Treatment Name" MinWidth="50" Width="*"/>
+									<DataGridComboBoxColumn Header="TreatmentType" TextBinding="{Binding TreatmentTypeString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="TreatmentTypeString"  ItemsSource="{Binding Mode=OneWay, Source={x:Static Data:Globals.GetTreatmentTypes}}" MinWidth="50" Width="*"/>
 									<DataGridComboBoxColumn x:Name="difficultyUnlockedColumn" ItemsSource="{Binding DataContext.TreatmentDifficultyModifierList, RelativeSource={RelativeSource AncestorType=Grid}}" SelectedValuePath="DifficultyUnlockedString"  TextBinding="{Binding DifficultyUnlockedString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Difficulty Unlocked" Width="*"/>
 									<DataGridComboBoxColumn x:Name="StationTreatmentColumn" ItemsSource="{Binding DataContext.StationTreatmentList, RelativeSource={RelativeSource AncestorType=Grid}}" SelectedValuePath="StationOwner.StationName"  TextBinding="{Binding StationOwner.StationName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Station" Width="*"/>
 									<DataGridTextColumn Binding="{Binding HeartsValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="Hearts Value" Width="*"/>

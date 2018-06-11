@@ -296,6 +296,7 @@ namespace HM4DesignTool.Level
                 {
                     this.DifficultyModifier = float.Parse(value, CultureInfo.InvariantCulture.NumberFormat);
                 }
+                this.OnPropertyChanged();
             }
         }
 
@@ -1212,6 +1213,7 @@ namespace HM4DesignTool.Level
             this.OnPropertyChanged("DifficultyModifier");
             this.RandomGroupEnabled = this.DifficultyModifier == 0;
             this.UpdateRandomRecommendations();
+            this.GetLevelLoaded?.UpdateLevelOutput();
         }
 
 
