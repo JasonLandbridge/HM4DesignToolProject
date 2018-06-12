@@ -171,28 +171,28 @@
     },
     "Room 6": {
       "applyAdrenaline": "Quick,21.0,Bed,1,40,False,False,#CFE2F3",
-      "applyBandage": "Unknown,26.0,Bed,1,60,False,False,#CFE2F3",
-      "applyBandaid": "Gesture,28.0,StandingDesk,1,20,False,False,#F4CCCC",
-      "applyColdPack": "Unknown,26.0,StandingDesk,1,20,False,False,#CC0000",
-      "applyDisinfectant": "Unknown,28.5,TreatmentChair,1,20,False,False,#6AA84F",
-      "applyEyeWash": "Unknown,28.0,TreatmentChair,1,30,False,False,#D9EAD3",
-      "applyHotBalm": "Unknown,21.0,TreatmentChair,1,40,False,False,#D9EAD3",
-      "applyHotPack": "Unknown,28.5,StandingDesk,1,20,False,False,#CC0000",
-      "applyLotion": "Unknown,27.0,TreatmentChair,1,20,False,False,#6AA84F",
-      "applySplint": "Unknown,29.5,TreatmentChair,1,20,False,False,#6AA84F",
-      "applyTourniquet": "Unknown,27.0,Bed,1,20,False,False,#6FA8DC",
-      "axialSlicesTreatment": "Unknown,26.0,Xray,1,10,True,False,#FF00FF",
-      "cprTreatment": "Unknown,26.0,Bed,1,20,False,False,#9FC5E8",
-      "findTools": "Unknown,23.0,Bed,1,10,False,False,#0000FF",
-      "hookupCardiac": "Unknown,29.0,TreatmentChair,1,20,False,False,#00FF00",
-      "oxygenTreatment": "Unknown,26.0,TreatmentChair,1,5,False,False,#D9EAD3",
-      "provideIbuprofen": "Unknown,29.0,StandingDesk,1,40,False,False,#CB7D69",
-      "removeObject": "Unknown,28.0,Bed,1,20,False,False,#6FA8DC",
-      "stitchTreatment": "Unknown,28.0,StandingDesk,1,10,True,False,#FF0000",
-      "takeBlood": "Unknown,23.0,TreatmentChair,1,40,False,False,#6AA84F",
-      "useThermometer": "Unknown,27.0,StandingDesk,1,20,False,False,#F4CCCC",
-      "xrayTreatment": "Unknown,21.0,Xray,1,15,False,True,#C27BA0",
-      "defibrilator": "Unknown,21.0,Bed,1,15,True,False,#9AC5CB"
+      "applyBandage": "Quick,26.0,Bed,1,60,False,False,#CFE2F3",
+      "applyBandaid": "Quick,28.0,StandingDesk,1,20,False,False,#F4CCCC",
+      "applyColdPack": "SingleProduct,26.0,StandingDesk,1,20,False,False,#CC0000",
+      "applyDisinfectant": "ComboProduct,28.5,TreatmentChair,1,20,False,False,#6AA84F",
+      "applyEyeWash": "ComboProduct,28.0,TreatmentChair,1,30,False,False,#D9EAD3",
+      "applyHotBalm": "SingleProduct,21.0,TreatmentChair,1,40,False,False,#D9EAD3",
+      "applyHotPack": "SingleProduct,28.5,StandingDesk,1,20,False,False,#CC0000",
+      "applyLotion": "Quick,27.0,TreatmentChair,1,20,False,False,#6AA84F",
+      "applySplint": "SingleProduct,29.5,TreatmentChair,1,20,False,False,#6AA84F",
+      "applyTourniquet": "SingleProduct,27.0,Bed,1,20,False,False,#6FA8DC",
+      "axialSlicesTreatment": "Minigame,26.0,Xray,1,10,True,False,#FF00FF",
+      "cprTreatment": "SingleProduct,26.0,Bed,1,20,True,False,#9FC5E8",
+      "findTools": "Minigame,23.0,Bed,1,10,False,False,#0000FF",
+      "hookupCardiac": "Minigame,29.0,TreatmentChair,1,20,False,False,#00FF00",
+      "oxygenTreatment": "SingleProduct,26.0,TreatmentChair,1,5,True,False,#D9EAD3",
+      "provideIbuprofen": "SingleProduct,29.0,StandingDesk,1,40,False,False,#CB7D69",
+      "removeObject": "Quick,28.0,Bed,1,20,False,False,#6FA8DC",
+      "stitchTreatment": "Minigame,28.0,StandingDesk,1,10,True,False,#FF0000",
+      "takeBlood": "ComboProduct,23.0,TreatmentChair,1,40,False,False,#6AA84F",
+      "useThermometer": "Quick,27.0,StandingDesk,1,20,False,False,#F4CCCC",
+      "xrayTreatment": "Minigame,21.0,Xray,1,15,False,True,#C27BA0",
+      "defibrilator": "Gesture,21.0,Bed,1,15,True,False,#9AC5CB"
     }
   },
   "BalancingCategories": {
@@ -307,7 +307,11 @@
       "defibrilator": 40
     },
     "r6_b02_bonus_02": {
-      "applyAdrenaline": 27
+      "applyAdrenaline": 100,
+      "applyHotBalm": 60,
+      "takeBlood": 26,
+      "xrayTreatment": 5,
+      "defibrilator": 38
     },
     "r5_b03_bonus_01": {
       "watchTV": 100
@@ -326,6 +330,20 @@
       "orderDrink": 30,
       "orderMeal": 30,
       "orderSalad": 30
+    },
+    "r6_b02_bonus_04": {
+      "applyAdrenaline": 61,
+      "applyBandage": 74,
+      "applyHotBalm": 32,
+      "oxygenTreatment": 29,
+      "takeBlood": 43,
+      "xrayTreatment": 19,
+      "defibrilator": 35
+    },
+    "r6_b03_bonus_01": {
+      "applyAdrenaline": 80,
+      "applyHotBalm": 25,
+      "takeBlood": 20
     }
   }
 }

@@ -75,6 +75,11 @@ namespace HM4DesignTool.Data
         SingleProduct = 3,
 
         /// <summary>
+        /// The cook product, this requires Allison to pick-up a product from a table and cook it.
+        /// </summary>
+        CookProduct = 3,
+
+        /// <summary>
         /// The combo product, combine two products to create a Combo Product to resolve this treatment.
         /// </summary>
         ComboProduct = 4,
