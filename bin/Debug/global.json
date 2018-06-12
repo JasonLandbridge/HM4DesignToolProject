@@ -181,7 +181,7 @@
       "applyLotion": "Quick,27.0,TreatmentChair,1,20,False,False,#6AA84F",
       "applySplint": "SingleProduct,29.5,TreatmentChair,1,20,False,False,#6AA84F",
       "applyTourniquet": "SingleProduct,27.0,Bed,1,20,False,False,#6FA8DC",
-      "axialSlicesTreatment": "Minigame,26.0,Xray,1,10,True,False,#FF00FF",
+      "axialSlicesTreatment": "Minigame,26.0,Xray,1,10,True,True,#FF00FF",
       "cprTreatment": "SingleProduct,26.0,Bed,1,20,True,False,#9FC5E8",
       "findTools": "Minigame,23.0,Bed,1,10,False,False,#0000FF",
       "hookupCardiac": "Minigame,29.0,TreatmentChair,1,20,False,False,#00FF00",

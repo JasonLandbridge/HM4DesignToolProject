@@ -238,16 +238,23 @@
 					<RowDefinition Height=".9*"/>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
 				<!-- Level List -->
-				<GroupBox Header="Level List" VerticalAlignment="Stretch" Margin="0,0,0,0">
+				<GroupBox Header="Level List" Grid.Row="0" VerticalAlignment="Stretch" Margin="0,0,0,0">
 					<TreeView x:Name="levelListDisplay" Margin="0" ItemsSource="{Binding LevelListDisplayCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="216" Cursor="Hand" Focusable="False" />
 				</GroupBox>
+
+				<GroupBox Header="Level Loaded" Grid.Row="1">
+					<Label Content="{Binding GetLevelLoaded.LevelNameWithStatus, Mode=OneWay ,UpdateSourceTrigger=PropertyChanged}" />
+				</GroupBox>
+				
+
 				<!-- Level List Filters-->
-				<GroupBox Header="Filters" HorizontalAlignment="Stretch" Margin="0,0,0,0" Grid.Row="1">
+				<GroupBox Grid.Row="2" Header="Filters" HorizontalAlignment="Stretch" Margin="0,0,0,0">
 					<StackPanel x:Name="filterLayout" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="0,0,0,0">
 						<ComboBox x:Name="levelListFilter" SelectedIndex="{Binding LevelListFilterSelectedIndex, FallbackValue=0, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding LevelListFilterItems, Mode=OneWay, UpdateSourceTrigger=Default}" />
 						<Grid x:Name="filterCheckLayout" Margin="0,5" >
@@ -265,7 +272,7 @@
 				</GroupBox>
 
 				<!--Level Controls-->
-				<Grid x:Name="levelControls" Grid.Row="2" IsEnabled="{Binding LevelOverviewActive}">
+				<Grid x:Name="levelControls" Grid.Row="3" IsEnabled="{Binding LevelOverviewActive}">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition/>
 						<ColumnDefinition/>
@@ -329,7 +336,7 @@
 												<ColumnDefinition/>
 											</Grid.ColumnDefinitions>
 											<ComboBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="5,0" VerticalAlignment="Stretch" ItemsSource="{Binding DifficultyModifierList, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding DifficultyModifierString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-											<!-- <wpfTool:DecimalUpDown Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Visibility="{Binding ElementName=difficultyModifierCheckBox, Path=IsChecked}"/> -->
+											<wpfTool:DecimalUpDown Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Visibility="{Binding ElementName=difficultyModifierCheckBox, Path=IsChecked}"/>
 										</Grid>
 										<Grid Grid.Column="1" Grid.Row="2" Margin="0,5">
 											<Grid.ColumnDefinitions>
@@ -692,8 +699,42 @@
 														<RowDefinition Height="30" />
 														<RowDefinition Height="30" />
 														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
 													</Grid.RowDefinitions>
 													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
 														<ColumnDefinition Width="200" />
 														<ColumnDefinition Width="200" />
 														<ColumnDefinition Width="200" />

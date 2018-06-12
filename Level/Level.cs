@@ -821,6 +821,7 @@ namespace HM4DesignTool.Level
             {
                 patient.SetMaxTreatments(value);
             }
+            this.OnPropertyChanged("PatientCollection");
         }
 
         #endregion Treatment

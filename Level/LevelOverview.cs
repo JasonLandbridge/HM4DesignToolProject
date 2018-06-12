@@ -348,6 +348,7 @@ namespace HM4DesignTool.Level
             {
                 this.maxTreatmentsVisible = value;
                 this.OnPropertyChanged();
+
                 this.GetLevelLoaded?.UpdateMaxTreatments(value);
             }
         }
