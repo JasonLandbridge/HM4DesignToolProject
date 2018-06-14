@@ -37,7 +37,7 @@ namespace HM4DesignTool.Forms
         public MainWindow()
         {
             this.InitializeComponent();
-
+            Test test = new Test();
             // Set Global reference to this Window
             Globals.GetMainWindow = this;
             this.DataContext = this;
@@ -46,6 +46,8 @@ namespace HM4DesignTool.Forms
             this.levelControls.DataContext = Globals.GetLevelOverview;
             this.OnPropertyChanged("PatientRowDataTemplate");
             UpdatePatientSimulateGrid();
+
+
         }
 
 
@@ -343,8 +345,6 @@ namespace HM4DesignTool.Forms
 
 
     }
-
-
 
 
 }

@@ -172,7 +172,7 @@
     "Room 6": {
       "applyAdrenaline": "Quick,21.0,Bed,1,40,False,False,#CFE2F3",
       "applyBandage": "Quick,26.0,Bed,1,60,False,False,#CFE2F3",
-      "applyBandaid": "Quick,28.0,StandingDesk,1,20,False,False,#F4CCCC",
+      "applyBandaid": "Quick,26.0,StandingDesk,1,60,False,False,#F4CCCC",
       "applyColdPack": "SingleProduct,26.0,StandingDesk,1,20,False,False,#CC0000",
       "applyDisinfectant": "ComboProduct,28.5,TreatmentChair,1,20,False,False,#6AA84F",
       "applyEyeWash": "ComboProduct,28.0,TreatmentChair,1,30,False,False,#D9EAD3",
@@ -343,6 +343,17 @@
     "r6_b03_bonus_01": {
       "applyAdrenaline": 80,
       "applyHotBalm": 25,
+      "takeBlood": 20
+    },
+    "r6_b03_bonus_05": {
+      "applyAdrenaline": 62,
+      "applyBandage": 66,
+      "applyBandaid": 64,
+      "applyHotBalm": 34
+    },
+    "r6_b03_bonus_08": {
+      "applyAdrenaline": 67,
+      "applyHotBalm": 30,
       "takeBlood": 20
     }
   }

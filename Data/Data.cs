@@ -11,6 +11,8 @@ namespace HM4DesignTool.Data
 {
     using System.IO;
 
+    using HM4DesignTool.Utilities;
+
     class Data
     {
 
@@ -166,9 +168,32 @@ namespace HM4DesignTool.Data
         {
 
             // Clean the raw text
+            //rawText = rawText.Replace("\r\n", string.Empty);
+
             rawText = FilterRawText(rawText);
 
-            tableName += tableName != "" ? "={" : "{";
+
+            int startIndexName = rawText.IndexOf(tableName);
+            int endIndexName = -1;
+
+            if (startIndexName > -1)
+            {
+                for (int i = startIndexName; i < rawText.Length; i++)
+                {
+                    if (rawText[i] == '{')
+                    {
+                        endIndexName = i + 1;
+                        break;
+                    }
+                }
+            }
+
+            if (endIndexName < startIndexName)
+            {
+                return string.Empty;
+            }
+
+            tableName = rawText.SelectString(startIndexName, endIndexName);
 
             int startIndex = rawText.IndexOf(tableName) + tableName.Length;
             int endIndex = FindClosingBracket(rawText, startIndex) - startIndex;
@@ -177,10 +202,8 @@ namespace HM4DesignTool.Data
             {
                 return string.Empty;
             }
-            else
-            {
-                return rawText.Substring(startIndex, endIndex);
-            }
+
+            return rawText.Substring(startIndex, endIndex);
         }
 
         public static int FindClosingBracket(string text, int start)

@@ -821,6 +821,7 @@ namespace HM4DesignTool.Level
             {
                 patient.SetMaxTreatments(value);
             }
+
             this.OnPropertyChanged("PatientCollection");
         }
 
@@ -828,11 +829,12 @@ namespace HM4DesignTool.Level
 
         #region Patient
 
-
+        /// <summary>
+        /// Adds a Patient to the Level. 
+        /// </summary>
         public void AddPatient()
         {
-            int index = this.PatientCollection.Count;
-            string patientName = $"Patient_{index}";
+            string patientName = $"Patient_{this.PatientCollection.Count}";
             Patient patientObject = new Patient(this, patientName);
             patientObject.SetMaxTreatments(Globals.GetLevelOverview.MaxTreatmentsVisible);
             this.PatientCollection.Add(patientObject);

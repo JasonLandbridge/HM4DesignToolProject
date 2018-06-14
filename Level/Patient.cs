@@ -757,6 +757,7 @@ namespace HM4DesignTool.Level
                     patientData = patientData.Replace($"{parameterList[i]}={{{text}}}", string.Empty);
 
                     patientData = Globals.RemoveFirstComma(patientData);
+
                 }
             }
 

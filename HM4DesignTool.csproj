@@ -117,6 +117,7 @@
     <Compile Include="Data\GameValues.cs" />
     <Compile Include="Data\Globals.cs" />
     <Compile Include="Data\ParseResult.cs" />
+    <Compile Include="Data\test.cs" />
     <Compile Include="Forms\TraitsWindow.xaml.cs">
       <DependentUpon>TraitsWindow.xaml</DependentUpon>
     </Compile>
