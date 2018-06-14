@@ -822,17 +822,20 @@ namespace HM4DesignTool.Level
             {
                 patient.SetMaxTreatments(value);
             }
+
+            this.OnPropertyChanged("PatientCollection");
         }
 
         #endregion Treatment
 
         #region Patient
 
-
+        /// <summary>
+        /// Adds a Patient to the Level. 
+        /// </summary>
         public void AddPatient()
         {
-            int index = this.PatientCollection.Count;
-            string patientName = $"Patient_{index}";
+            string patientName = $"Patient_{this.PatientCollection.Count}";
             Patient patientObject = new Patient(this, patientName);
             patientObject.SetMaxTreatments(Globals.GetLevelOverview.MaxTreatmentsVisible);
             this.PatientCollection.Add(patientObject);
@@ -986,11 +989,15 @@ namespace HM4DesignTool.Level
                     {
                         if (x == t.TreatmentName)
                         {
+                            t.SetLevelParent(this);
                             randomTreatmentList.Add(t);
                             break;
                         }
                     }
                 }
+
+
+
 
                 // Make sure all AtLast treatment are at the end of the list
                 int treatmentCount = randomTreatmentList.Count;
@@ -1252,7 +1259,7 @@ namespace HM4DesignTool.Level
                     rawText = rawText.Replace(this.additionalText[addtionalTextIndex], string.Empty);
                     addtionalTextIndex++;
                 }
-                
+
                 this.ParseDesignData(rawText);
             }
 
@@ -1264,16 +1271,16 @@ namespace HM4DesignTool.Level
             ParseResult patientTriggerResult = this.ParsePatientTriggers(rawText);
 
             //TODO Needs advice how to store text after everything. 
-           
-           //if (patientTriggerResult.ParseSucces)
-           //{
 
-           //    string levelDesc = "levelDesc.triggers";
-           //    int start = rawText.IndexOf(levelDesc) + levelDesc.Length;
-           //    int end = Data.FindClosingBracket(rawText, start);
+            //if (patientTriggerResult.ParseSucces)
+            //{
 
-           //    this.additionalText[addtionalTextIndex] = rawText.SelectString(end, rawText.Length - 1);
-           //}
+            //    string levelDesc = "levelDesc.triggers";
+            //    int start = rawText.IndexOf(levelDesc) + levelDesc.Length;
+            //    int end = Data.FindClosingBracket(rawText, start);
+
+            //    this.additionalText[addtionalTextIndex] = rawText.SelectString(end, rawText.Length - 1);
+            //}
 
 
         }
@@ -1340,7 +1347,8 @@ namespace HM4DesignTool.Level
                     string[] parameters = Regex.Split(patientChance, "=");
                     if (parameters.Length > 1)
                     {
-                        this.PatientChanceList.Add(new PatientChance(parameters[0], parameters[1]));
+                        this.PatientChanceList.Add(
+                            new PatientChance(parameters[0], parameters[1]) { ParentLevel = this });
                     }
 
                 }

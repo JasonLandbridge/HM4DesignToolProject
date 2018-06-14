@@ -48,4 +48,46 @@ namespace HM4DesignTool.Data
         /// </summary>
         OliverAll = 6
     }
+
+    /// <summary>
+    /// The treatment type enum.
+    /// </summary>
+    public enum TreatmentTypeEnum
+    {
+        /// <summary>
+        /// The default option if the level type is unknown.
+        /// </summary>
+        Unknown = 0,
+
+        /// <summary>
+        /// The quick treatment, a single click treatment which will be quickly treated
+        /// </summary>
+        Quick = 1,
+
+        /// <summary>
+        /// The gesture treatment, this requires the player to perform a gesture, such as drawing a circle or swiping to the right along a bar. This does not require a product to be carried by Allison.  
+        /// </summary>
+        Gesture = 2,
+
+        /// <summary>
+        /// The single product, this requires Allison to pick-up a product from a table.
+        /// </summary>
+        SingleProduct = 3,
+
+        /// <summary>
+        /// The cook product, this requires Allison to pick-up a product from a table and cook it.
+        /// </summary>
+        CookProduct = 3,
+
+        /// <summary>
+        /// The combo product, combine two products to create a Combo Product to resolve this treatment.
+        /// </summary>
+        ComboProduct = 4,
+
+        /// <summary>
+        /// The minigame, this requires the player to play a minigame to proceed to the next treatment, such as stitching a wound or performing a brain scan and finding the troubled areas. 
+        /// </summary>
+        Minigame = 5,
+    }
+
 }

@@ -238,16 +238,25 @@
 					<RowDefinition Height=".9*"/>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
 				<!-- Level List -->
-				<GroupBox Header="Level List" VerticalAlignment="Stretch" Margin="0,0,0,0">
+				<GroupBox Header="Level List" Grid.Row="0" VerticalAlignment="Stretch" Margin="0,0,0,0">
 					<TreeView x:Name="levelListDisplay" Margin="0" ItemsSource="{Binding LevelListDisplayCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="216" Cursor="Hand" Focusable="False" />
 				</GroupBox>
+
+				<GroupBox Header="Level Loaded" Grid.Row="1">
+					<Label>
+						<TextBlock Text="{Binding GetLevelLoaded.LevelNameWithStatus, Mode=OneWay ,UpdateSourceTrigger=PropertyChanged}"></TextBlock>
+					</Label>
+				</GroupBox>
+
+
 				<!-- Level List Filters-->
-				<GroupBox Header="Filters" HorizontalAlignment="Stretch" Margin="0,0,0,0" Grid.Row="1">
+				<GroupBox Grid.Row="2" Header="Filters" HorizontalAlignment="Stretch" Margin="0,0,0,0">
 					<StackPanel x:Name="filterLayout" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="0,0,0,0">
 						<ComboBox x:Name="levelListFilter" SelectedIndex="{Binding LevelListFilterSelectedIndex, FallbackValue=0, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding LevelListFilterItems, Mode=OneWay, UpdateSourceTrigger=Default}" />
 						<Grid x:Name="filterCheckLayout" Margin="0,5" >
@@ -265,7 +274,7 @@
 				</GroupBox>
 
 				<!--Level Controls-->
-				<Grid x:Name="levelControls" Grid.Row="2" IsEnabled="{Binding LevelOverviewActive}">
+				<Grid x:Name="levelControls" Grid.Row="3" IsEnabled="{Binding LevelOverviewActive}">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition/>
 						<ColumnDefinition/>
@@ -312,7 +321,6 @@
 											<RowDefinition/>
 											<RowDefinition/>
 											<RowDefinition/>
-											<RowDefinition/>
 										</Grid.RowDefinitions>
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition/>
@@ -320,17 +328,11 @@
 										</Grid.ColumnDefinitions>
 										<Label MinWidth="100" Grid.Column="0" Grid.Row="0" Content="Part of Room: " Margin="0,5" />
 										<Label MinWidth="100" Grid.Column="0" Grid.Row="1" Content="Difficulty Modifier: " Margin="0,5" />
-										<Label MinWidth="100" Grid.Column="0" Grid.Row="3" Content="Level Type: " Margin="0,5"/>
-										<Label MinWidth="100" Grid.Column="0" Grid.Row="4" Content="Gameplay Character: " Margin="0,5"/>
+										<Label MinWidth="100" Grid.Column="0" Grid.Row="2" Content="Level Type: " Margin="0,5"/>
+										<Label MinWidth="100" Grid.Column="0" Grid.Row="3" Content="Gameplay Character: " Margin="0,5"/>
 
 										<wpfTool:IntegerUpDown x:Name="roomIndexValue" MinWidth="100" Grid.Column="1" Grid.Row="0" Margin="5,5" Value="{Binding RoomIndex, FallbackValue=-1, UpdateSourceTrigger=PropertyChanged}" DefaultValue="0"/>
-										<Grid Grid.Column="1" Grid.Row="1" Margin="0,5">
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition/>
-											</Grid.ColumnDefinitions>
-											<ComboBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="5,0" VerticalAlignment="Stretch" ItemsSource="{Binding DifficultyModifierList, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding DifficultyModifierString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-											<!-- <wpfTool:DecimalUpDown Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Visibility="{Binding ElementName=difficultyModifierCheckBox, Path=IsChecked}"/> -->
-										</Grid>
+										<ComboBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" Margin="5,5" VerticalAlignment="Stretch" ItemsSource="{Binding DifficultyModifierList, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" SelectedValue="{Binding DifficultyModifierString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 										<Grid Grid.Column="1" Grid.Row="2" Margin="0,5">
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition/>
@@ -338,8 +340,8 @@
 												<ColumnDefinition/>
 											</Grid.ColumnDefinitions>
 										</Grid>
-										<ComboBox x:Name="levelTypeDropDown" Grid.Column="1" Grid.Row="3"  Margin="5,5" ItemsSource="{Binding Mode=OneWay, Source={x:Static Data:Globals.GetLevelTypes}}" SelectedIndex="0" SelectedValue="{Binding GetLevelLoaded.GetLevelTypeString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-										<TextBox Grid.Row="4" Grid.Column="1" Margin="5,5" Text="{Binding GetLevelLoaded.GameplayCharacter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+										<ComboBox x:Name="levelTypeDropDown" Grid.Column="1" Grid.Row="2"  Margin="5,5" ItemsSource="{Binding Mode=OneWay, Source={x:Static Data:Globals.GetLevelTypes}}" SelectedIndex="0" SelectedValue="{Binding GetLevelLoaded.GetLevelTypeString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+										<TextBox Grid.Row="3" Grid.Column="1" Margin="5,5" Text="{Binding GetLevelLoaded.GameplayCharacter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
 
 									</Grid>
@@ -692,8 +694,42 @@
 														<RowDefinition Height="30" />
 														<RowDefinition Height="30" />
 														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
+														<RowDefinition Height="30" />
 													</Grid.RowDefinitions>
 													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="200" />
 														<ColumnDefinition Width="200" />
 														<ColumnDefinition Width="200" />
 														<ColumnDefinition Width="200" />

@@ -9,22 +9,51 @@ namespace HM4DesignTool.Forms
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Runtime.CompilerServices;
     using System.Windows;
+    using System.Windows.Controls;
 
     using HM4DesignTool.Data;
 
     /// <summary>
     /// Window used to create a list of level names. 
     /// </summary>
-    public partial class LevelListExport
+    public partial class LevelListExport : INotifyPropertyChanged
     {
+
+
+
+        #region Fields
+
+        private bool enableAddLuaExtension;
+
+        private bool enableLevelEditorFormat;
+
+        private bool enablePrefix;
+
+        private string prefixText = string.Empty;
+
+
+        private bool enableSuffix;
+
+        private string suffixText = string.Empty;
+
+
+        private bool enableEndTab;
+        #endregion
+
+
+
         #region Constructors
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LevelListExport"/> class.
         /// </summary>
         public LevelListExport()
         {
             this.InitializeComponent();
+            this.DataContext = this;
 
             // Populate LevelListFilter Dropdown
             this.levelListFilter.Items.Add("All");
@@ -37,6 +66,106 @@ namespace HM4DesignTool.Forms
             // Populate LevelList
             this.LoadLevelList();
         }
+
+        #region Events
+
+        /// <inheritdoc />
+        /// <summary>
+        /// This is used to notify the bound XAML Control to update its value.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        #endregion
+
+        #region Properties
+
+        #region Public
+
+
+
+        public bool EnableLevelEditorFormat
+        {
+            get => this.enableLevelEditorFormat;
+            set
+            {
+                this.enableLevelEditorFormat = value;
+                this.OnPropertyChanged();
+                this.LoadLevelList();
+
+            }
+        }
+
+
+        public bool EnableAddLuaExtension
+        {
+            get => this.enableAddLuaExtension;
+            set
+            {
+                this.enableAddLuaExtension = value;
+                this.OnPropertyChanged();
+                this.LoadLevelList();
+
+            }
+        }
+
+        public string PrefixText
+        {
+            get => this.prefixText;
+            set
+            {
+                this.prefixText = value;
+                this.OnPropertyChanged();
+                this.LoadLevelList();
+            }
+        }
+
+        public bool EnablePrefix
+        {
+            get => this.enablePrefix;
+            set
+            {
+                this.enablePrefix = value;
+                this.OnPropertyChanged();
+                this.LoadLevelList();
+
+            }
+        }
+
+        public string SuffixText
+        {
+            get => this.suffixText;
+            set
+            {
+                this.suffixText = value;
+                this.OnPropertyChanged();
+                this.LoadLevelList();
+            }
+        }
+
+        public bool EnableSuffix
+        {
+            get => this.enableSuffix;
+            set
+            {
+                this.enableSuffix = value;
+                this.OnPropertyChanged();
+                this.LoadLevelList();
+            }
+        }
+
+        public bool EnableEndTab
+        {
+            get => this.enableEndTab;
+            set
+            {
+                this.enableEndTab = value;
+                this.OnPropertyChanged();
+                this.LoadLevelList();
+            }
+        }
+        #endregion
+
+        #endregion
 
         #endregion
 
@@ -62,23 +191,38 @@ namespace HM4DesignTool.Forms
             {
                 if (category.Value.Count > 0)
                 {
+
                     foreach (string levelName in category.Value)
                     {
-                        if ((bool)this.filterLevelEditorFormat.IsChecked)
-                        {
-                            output = $"{output}\"{levelName}\",";
-                        }
-                        else
-                        {
-                            output = $"{output}{levelName}";
+                        string line = levelName;
 
-                            if ((bool)this.levelListAddExtension.IsChecked)
-                            {
-                                output = $"{output}.lua";
-                            }
+                        if (this.enablePrefix)
+                        {
+                            line = $"{this.PrefixText}{line}";
                         }
 
-                        output = $"{output}{Environment.NewLine}";
+                        if (this.enableSuffix)
+                        {
+                            line = $"{line}{this.SuffixText}";
+                        }
+
+                        if (this.EnableAddLuaExtension)
+                        {
+                            line = $"{line}.lua";
+                        }
+
+                        if (this.EnableLevelEditorFormat)
+                        {
+                            line = $"\"{line}\",";
+                        }
+
+                        if (this.EnableEndTab)
+                        {
+                            line = $"{line}\t";
+                        }
+
+
+                        output = $"{output}{line}\n";
                     }
                 }
             }
@@ -127,9 +271,24 @@ namespace HM4DesignTool.Forms
 
         #endregion
 
-        private void levelListFilter_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void levelListFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             this.LoadLevelList();
         }
+
+        #region INotifyPropertyChanged Members
+
+        /// <summary>
+        /// This is used to notify the bound XAML Control to update its value.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The property Name.
+        /// </param>
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion INotifyPropertyChanged Members
     }
 }

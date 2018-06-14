@@ -20,10 +20,12 @@
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
 					<RowDefinition/>
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
-				
 				<ComboBox x:Name="levelListFilter" Margin="0,10,0,5" SelectionChanged="levelListFilter_SelectionChanged" />
 				<Grid x:Name="filterCheckLayout" Margin="0,10,0,5" Grid.Row="1" >
 					<Grid.ColumnDefinitions>
@@ -36,18 +38,23 @@
 					<CheckBox x:Name="levelListUnknownCheck" Content="Unknown" Grid.Column="2" Margin="5,0,0,0" Click="UpdateLevelList"/>
 				</Grid>
 				<Grid Margin="5,10,5,5" Grid.Row="2" >
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-					</Grid.ColumnDefinitions>
-					<CheckBox x:Name="levelListAddExtension" Content="Add .lua Extension" Click="UpdateLevelList"/>
+					<CheckBox x:Name="levelListAddExtension" Content="Add .lua Extension" IsChecked="{Binding EnableAddLuaExtension, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 				</Grid>
 				<Grid Margin="5,10,5,5" Grid.Row="3" >
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-					</Grid.ColumnDefinitions>
-					<CheckBox x:Name="filterLevelEditorFormat" Content="Level Editor Format" Click="UpdateLevelList"/>
+					<CheckBox x:Name="filterLevelEditorFormat" Content="Level Editor Format" IsChecked="{Binding EnableLevelEditorFormat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 				</Grid>
-				<Button x:Name="copyToClipboardButton" Content="Copy to Clipboard" Grid.Row="5" Padding="1,5" Click="CopyToClipboardButtonClick"/>
+				<StackPanel  Grid.Row="4">
+					<CheckBox Margin="5,10,5,5" Content="Add Prefix" IsChecked="{Binding EnablePrefix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+					<TextBox Margin="5,10,5,5" Text="{Binding PrefixText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+				</StackPanel>
+				<StackPanel  Grid.Row="5">
+					<CheckBox Margin="5,10,5,5" Content="Add Suffix" IsChecked="{Binding EnableSuffix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+					<TextBox Margin="5,10,5,5" Text="{Binding SuffixText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+				</StackPanel>
+				<CheckBox Margin="5,10,5,5"  Grid.Row="6"  Content="Add Tab To End" IsChecked="{Binding EnableEndTab, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+				<Button x:Name="copyToClipboardButton" Content="Copy to Clipboard" Grid.Row="8" Padding="1,5" Click="CopyToClipboardButtonClick"/>
 			</Grid>
 		</GroupBox>
 		<GroupBox Header="Level List" Grid.Column="1" Margin="5,0">

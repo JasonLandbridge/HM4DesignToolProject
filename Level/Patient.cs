@@ -303,8 +303,22 @@ namespace HM4DesignTool.Level
 
             set
             {
-                this.treatmentList = value;
-
+                int maxCount = Math.Max(Globals.GetLevelOverview.MaxTreatmentsVisible, value.Count);
+                for (int i = 0; i < maxCount; i++)
+                {
+                    if (i < value.Count)
+                    {
+                        if (value[i] != null)
+                        {
+                            value[i].SetLevelParent(this.parentLevel);
+                            value[i].SetPatientParent(this);
+                        }
+                    }
+                    else
+                    {
+                        value.Add(new Treatment());
+                    }
+                }
                 this.OnPropertyChanged();
                 this.ParentLevel?.UpdateLevelOutput();
             }
@@ -526,8 +540,9 @@ namespace HM4DesignTool.Level
             }
 
             this.SetTreatments(treatmentList);
+            this.OnPropertyChanged("TreatmentCollection");
         }
-            
+
 
         /// <summary>
         /// Set the treatments from List(Treatment).
@@ -537,6 +552,24 @@ namespace HM4DesignTool.Level
         /// </param>
         public void SetTreatments(List<Treatment> listTreatment)
         {
+            // Ensure that all treatments have empty slots up till the maxTreatments visible. 
+            int maxCount = Math.Max(Globals.GetLevelOverview.MaxTreatmentsVisible, listTreatment.Count);
+            for (int i = 0; i < maxCount; i++)
+            {
+                if (i < listTreatment.Count)
+                {
+                    if (listTreatment[i] != null)
+                    {
+                        listTreatment[i].SetLevelParent(this.parentLevel);
+                        listTreatment[i].SetPatientParent(this);
+                    }
+                }
+                else
+                {
+                    listTreatment.Add(new Treatment());
+                }
+            }
+
             // Make sure the maxAmount of visible treatments in visible
             this.SetMaxTreatments(Math.Max(listTreatment.Count, this.TreatmentCollection.Count));
 
@@ -725,11 +758,12 @@ namespace HM4DesignTool.Level
                     patientData = patientData.Replace($"{parameterList[i]}={{{text}}}", string.Empty);
 
                     patientData = Globals.RemoveFirstComma(patientData);
+
                 }
             }
 
             // If there is remaining data then it is probably traits that have been added.
-           
+
             if (patientData != string.Empty && patientData.Length > 0)
             {
                 List<string> traitsList = Regex.Split(patientData, ",").Where(s => s != string.Empty).ToList();
@@ -741,7 +775,8 @@ namespace HM4DesignTool.Level
                     if (valueList.Count == 2)
                     {
                         this.PatientTraitCollection.Add(new PatientTrait(valueList[0], valueList[1]));
-                    }else if (valueList.Count == 1)
+                    }
+                    else if (valueList.Count == 1)
                     {
                         this.PatientTraitCollection.Add(new PatientTrait(valueList[0]));
 
