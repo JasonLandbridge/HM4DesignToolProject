@@ -20,6 +20,8 @@ namespace HM4DesignTool.Level
     using HM4DesignTool.Forms;
     using HM4DesignTool.Utilities;
 
+    using Weighted_Randomizer;
+
     /// <inheritdoc />
     /// <summary>
     /// Holds the patient triggers in a Level.
@@ -93,6 +95,11 @@ namespace HM4DesignTool.Level
         /// The open traits window commdnd fieleld.
         /// </summary>
         private ICommand openTraitsWindowCommand;
+
+        /// <summary>
+        /// The open traits window commdnd fieleld.
+        /// </summary>
+        private ICommand randomizeTreatmentsCommand;
 
         #endregion
 
@@ -196,6 +203,13 @@ namespace HM4DesignTool.Level
                 this.ParentLevel?.UpdateLevelOutput();
             }
         }
+
+
+        /// <summary>
+        /// Check if this Level has an enabled weight for Patient Occurence in TimeTrial type levels.
+        /// </summary>
+        public bool WeightEnabled => this.ParentLevel.WeightEnabled;
+
 
         #endregion
 
@@ -319,6 +333,7 @@ namespace HM4DesignTool.Level
                         value.Add(new Treatment());
                     }
                 }
+
                 this.OnPropertyChanged();
                 this.ParentLevel?.UpdateLevelOutput();
             }
@@ -360,6 +375,11 @@ namespace HM4DesignTool.Level
         /// The open traits window command.
         /// </summary>
         public ICommand OpenTraitsWindowCommand => this.openTraitsWindowCommand ?? (this.openTraitsWindowCommand = new CommandHandler(this.OpenTraitsWindow, this.patientFinishedLoading));
+
+        /// <summary>
+        /// The open traits window command.
+        /// </summary>
+        public ICommand RandomizeTreatmentsCommand => this.randomizeTreatmentsCommand ?? (this.randomizeTreatmentsCommand = new CommandHandler(this.RandomizeTreatments, this.patientFinishedLoading));
 
         #endregion
 
@@ -463,6 +483,7 @@ namespace HM4DesignTool.Level
             hashCode = (hashCode * -1521134295) + EqualityComparer<ObservableCollection<PatientTrait>>.Default.GetHashCode(this.PatientTraitCollection);
             return hashCode;
         }
+
         #endregion
 
         #region PatientData
@@ -728,7 +749,6 @@ namespace HM4DesignTool.Level
                 {
                     string text = Data.GetVariable(patientData, parameterList[i]);
                     text = Globals.RemoveFirstComma(text);
-
                     if (text != string.Empty)
                     {
                         switch (i)
@@ -747,23 +767,19 @@ namespace HM4DesignTool.Level
                             case 2:
                                 this.SetTreatments(text.Split(',').ToList());
                                 break;
-
                             default:
                                 break;
                         }
-
                     }
+
                     // Remove found entries to later still store any unindexed text. 
                     patientData = patientData.Replace($"{parameterList[i]}={text}", string.Empty);
                     patientData = patientData.Replace($"{parameterList[i]}={{{text}}}", string.Empty);
-
                     patientData = Globals.RemoveFirstComma(patientData);
-
                 }
             }
 
             // If there is remaining data then it is probably traits that have been added.
-
             if (patientData != string.Empty && patientData.Length > 0)
             {
                 List<string> traitsList = Regex.Split(patientData, ",").Where(s => s != string.Empty).ToList();
@@ -809,6 +825,104 @@ namespace HM4DesignTool.Level
             treatment.SetPatientParent(this);
             treatment.IsVisible = true;
             this.TreatmentCollection.Add(treatment);
+        }
+
+        public void RandomizeTreatments()
+        {
+            this.RandomizeTreatments(this.ValidTreatmentCount);
+        }
+
+
+        public void RandomizeTreatments(int numberOfTreatments)
+        {
+            // https://github.com/BlueRaja/Weighted-Item-Randomizer-for-C-Sharp/wiki/Getting-Started
+            IWeightedRandomizer<string> randomizer = new DynamicWeightedRandomizer<string>();
+
+            List<Treatment> treatmentOptions = this.ParentLevel.AvailableTreatmentList.FindAll(t => t.CustomizedWeight > 0);
+
+            // Ensure that the treatment number is not highter than the available treatments.
+            numberOfTreatments = Math.Min(treatmentOptions.Count, numberOfTreatments);
+
+            List<string> randomTreatmentNameList = new List<string>();
+
+            // Create the randomizer
+            foreach (Treatment treatment in treatmentOptions)
+            {
+                randomizer.Add(treatment.TreatmentName, treatment.CustomizedWeight);
+            }
+
+            for (int i = 0; i < numberOfTreatments; i++)
+            {
+                if (randomizer.Count == 0 || randomizer.TotalWeight == 0)
+                {
+                    break;
+                }
+
+                string randomTreatmentName = randomizer.NextWithRemoval();
+
+                randomTreatmentNameList.Add(randomTreatmentName);
+            }
+
+            // Convert from String back to Treatments
+            List<Treatment> randomTreatmentList = new List<Treatment>();
+            foreach (string x in randomTreatmentNameList)
+            {
+                foreach (Treatment t in treatmentOptions)
+                {
+                    if (x == t.TreatmentName)
+                    {
+                        t.SetLevelParent(this.ParentLevel);
+                        randomTreatmentList.Add(t);
+                        break;
+                    }
+                }
+            }
+
+            // Replace duplicate minigame treatments with another treatment. 
+            int numberOfMinigames = 0;
+            for (int i = 0; i < randomTreatmentList.Count; i++)
+            {
+                if (randomTreatmentList[i].TreatmentType == TreatmentTypeEnum.Minigame)
+                {
+                    numberOfMinigames++;
+
+                    if (numberOfMinigames > 1)
+                    {
+                        while (true)
+                        {
+                            if (randomizer.Count == 0 || randomizer.TotalWeight == 0)
+                            {
+                                break;
+                            }
+
+                            Treatment newTreatment = new Treatment(randomizer.NextWithRemoval());
+
+                            if (!randomTreatmentList.Contains(newTreatment) && newTreatment.TreatmentType != TreatmentTypeEnum.Minigame)
+                            {
+                                randomTreatmentList[i] = newTreatment;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            // Make sure all AtLast treatment are at the end of the list
+            int treatmentCount = randomTreatmentList.Count;
+            for (int i = 0; i < treatmentCount; i++)
+            {
+                Treatment treatment = randomTreatmentList[i];
+
+                if (randomTreatmentList[i].AlwaysLast)
+                {
+                    randomTreatmentList.RemoveAt(i);
+                    randomTreatmentList.Add(treatment);
+                }
+            }
+
+            // Store new TreatmentList in the patient
+            this.SetTreatments(randomTreatmentList);
         }
 
         #endregion

@@ -447,6 +447,11 @@ namespace HM4DesignTool.Level
             }
         }
 
+        public List<Treatment> FilteredAvailableTreatmentList(TreatmentTypeEnum treatmentType)
+        {
+            return AvailableTreatmentList.FindAll(t => t.TreatmentType == treatmentType);
+        }
+
         /// <summary>
         /// Gets the available treatment list from which the level chooses the correct Treatments in string format.
         /// </summary>
@@ -945,76 +950,14 @@ namespace HM4DesignTool.Level
         /// </param>
         public void RandomizeTreatments(int treatmentMinValue, int treatmentMaxValue)
         {
-            // Filter List by treatments with a CustomizedWeight higher than 0
-            List<Treatment> treatmentOptions = this.AvailableTreatmentList.FindAll(t => t.CustomizedWeight > 0);
-
-            // https://github.com/BlueRaja/Weighted-Item-Randomizer-for-C-Sharp/wiki/Getting-Started
-            IWeightedRandomizer<string> randomizer = new DynamicWeightedRandomizer<string>();
 
             foreach (Patient patient in this.PatientCollection)
             {
                 // Get the number of treatments to generate.
-                int treatmentNumber = Globals.GetRandom.Next(
-                    Math.Min(treatmentMinValue, treatmentMaxValue),
+                int treatmentNumber = Globals.GetRandom.Next(Math.Min(treatmentMinValue, treatmentMaxValue),
                     treatmentMaxValue + 1);
 
-                // Ensure that the treatment number is not highter than the available treatments.
-                treatmentNumber = Math.Min(treatmentOptions.Count, treatmentNumber);
-                List<string> randomTreatmentNameList = new List<string>();
-
-                // Create the randomizer
-                randomizer.Clear();
-                foreach (Treatment treatment in treatmentOptions)
-                {
-                    randomizer.Add(treatment.TreatmentName, treatment.CustomizedWeight);
-                }
-
-                for (int i = 0; i < treatmentNumber; i++)
-                {
-                    if (randomizer.Count == 0 || randomizer.TotalWeight == 0)
-                    {
-                        break;
-                    }
-
-                    string randomTreatmentName = randomizer.NextWithRemoval();
-
-                    randomTreatmentNameList.Add(randomTreatmentName);
-                }
-
-                // Convert from String back to Treatments
-                List<Treatment> randomTreatmentList = new List<Treatment>();
-                foreach (string x in randomTreatmentNameList)
-                {
-                    foreach (Treatment t in treatmentOptions)
-                    {
-                        if (x == t.TreatmentName)
-                        {
-                            t.SetLevelParent(this);
-                            randomTreatmentList.Add(t);
-                            break;
-                        }
-                    }
-                }
-
-
-
-
-                // Make sure all AtLast treatment are at the end of the list
-                int treatmentCount = randomTreatmentList.Count;
-                for (int i = 0; i < treatmentCount; i++)
-                {
-                    Treatment treatment = randomTreatmentList[i];
-
-                    if (randomTreatmentList[i].AlwaysLast)
-                    {
-                        randomTreatmentList.RemoveAt(i);
-                        randomTreatmentList.Add(treatment);
-                    }
-                }
-
-                // Store new TreatmentList in the patient
-                patient.SetTreatments(randomTreatmentList);
-
+                patient.RandomizeTreatments(treatmentNumber);
             }
 
             this.UpdateLevelEdited();

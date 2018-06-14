@@ -2,7 +2,7 @@
   "ProjectDirectoryPath": "I:\\hm4\\data",
   "RoomFilterDropdownIndex": 6,
   "LevelListFirstCategoryOpen": true,
-  "RoomFilterStoryCheck": false,
+  "RoomFilterStoryCheck": true,
   "RoomFilterBonusCheck": true,
   "RoomFilterUnknownCheck": false,
   "ShowStationNextToTreatment": true
