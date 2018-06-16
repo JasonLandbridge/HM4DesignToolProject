@@ -89,6 +89,7 @@
 
 		<!-- PatientRowTreatmentTemplate -->
 		<DataTemplate x:Key="PatientRowTreatmentTemplate">
+
 			<StackPanel Orientation="Horizontal">
 				<Label Visibility="{Binding Converter={StaticResource VisibilityOfBool}, Source={x:Static Data:Globals.GetLevelOverview}, Path=ShowStationsNextToTreatments, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,5,0"
 					   Width="60"
@@ -150,18 +151,21 @@
 
 		<!-- PatientSimulateRowTreatmentTemplate -->
 		<DataTemplate x:Key="PatientSimulateRowTreatmentTemplate">
-			<StackPanel Orientation="Horizontal">
-				<Label Visibility="{Binding Converter={StaticResource VisibilityOfBool}, Source={x:Static Data:Globals.GetLevelOverview}, Path=ShowStationsNextToTreatments, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,5,0"
-				       Width="60"
-				       Content="{Binding StationString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-				       Padding="5,5,5,1"
-				/>
-				<ComboBox Margin="5,0" Style="{DynamicResource TreatmentComboBoxStyle}" ItemsSource="{Binding DataContext.TreatmentOptions, ElementName=patientSimulateTreatmentRow, Mode=OneWay}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="125">
-					<ComboBox.Visibility>
-						<Binding Converter="{StaticResource VisibilityOfBool}" Mode="TwoWay" Path="IsVisible" UpdateSourceTrigger="PropertyChanged"/>
-					</ComboBox.Visibility>
-				</ComboBox>
-			</StackPanel>
+
+			<Border BorderThickness="3" BorderBrush="{Binding TreatmentTypeColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=Transparent}" Margin="3,0">
+				<StackPanel Orientation="Horizontal" Margin="3">
+					<Label Visibility="{Binding Converter={StaticResource VisibilityOfBool}, Source={x:Static Data:Globals.GetLevelOverview}, Path=ShowStationsNextToTreatments, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,5,0"
+					       Width="60"
+					       Content="{Binding StationString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+					       Padding="5,5,5,1"
+					/>
+					<ComboBox Margin="5,0" Style="{DynamicResource TreatmentComboBoxStyle}" ItemsSource="{Binding DataContext.TreatmentOptions, ElementName=patientSimulateTreatmentRow, Mode=OneWay}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="125">
+						<ComboBox.Visibility>
+							<Binding Converter="{StaticResource VisibilityOfBool}" Mode="TwoWay" Path="IsVisible" UpdateSourceTrigger="PropertyChanged"/>
+						</ComboBox.Visibility>
+					</ComboBox>
+				</StackPanel>
+			</Border>
 		</DataTemplate>
 		<!--PatientSimulateRowControlTemplate-->
 		<DataTemplate x:Key="PatientSimulateRowControlTemplate">
@@ -657,97 +661,97 @@
 									<Grid x:Name="PatientSimulateHeaderGrid"  ShowGridLines="True"/>
 
 									<Separator Height="5"></Separator>
-									<ItemsControl x:Name="PatientSimulateGrid" Grid.IsSharedSizeScope="True" ItemTemplate="{DynamicResource PatientSimulateRowControlTemplate}"  ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+									<ItemsControl x:Name="PatientSimulateGrid" ItemTemplate="{DynamicResource PatientSimulateRowControlTemplate}"  ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 										<ItemsControl.ItemsPanel>
-											<ItemsPanelTemplate >
-												<Grid ShowGridLines="True">
+											<ItemsPanelTemplate>
+												<Grid ShowGridLines="False">
 													<Grid.RowDefinitions>
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
-														<RowDefinition Height="30" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
+														<RowDefinition Height="50" />
 													</Grid.RowDefinitions>
 													<Grid.ColumnDefinitions>
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
-														<ColumnDefinition Width="200" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
+														<ColumnDefinition Width="218" />
 													</Grid.ColumnDefinitions>
 												</Grid>
 											</ItemsPanelTemplate>

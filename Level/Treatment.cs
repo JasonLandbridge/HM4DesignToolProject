@@ -287,12 +287,16 @@ namespace HM4DesignTool.Level
                 {
                     this.treatmentName = value;
                     this.OnPropertyChanged();
-                    this.OnPropertyChanged("TreatmentColorBrush");
+
                     this.ChangeTreatment();
                     if (this.parentPatient != null)
                     {
                         this.parentPatient.ParentLevel?.UpdateLevelOutput();
                     }
+
+                    this.OnPropertyChanged("TreatmentColorBrush");
+                    this.OnPropertyChanged("TreatmentType");
+                    this.OnPropertyChanged("TreatmentTypeColorBrush");
                 }
             }
         }
@@ -307,6 +311,7 @@ namespace HM4DesignTool.Level
             {
                 this.treatmentType = value;
                 this.OnPropertyChanged();
+                this.OnPropertyChanged("TreatmentTypeColorBrush");
             }
         }
 
@@ -471,6 +476,38 @@ namespace HM4DesignTool.Level
             get => Globals.ColorToHex(this.TreatmentColor);
             set => this.TreatmentColor = Globals.HexToColor(value);
         }
+
+        /// <summary>
+        /// Gets the treatment Type color brush.
+        /// </summary>
+        public SolidColorBrush TreatmentTypeColorBrush
+        {
+            get
+            {
+                switch (this.TreatmentType)
+                {
+                    case TreatmentTypeEnum.Unknown:
+                        return new SolidColorBrush(Colors.White);
+                    case TreatmentTypeEnum.Quick:
+                        return new SolidColorBrush(Colors.Aqua);
+                    case TreatmentTypeEnum.Gesture:
+                        return new SolidColorBrush(Colors.Blue);
+                    case TreatmentTypeEnum.SingleProduct:
+                        return new SolidColorBrush(Colors.DarkOrange);
+                    case TreatmentTypeEnum.ComboProduct:
+                        return new SolidColorBrush(Colors.Red);
+                    case TreatmentTypeEnum.Ingredient:
+                        return new SolidColorBrush(Colors.DarkViolet);
+                    case TreatmentTypeEnum.CookProduct:
+                        return new SolidColorBrush(Colors.Gold);
+                    case TreatmentTypeEnum.Minigame:
+                        return new SolidColorBrush(Colors.DarkGreen);
+                    default:
+                        return new SolidColorBrush(Colors.White);
+                }
+            }
+        }
+
 
         /// <summary>
         /// Gets or sets the weight percentage.

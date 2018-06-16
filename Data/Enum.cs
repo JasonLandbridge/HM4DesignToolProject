@@ -70,24 +70,29 @@ namespace HM4DesignTool.Data
         Gesture = 2,
 
         /// <summary>
-        /// The single product, this requires Allison to pick-up a product from a table.
+        /// The ingredient which needs to be picked and re-stocked.
         /// </summary>
-        SingleProduct = 3,
+        Ingredient = 3,
 
         /// <summary>
-        /// The cook product, this requires Allison to pick-up a product from a table and cook it.
+        /// The single product, this requires Allison to pick-up a product from a table.
         /// </summary>
-        CookProduct = 3,
+        SingleProduct = 4,
 
         /// <summary>
         /// The combo product, combine two products to create a Combo Product to resolve this treatment.
         /// </summary>
-        ComboProduct = 4,
+        ComboProduct = 5,
+
+        /// <summary>
+        /// The cook product, this requires Allison to pick-up a product from a table and cook it.
+        /// </summary>
+        CookProduct = 6,
 
         /// <summary>
         /// The minigame, this requires the player to play a minigame to proceed to the next treatment, such as stitching a wound or performing a brain scan and finding the troubled areas. 
         /// </summary>
-        Minigame = 5,
+        Minigame = 7,
     }
 
 }

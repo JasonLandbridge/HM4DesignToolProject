@@ -60,7 +60,7 @@ namespace HM4DesignTool.Forms
 
             for (int i = 0; i < 20; i++)
             {
-                ColumnDefinition c1 = new ColumnDefinition { Width = new GridLength(200, GridUnitType.Pixel) };
+                ColumnDefinition c1 = new ColumnDefinition { Width = new GridLength(218, GridUnitType.Pixel) };
                 newGrid.ColumnDefinitions.Add(c1);
             }
             for (int i = 0; i < 1; i++)
@@ -85,6 +85,7 @@ namespace HM4DesignTool.Forms
 
             }
 
+            ;
             //object grid = FindItemsPanel(PatientSimulateGrid);
 
             //newGrid = (Grid)grid;
