@@ -68,6 +68,7 @@ namespace HM4DesignTool.Level
         /// </summary>
         private readonly DesignToolData designToolData = new DesignToolData();
 
+
         #endregion DesignToolData
 
         #region Treatment
@@ -151,14 +152,20 @@ namespace HM4DesignTool.Level
         {
             this.LevelName = levelName;
             this.PatientChanceList = Globals.GetSettings.GetPatientChanceList(this.CategoryKey);
-            //this.PatientList = new List<Patient>();
 
+
+            this.ParseDesignData();
+
+            this.canExecuteCommands = true;
+        }
+
+        public void LoadLevel()
+        {
             // Translate the levelScript into workable variables.
             this.ParseRawText();
 
             this.UpdateAvailableTreatmentList();
             this.UpdateLevelOutput();
-            this.canExecuteCommands = true;
             this.LevelFinishedLoading = true;
         }
 
@@ -204,10 +211,10 @@ namespace HM4DesignTool.Level
                     levelName += $" (*)";
                 }
 
-                if (this.IsEmpty)
-                {
-                    levelName += $" (e)";
-                }
+                //if (this.IsEmpty)
+                //{
+                //    levelName += $" (e)";
+                //}
 
                 if (this.GetLevelType != LevelTypeEnum.Unknown)
                 {
@@ -428,6 +435,8 @@ namespace HM4DesignTool.Level
                 this.UpdateLevelOutput();
             }
         }
+
+        public bool DesignToolDataLoaded { get; set; }
 
         #endregion DesignToolData
 
@@ -1183,28 +1192,15 @@ namespace HM4DesignTool.Level
 
         #region ParseData
 
+
+
+
         /// <summary>
         /// Read from the LevelScript and parse everything into workable variables.
         /// </summary>
         private void ParseRawText()
         {
             string rawText = this.GetCurrentLevelScript;
-            int addtionalTextIndex = 0;
-
-            // Parse DesignToolData embeded in file.
-            string designDataText = Data.GetDesignData(rawText);
-            if (designDataText != string.Empty)
-            {
-                int designStartIndex = rawText.IndexOf(designDataText, 0);
-                if (designStartIndex > 0)
-                {
-                    this.additionalText[addtionalTextIndex] = rawText.SelectString(0, designStartIndex);
-                    rawText = rawText.Replace(this.additionalText[addtionalTextIndex], string.Empty);
-                    addtionalTextIndex++;
-                }
-
-                this.ParseDesignData(rawText);
-            }
 
             // Parse possible GamePlayCharacters
             this.ParseGameplayCharacter(rawText);
@@ -1229,11 +1225,19 @@ namespace HM4DesignTool.Level
         }
 
 
-        private void ParseDesignData(string rawLevelText)
+        private void ParseDesignData()
         {
-            rawLevelText = Data.FilterRawText(rawLevelText);
 
-            this.designToolData.ParseDesignData(Data.GetDesignData(rawLevelText));
+            string rawText = this.GetCurrentLevelScript;
+
+            // Parse DesignToolData embeded in file.
+            rawText = Data.GetDesignData(rawText);
+
+            rawText = Data.FilterRawText(rawText);
+
+            this.designToolData.ParseDesignData(Data.GetDesignData(rawText));
+
+            this.DesignToolDataLoaded = true;
         }
 
         /// <summary>

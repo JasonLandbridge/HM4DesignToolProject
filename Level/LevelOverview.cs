@@ -330,7 +330,14 @@ namespace HM4DesignTool.Level
             {
                 if (value != this.currentLevelLoaded)
                 {
+                    // Load the level if not already done
+                    if (!value.LevelFinishedLoading)
+                    {
+                        value.LoadLevel();
+                    }
+
                     this.currentLevelLoaded = value;
+
                     this.OnPropertyChanged();
                     this.CurrentLevelUpdated();
                 }
@@ -826,15 +833,11 @@ namespace HM4DesignTool.Level
 
             if (File.Exists(levelPath))
             {
-                using (StreamReader streamReader = new StreamReader(levelPath, Encoding.UTF8))
-                {
-                    string readContents = streamReader.ReadToEnd();
-                    return readContents;
-                }
+               return File.ReadAllText(levelPath);
             }
             else
             {
-                Console.WriteLine("ERROR: Data.ReadLevelText, Could not find " + levelPath + "!");
+                Console.WriteLine("ERROR: Data.ReadLevelTextFromFile, Could not find " + levelPath + "!");
                 return null;
             }
         }
@@ -1193,8 +1196,7 @@ namespace HM4DesignTool.Level
 
             this.GetLevelLoaded.LevelLoaded();
 
-            this.UpdatePatientSimulator();
-
+            Globals.GetMainWindow.UpdatePatientSimulateGrid();
         }
 
         /// <summary>
@@ -1287,6 +1289,7 @@ namespace HM4DesignTool.Level
             }
 
             this.levelObjectData.Add(levelName, this.CreateLevel(levelName));
+
             return this.levelObjectData[levelName];
         }
 
@@ -1391,69 +1394,6 @@ namespace HM4DesignTool.Level
 
         #region PatientSimulator
 
-        /// <summary>
-        /// Update the patient simulator in the Front-end
-        /// </summary>
-        private void UpdatePatientSimulator()
-        {
-            // A DataTable is first created where an indentation is inserted to mimic a delay
-            DataTable treatmentDataTable = new DataTable();
-            treatmentDataTable.Columns.Add("PatientName");
-
-            DataGrid simulatorGrid = Globals.GetMainWindow.patientSimulatorGrid;
-
-            // SimulatorGrid.ItemsSource = new Binding("treatmentDataTable");    //GetLevelLoaded.PatientCollection;
-
-            // Create first column for the PatientName
-            DataGridTextColumn patientNameColumn =
-                new DataGridTextColumn
-                {
-                    Header = "Patient Name:",
-                    Binding = new Binding(treatmentDataTable.Columns[0].ToString())
-                };
-            simulatorGrid.Columns.Add(patientNameColumn);
-
-            // Create the columns
-            for (int i = 0; i < 40; i++)
-            {
-                // Add treatment column to the treatmentDataTable
-                treatmentDataTable.Columns.Add(i.ToString());
-
-                string columnName = (i * 5).ToString() + " Seconds";
-                DataGridComboBoxColumn treatmentColumn =
-                    new DataGridComboBoxColumn
-                    {
-                        Header = columnName,
-                        SelectedValueBinding = new Binding(treatmentDataTable.Columns[i + 1].ToString()),
-                        ItemsSource = this.GetLevelLoaded.AvailableTreatmentStringList,
-                        Width = 120
-                    };
-                simulatorGrid.Columns.Add(treatmentColumn);
-            }
-
-            for (int patientIndex = 0; patientIndex < this.GetLevelLoaded.PatientCollection.Count; patientIndex++)
-            {
-                Patient patient = this.GetLevelLoaded.PatientCollection[patientIndex];
-                DataRow patientDataRow = treatmentDataTable.NewRow();
-
-                patientDataRow["PatientName"] = patient.PatientName;
-
-                for (int i = 0; i < 15; i++)
-                {
-                    if (i < patient.TreatmentCollection.Count)
-                    {
-                        patientDataRow[patientIndex + i + 1] = patient.TreatmentCollection[i].TreatmentName;
-                    }
-                }
-
-                treatmentDataTable.Rows.Add(patientDataRow);
-            }
-
-            // Set a DataGrid control's DataContext to the DataView.
-            simulatorGrid.ItemsSource = treatmentDataTable.DefaultView;
-
-            // Globals.GetMainWindow.patientSimulatorGrid = SimulatorGrid;
-        }
 
         #endregion
 

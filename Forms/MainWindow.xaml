@@ -149,35 +149,6 @@
 			</Grid>
 		</DataTemplate>
 
-		<!-- PatientSimulateRowTreatmentTemplate -->
-		<DataTemplate x:Key="PatientSimulateRowTreatmentTemplate">
-
-			<Border BorderThickness="3" BorderBrush="{Binding TreatmentTypeColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=Transparent}" Margin="3,0">
-				<StackPanel Orientation="Horizontal" Margin="3">
-					<Label Visibility="{Binding Converter={StaticResource VisibilityOfBool}, Source={x:Static Data:Globals.GetLevelOverview}, Path=ShowStationsNextToTreatments, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,5,0"
-					       Width="60"
-					       Content="{Binding StationString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-					       Padding="5,5,5,1"
-					/>
-					<ComboBox Margin="5,0" Style="{DynamicResource TreatmentComboBoxStyle}" ItemsSource="{Binding DataContext.TreatmentOptions, ElementName=patientSimulateTreatmentRow, Mode=OneWay}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="125">
-						<ComboBox.Visibility>
-							<Binding Converter="{StaticResource VisibilityOfBool}" Mode="TwoWay" Path="IsVisible" UpdateSourceTrigger="PropertyChanged"/>
-						</ComboBox.Visibility>
-					</ComboBox>
-				</StackPanel>
-			</Border>
-		</DataTemplate>
-		<!--PatientSimulateRowControlTemplate-->
-		<DataTemplate x:Key="PatientSimulateRowControlTemplate">
-			<ItemsControl x:Name="patientSimulateTreatmentRow" ItemTemplate="{DynamicResource PatientSimulateRowTreatmentTemplate}" ItemsSource="{Binding TreatmentCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" >
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<WrapPanel />
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-			</ItemsControl>
-		</DataTemplate>
-
 		<!--PatientChancesRowTemplate-->
 		<DataTemplate x:Key="PatientChancesRowTemplate">
 			<Grid Margin="0,5">
@@ -200,6 +171,7 @@
 				<Label Content="{Binding PercentageString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="5" Margin="0" VerticalContentAlignment="Center" Width="100" HorizontalAlignment="Left"/>
 			</Grid>
 		</DataTemplate>
+
 	</Window.Resources>
 	<Grid VerticalAlignment="Stretch" Margin="0,0,0,0">
 		<Grid.RowDefinitions>
@@ -302,7 +274,7 @@
 					<RowDefinition/>
 				</Grid.RowDefinitions>
 				<!--Level Overview Tabs-->
-				<TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+				<TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 					<TabItem Header="General" Width="120">
 						<Grid Background="#FFF" IsEnabled="{Binding LevelOverviewActive}">
 							<Grid.ColumnDefinitions>
@@ -632,152 +604,89 @@
 
 						</Grid>
 					</TabItem>
-					<TabItem Visibility="Collapsed" Header="Simulator" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" IsEnabled="{Binding LevelOverviewActive}">
-						<Grid Background="#FFE5E5E5">
-							<Grid.RowDefinitions>
-								<RowDefinition/>
-								<RowDefinition Height="Auto"/>
-							</Grid.RowDefinitions>
-
-							<DataGrid x:Name="patientSimulatorGrid" Grid.Row="0"  FrozenColumnCount="1" SelectionUnit="Cell" CanUserDeleteRows="False" CanUserAddRows="False" AutoGenerateColumns="False" CanUserSortColumns="False"/>
-
-							<Slider Grid.Row="1" />
-						</Grid>
-					</TabItem>
 
 					<TabItem Header="Simulator" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="120" IsEnabled="{Binding LevelOverviewActive}">
 						<Grid Background="#FFE5E5E5">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="150"/>
+								<ColumnDefinition Width="200"/>
 								<ColumnDefinition/>
 							</Grid.ColumnDefinitions>
 
+							<Grid Grid.Column="0" Grid.Row="0" ShowGridLines="True" Height="30">
+								<Label Content="Patient Name:"></Label>
+							</Grid>
 
 
-							<ScrollViewer HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="0" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" >
+							<ScrollViewer x:Name="sv0" Grid.Column="1" Grid.Row="0" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+								<Grid x:Name="PatientSimulateHeaderGrid" ShowGridLines="True" Height="30"/>
+							</ScrollViewer>
+							<Separator Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Height="5"/>
 
-								<StackPanel >
-
-									<Grid x:Name="PatientSimulateHeaderGrid"  ShowGridLines="True"/>
-
-									<Separator Height="5"></Separator>
-									<ItemsControl x:Name="PatientSimulateGrid" ItemTemplate="{DynamicResource PatientSimulateRowControlTemplate}"  ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-										<ItemsControl.ItemsPanel>
-											<ItemsPanelTemplate>
-												<Grid ShowGridLines="False">
-													<Grid.RowDefinitions>
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-														<RowDefinition Height="50" />
-													</Grid.RowDefinitions>
-													<Grid.ColumnDefinitions>
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-														<ColumnDefinition Width="218" />
-													</Grid.ColumnDefinitions>
-												</Grid>
-											</ItemsPanelTemplate>
-										</ItemsControl.ItemsPanel>
-
-										<ItemsControl.ItemContainerStyle>
-											<Style>
-												<!-- https://stackoverflow.com/a/11000466 -->
-												<Setter Property="Grid.Column" Value="{Binding PatientIndex}" />
-												<Setter Property="Grid.Row" Value="{Binding PatientIndex}" />
-
-												<!-- Can either use a DataTrigger to determine these values, or store them on the object itself -->
-												<Setter Property="Grid.RowSpan" Value="1" />
-												<Setter Property="Grid.ColumnSpan" Value="{Binding TreatmentCount}" />
-
-											</Style>
-										</ItemsControl.ItemContainerStyle>
-									</ItemsControl>
-
-								</StackPanel>
-
-
-
+							<ScrollViewer x:Name="sv1" HorizontalAlignment="Stretch" Grid.Column="0" Grid.Row="2" VerticalAlignment="Stretch" ScrollChanged="ScrollChanged" VerticalScrollBarVisibility="Hidden">
+								<ItemsControl ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<TextBox MinWidth="100" Height="24" Margin="5,13" Text="{Binding PatientName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
 							</ScrollViewer>
 
+							<ScrollViewer x:Name="sv2" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Hidden" ScrollChanged="ScrollChanged"  Width="Auto">
+								<ItemsControl x:Name="PatientSimulateGrid"  ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,100,0">
+									<ItemsControl.ItemTemplate>
+										<!--PatientSimulateRowControlTemplate-->
+										<DataTemplate>
+											<ItemsControl x:Name="patientSimulateTreatmentRow" ItemsSource="{Binding TreatmentCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" >
+												<ItemsControl.ItemsPanel>
+													<ItemsPanelTemplate>
+														<WrapPanel />
+													</ItemsPanelTemplate>
+												</ItemsControl.ItemsPanel>
+												<ItemsControl.ItemTemplate>
+													<!-- PatientSimulateRowTreatmentTemplate -->
+													<DataTemplate>
+														<Border BorderThickness="3" BorderBrush="{Binding TreatmentTypeColorBrush, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, FallbackValue=Transparent}" Margin="3,0">
+															<StackPanel Orientation="Horizontal" Margin="3">
+																<Label Visibility="{Binding Converter={StaticResource VisibilityOfBool}, Source={x:Static Data:Globals.GetLevelOverview}, Path=ShowStationsNextToTreatments, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,5,0"
+																	       Width="60"
+																	       Content="{Binding StationString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+																	       Padding="5,5,5,1"
+																	/>
+																<ComboBox Margin="5,0" Style="{DynamicResource TreatmentComboBoxStyle}" ItemsSource="{Binding DataContext.TreatmentOptions, ElementName=patientSimulateTreatmentRow, Mode=OneWay}" SelectedValue="{Binding TreatmentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="125">
+																	<ComboBox.Visibility>
+																		<Binding Converter="{StaticResource VisibilityOfBool}" Mode="TwoWay" Path="IsVisible" UpdateSourceTrigger="PropertyChanged"/>
+																	</ComboBox.Visibility>
+																</ComboBox>
+															</StackPanel>
+														</Border>
+													</DataTemplate>
+												</ItemsControl.ItemTemplate>
+											</ItemsControl>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+									<ItemsControl.ItemContainerStyle>
+										<Style>
+											<!-- https://stackoverflow.com/a/11000466 -->
+											<Setter Property="Grid.Column" Value="{Binding PatientIndex}" />
+											<Setter Property="Grid.Row" Value="{Binding PatientIndex}" />
 
+											<!-- Can either use a DataTrigger to determine these values, or store them on the object itself -->
+											<Setter Property="Grid.RowSpan" Value="1" />
+											<Setter Property="Grid.ColumnSpan" Value="{Binding TreatmentCount}" />
+
+										</Style>
+									</ItemsControl.ItemContainerStyle>
+								</ItemsControl>
+							</ScrollViewer>
+
+							<ScrollBar x:Name="PatientSimulateHorizontalScrollbar"  Value="0" Minimum="0" Maximum="{Binding ElementName=sv0, Path=ScrollableWidth }" Grid.Column="1" Grid.Row="3" Orientation="Horizontal" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" ValueChanged="ScrollBar_ValueChanged" SmallChange="5" LargeChange="10" Loaded="PatientSimulateHorizontalScrollbar_Loaded"/>
 						</Grid>
 					</TabItem>
 				</TabControl>

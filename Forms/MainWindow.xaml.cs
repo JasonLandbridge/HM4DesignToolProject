@@ -18,6 +18,8 @@ namespace HM4DesignTool.Forms
     using System.Runtime.CompilerServices;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
+    using System.Windows.Markup;
     using System.Windows.Media;
 
     using HM4DesignTool.Data;
@@ -38,6 +40,7 @@ namespace HM4DesignTool.Forms
         {
             this.InitializeComponent();
             Test test = new Test();
+
             // Set Global reference to this Window
             Globals.GetMainWindow = this;
             this.DataContext = this;
@@ -45,104 +48,78 @@ namespace HM4DesignTool.Forms
             this.mainLayout.DataContext = Globals.GetLevelOverview;
             this.levelControls.DataContext = Globals.GetLevelOverview;
             this.OnPropertyChanged("PatientRowDataTemplate");
-            UpdatePatientSimulateGrid();
-
-
         }
-
 
         public void UpdatePatientSimulateGrid()
         {
 
             Grid newGrid = this.PatientSimulateHeaderGrid;
-            // newGrid.IsItemsHost = true;
 
 
-            for (int i = 0; i < 20; i++)
-            {
-                ColumnDefinition c1 = new ColumnDefinition { Width = new GridLength(218, GridUnitType.Pixel) };
-                newGrid.ColumnDefinitions.Add(c1);
-            }
-            for (int i = 0; i < 1; i++)
+            int rowCount = Globals.GetLevelOverview.GetLevelLoaded.PatientCollection.Count;
+            int columnCount = rowCount + Globals.GetLevelOverview.MaxTreatmentsVisible + 1;
+
+
+            if (newGrid.RowDefinitions.Count == 0)
             {
                 RowDefinition r1 = new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) };
                 newGrid.RowDefinitions.Add(r1);
             }
 
+            newGrid.ColumnDefinitions.Clear();
+            newGrid.Children.Clear();
 
-            for (int i = 0; i < 40; i++)
+            for (int i = 0; i < columnCount; i++)
             {
+                ColumnDefinition c1 = new ColumnDefinition { Width = new GridLength(218, GridUnitType.Pixel) };
+                newGrid.ColumnDefinitions.Add(c1);
+            }
 
-                string columnName = (i * 5).ToString() + " Seconds";
-                Label label = new Label { Content = columnName };
+            List<string> headerList = new List<string>();
+
+            for (int i = 0; i < columnCount; i++)
+            {
+                headerList.Add((i * 5).ToString() + " Seconds");
+            }
+
+            int loop = 0;
+            foreach (string headerName in headerList)
+            {
+                Label label = new Label { Content = headerName };
                 label.FontWeight = new FontWeight();
                 label.Style = this.FindResource("SimulateHeaderFont") as Style;
 
                 Grid.SetRow(label, 0);
-                Grid.SetColumn(label, i);
+                Grid.SetColumn(label, loop);
 
                 newGrid.Children.Add(label);
-
+                loop++;
             }
 
-            ;
-            //object grid = FindItemsPanel(PatientSimulateGrid);
-
-            //newGrid = (Grid)grid;
 
 
-            //for (int i = 0; i < 15; i++)
-            //{
-            //    RowDefinition r1 = new RowDefinition { Height = new GridLength(25, GridUnitType.Pixel) };
-
-            //    newGrid.RowDefinitions.Add(r1);
-            //}
-
-
-
-            ////this.PatientSimulateHeaderGrid = newGrid;
-        }
-
-        private object FindItemsPanel(Visual visual)
-
-        {
-
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(visual); i++)
-
+            string xaml = @"<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>";
+            xaml += "<Grid ShowGridLines='False'>";
+            xaml += "<Grid.ColumnDefinitions>";
+            for (int i = 0; i < 40; i++)
             {
-
-                Visual child = VisualTreeHelper.GetChild(visual, i) as Visual;
-
-                if (child != null)
-
-                {
-
-                    if (child is object && VisualTreeHelper.GetParent(child) is ItemsPresenter)
-
-                    {
-
-                        object temp = child;
-
-                        return (object)temp;
-
-                    }
-                    object panel = FindItemsPanel(child);
-
-                    if (panel != null)
-
-                    {
-
-                        object temp = panel;
-
-                        return (object)temp; // return the panel up the call stack
-
-                    }
-
-                }
-
+                xaml += @"<ColumnDefinition Width='218' />";
             }
 
-            return default(object);
+            xaml += "</Grid.ColumnDefinitions>";
+
+            xaml += "<Grid.RowDefinitions>";
+            for (int i = 0; i < rowCount; i++)
+            {
+                xaml += @"<RowDefinition Height='50'/>";
+            }
+
+            xaml += "</Grid.RowDefinitions>";
+            xaml += "</Grid></ItemsPanelTemplate>";
+
+
+            this.PatientSimulateGrid.ItemsPanel = XamlReader.Parse(xaml) as ItemsPanelTemplate; 
+            
 
         }
 
@@ -289,6 +266,7 @@ namespace HM4DesignTool.Forms
         {
             Globals.GetLevelOverview.GetLevelLoaded.SelectAllPatientChances((bool)this.selectAllPatientChancesCheckbox.IsChecked);
         }
+
         #endregion
 
         #endregion
@@ -327,6 +305,19 @@ namespace HM4DesignTool.Forms
 
         #endregion
 
+
+        private void ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (sender == this.sv1)
+            {
+                this.sv2.ScrollToVerticalOffset(e.VerticalOffset);
+            }
+            else
+            {
+                this.sv1.ScrollToVerticalOffset(e.VerticalOffset);
+            }
+        }
+
         #endregion
 
         #region INotifyPropertyChanged Members
@@ -342,10 +333,26 @@ namespace HM4DesignTool.Forms
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+
         #endregion INotifyPropertyChanged Members
 
 
+
+        private void ScrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            ScrollBar scrollBar = sender as ScrollBar;
+            this.sv0.ScrollToHorizontalOffset(scrollBar.Value);
+            this.sv2.ScrollToHorizontalOffset(scrollBar.Value);
+        }
+
+        private void PatientSimulateHorizontalScrollbar_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Used to make the scrollbar thumb thicker
+            if (this.PatientSimulateHorizontalScrollbar.Track?.Thumb != null)
+            {
+                this.PatientSimulateHorizontalScrollbar.Track.ViewportSize = double.NaN;
+                this.PatientSimulateHorizontalScrollbar.Track.Thumb.Width = 150;
+            }
+        }
     }
-
-
 }
