@@ -614,7 +614,7 @@
 								<RowDefinition Height="Auto"/>
 							</Grid.RowDefinitions>
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="200"/>
+								<ColumnDefinition Width="Auto"/>
 								<ColumnDefinition/>
 							</Grid.ColumnDefinitions>
 
@@ -632,7 +632,10 @@
 								<ItemsControl ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 									<ItemsControl.ItemTemplate>
 										<DataTemplate>
-											<TextBox MinWidth="100" Height="24" Margin="5,13" Text="{Binding PatientName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+											<StackPanel Orientation="Horizontal" >
+												<TextBox MinWidth="100" Height="24" Margin="5,13" Text="{Binding PatientName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+												<Button Content=" R " Margin="5,0" Width="30" Height="24" Command="{Binding RandomizeTreatmentsCommand}"/>
+											</StackPanel>
 										</DataTemplate>
 									</ItemsControl.ItemTemplate>
 								</ItemsControl>

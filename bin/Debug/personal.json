@@ -4,6 +4,6 @@
   "LevelListFirstCategoryOpen": true,
   "RoomFilterStoryCheck": false,
   "RoomFilterBonusCheck": true,
-  "RoomFilterUnknownCheck": false,
+  "RoomFilterUnknownCheck": true,
   "ShowStationNextToTreatment": true
 }

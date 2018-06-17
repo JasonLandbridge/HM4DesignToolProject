@@ -366,6 +366,21 @@
       "oxygenTreatment": 100,
       "provideIbuprofen": 100,
       "takeBlood": 45
+    },
+    "r6_b06_bonus_08": {
+      "applyColdPack": 10,
+      "applyDisinfectant": 100,
+      "applyEyeWash": 100,
+      "applyHotBalm": 10,
+      "applyHotPack": 10,
+      "applySplint": 10,
+      "applyTourniquet": 10,
+      "oxygenTreatment": 10,
+      "provideIbuprofen": 10,
+      "removeObject": 10,
+      "takeBlood": 100,
+      "xrayTreatment": 10,
+      "defibrilator": 20
     }
   }
 }
