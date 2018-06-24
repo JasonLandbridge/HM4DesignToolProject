@@ -12,6 +12,7 @@ namespace HM4DesignTool.Forms
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
     using System.Windows;
+    using System.Windows.Controls.Primitives;
 
     using HM4DesignTool.Data;
     using HM4DesignTool.Level;
@@ -162,5 +163,21 @@ namespace HM4DesignTool.Forms
         }
 
         #endregion
+
+        private void ScrollBar_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Used to make the scrollbar thumb thicker
+            if (this.ScrollBarVertical.Track?.Thumb != null)
+            {
+                this.ScrollBarVertical.Track.ViewportSize = double.NaN;
+                this.ScrollBarVertical.Track.Thumb.Height = 150;
+            }
+        }
+
+        private void ScrollBarVertical_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            ScrollBar scrollBar = sender as ScrollBar;
+            this.TreatmentScrollView.ScrollToVerticalOffset(scrollBar.Value);
+        }
     }
 }

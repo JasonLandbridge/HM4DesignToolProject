@@ -7,36 +7,15 @@
 		mc:Ignorable="d"
 		Title="Custom Treatment Weights" Height="600" Width="1000" WindowStartupLocation="CenterOwner">
 	<Window.Resources>
-		<!--CustomTreatmentWeightRow Template-->
-		<DataTemplate x:Key="CustomTreatmentWeightRow">
-			<Grid Margin="0,5">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto"/>
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="Auto"/>
-
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition/>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="18"/>
-
-				</Grid.ColumnDefinitions>
-				<TextBox  Grid.Column="0" TextWrapping="Wrap" Text="{Binding TreatmentName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,5,0,5" Width="180" MinWidth="100" IsReadOnlyCaretVisible="False" VerticalContentAlignment="Center" IsEnabled="True" IsReadOnly="True"/>
-				<Label  Grid.Column="1"  Content="{Binding TreatmentTypeString, Mode=OneTime}" Margin="0" Width="100" MinWidth="100" VerticalContentAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"/>
-				<Button Grid.Column="2" Content="R"  Margin="5" Width="30" MinWidth="20" Padding="5" Command="{Binding RandomizeWeightCommand}" CommandParameter="{Binding}"/>
-				<Label  Grid.Column="3"  Content="{Binding Weight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0" Width="100" MinWidth="100" VerticalContentAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"/>
-				<Label Grid.Column="4" Content="{Binding CustomizedWeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"  Margin="0" Width="100" MinWidth="100" VerticalContentAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"/>
-				<Slider Grid.Column="5" Margin="5" VerticalContentAlignment="Stretch" VerticalAlignment="Center" Value="{Binding CustomizedWeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Maximum="100" LargeChange="5" SmallChange="1" Cursor="Hand"/>
-				<Label Grid.Column="6" Content="{Binding WeightPercentageString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"  Margin="0" VerticalContentAlignment="Center" Width="100" MinWidth="100" HorizontalAlignment="Left"/>
-			</Grid>
-		</DataTemplate>
 	</Window.Resources>
 
 	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition/>
+			<ColumnDefinition Width="Auto" />
+		</Grid.ColumnDefinitions>
+
+
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition/>
@@ -44,34 +23,70 @@
 		</Grid.RowDefinitions>
 
 		<!-- CustomTreatmentWeight Overview Header -->
-		<Grid Margin="0,5" Grid.Row="0">
+		<Grid Margin="0,5" Grid.Row="0" Grid.Column="0" ShowGridLines="True">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="150"/>
+				<ColumnDefinition Width="100"/>
+				<ColumnDefinition Width="120"/>
 				<ColumnDefinition Width="Auto"/>
-				<ColumnDefinition Width="Auto"/>
-				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="100"/>
 				<ColumnDefinition Width="Auto"/>
 				<ColumnDefinition/>
-				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="114"/>
 				<ColumnDefinition Width="18"/>
 			</Grid.ColumnDefinitions>
-			<Label Content="Treatment Name" Grid.Column="0" Margin="5,0,0,0" Width="180" MinWidth="100" VerticalContentAlignment="Center" FontWeight="Bold"/>
-			<Label Content="Treatment Type" Grid.Column="1" Margin="5,0,0,0" Width="180" MinWidth="100" VerticalContentAlignment="Center" FontWeight="Bold"/>
+			<Label Content="Treatment Name" Grid.Column="0" Margin="5,0,0,0"  VerticalContentAlignment="Center" FontWeight="Bold"/>
+			<Label Content="Station" Grid.Column="1" Margin="5,0,0,0" VerticalContentAlignment="Center" FontWeight="Bold"/>
+			<Label Content="Treatment Type" Grid.Column="2" Margin="5,0,0,0" Width="180" MinWidth="100" VerticalContentAlignment="Center" FontWeight="Bold"/>
 
-			<Label Content=" " Grid.Column="2" Margin="10,5" Width="20" MinWidth="20"/>
-			<Label Content="Base Weight" Grid.Column="3" Margin="0" VerticalContentAlignment="Center" FontWeight="Bold" Width="100" MinWidth="100"/>
-			<Label Content="Custom Weight" Grid.Column="4" Margin="0" VerticalContentAlignment="Center" FontWeight="Bold" Width="100" MinWidth="100"/>
-			<Label Content="Chance" Grid.Column="6" Margin="0" VerticalContentAlignment="Center" Width="100" FontWeight="Bold" HorizontalAlignment="Left"/>
+			<Label Content=" " Grid.Column="3" Margin="10,5" Width="20" MinWidth="20"/>
+			<Label Content="Base Weight" Grid.Column="4" Margin="0" VerticalContentAlignment="Center" FontWeight="Bold" Width="100" MinWidth="100"/>
+			<Label Content="Custom Weight" Grid.Column="5" Margin="0" VerticalContentAlignment="Center" FontWeight="Bold" Width="100" MinWidth="100"/>
+			<Label Content="Chance" Grid.Column="7" Margin="0" VerticalContentAlignment="Center" Width="100" FontWeight="Bold" HorizontalAlignment="Left"/>
 		</Grid>
 
 		<!-- CustomTreatmentWeight Overview -->
-		<ScrollViewer HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" >
-			<ItemsControl x:Name="PatientOverviewLayout" ItemTemplate="{DynamicResource CustomTreatmentWeightRow}"  ItemsSource="{Binding Path=CustomizedAvailableTreatmentList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, diag:PresentationTraceSources.TraceLevel=High}" />
+		<ScrollViewer x:Name="TreatmentScrollView"  HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" >
+			<ItemsControl x:Name="PatientOverviewLayout"  ItemsSource="{Binding Path=CustomizedAvailableTreatmentList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, diag:PresentationTraceSources.TraceLevel=High}">
+				<ItemsControl.ItemTemplate>
+					<!--CustomTreatmentWeightRow Template-->
+					<DataTemplate>
+						<Grid Margin="0,5" ShowGridLines="True">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="150"/>
+								<ColumnDefinition Width="100"/>
+								<ColumnDefinition Width="120"/>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="100"/>
+
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition/>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="18"/>
+
+							</Grid.ColumnDefinitions>
+							<TextBox  Grid.Column="0" TextWrapping="Wrap" Text="{Binding TreatmentName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="5,5,0,5" Width="180" MinWidth="100" IsReadOnlyCaretVisible="False" VerticalContentAlignment="Center" IsEnabled="True" IsReadOnly="True"/>
+							<Label  Grid.Column="1"  Content="{Binding StationName, Mode=OneTime}" Margin="0" Width="100" MinWidth="100" VerticalContentAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Label  Grid.Column="2"  Content="{Binding TreatmentTypeString, Mode=OneTime}" Margin="0" Width="120" MinWidth="100" VerticalContentAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Button Grid.Column="3" Content="R"  Margin="5" Width="30" MinWidth="20" Padding="5" Command="{Binding RandomizeWeightCommand}" CommandParameter="{Binding}"/>
+							<Label  Grid.Column="4"  Content="{Binding Weight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0" Width="100" MinWidth="100" VerticalContentAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Label Grid.Column="5" Content="{Binding CustomizedWeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"  Margin="0" Width="100" MinWidth="100" VerticalContentAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center"/>
+							<Slider Grid.Column="6" Margin="5" VerticalContentAlignment="Stretch" VerticalAlignment="Center" Value="{Binding CustomizedWeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Maximum="100" LargeChange="5" SmallChange="1" Cursor="Hand"/>
+							<Label Grid.Column="7" Content="{Binding WeightPercentageString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"  Margin="0" VerticalContentAlignment="Center" Width="100" MinWidth="100" HorizontalAlignment="Left"/>
+						</Grid>
+					</DataTemplate>
+
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
 		</ScrollViewer>
 
-		 <!--<ContentControl Grid.Row="1" ContentTemplate="{StaticResource CustomTreatmentWeightRow}"></ContentControl>--> 
+		<ScrollBar x:Name="ScrollBarVertical" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Loaded="ScrollBar_Loaded" ValueChanged="ScrollBarVertical_ValueChanged"/>
 
 		<Grid Grid.Row="2" Margin="0,5">
 			<Grid.ColumnDefinitions>
@@ -79,7 +94,7 @@
 				<ColumnDefinition Width="Auto"/>
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
-			
+
 			<Button x:Name="ButtonSave" Grid.Column="1" Content="Save" IsDefault="True" Margin="5,0" Width="50" Padding="5" Click="ButtonSaveClick"  />
 			<Button x:Name="ButtonCancel" Grid.Column="2" Content="Cancel" IsDefault="False" Margin="5,0" Width="50" Padding="5" Click="ButtonCancelClick" />
 		</Grid>

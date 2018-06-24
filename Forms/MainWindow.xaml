@@ -193,7 +193,7 @@
 				<MenuItem Header="_View">
 					<MenuItem x:Name="MenuItemShowStationOnTreatment"  Header="Show Stations next to Treatments" HorizontalAlignment="Left" IsCheckable="True" IsChecked="{Binding Source={x:Static Data:Globals.GetLevelOverview}, Path=ShowStationsNextToTreatments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 				</MenuItem>
-				<MenuItem Header="_Help" Click="MenuItemOpenHelp"/>
+				<MenuItem Header="_Help" Click="MenuItemOpenHelp" Visibility="Collapsed"/>
 
 			</Menu>
 			<StackPanel/>
@@ -628,7 +628,7 @@
 							</ScrollViewer>
 							<Separator Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Height="5"/>
 
-							<ScrollViewer x:Name="sv1" HorizontalAlignment="Stretch" Grid.Column="0" Grid.Row="2" VerticalAlignment="Stretch" ScrollChanged="ScrollChanged" VerticalScrollBarVisibility="Hidden">
+							<ScrollViewer x:Name="sv1" HorizontalAlignment="Stretch" Grid.Column="0" Grid.Row="2" VerticalAlignment="Stretch" ScrollChanged="ScrollChanged" VerticalScrollBarVisibility="Hidden" RequestBringIntoView="dummy_RequestBringIntoView">
 								<ItemsControl ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 									<ItemsControl.ItemTemplate>
 										<DataTemplate>
@@ -641,7 +641,7 @@
 								</ItemsControl>
 							</ScrollViewer>
 
-							<ScrollViewer x:Name="sv2" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Hidden" ScrollChanged="ScrollChanged"  Width="Auto">
+							<ScrollViewer x:Name="sv2" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Hidden" ScrollChanged="ScrollChanged"  Width="Auto" RequestBringIntoView="dummy_RequestBringIntoView">
 								<ItemsControl x:Name="PatientSimulateGrid"  ItemsSource="{Binding GetLevelLoaded.PatientCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,100,0">
 									<ItemsControl.ItemTemplate>
 										<!--PatientSimulateRowControlTemplate-->
@@ -689,7 +689,7 @@
 								</ItemsControl>
 							</ScrollViewer>
 
-							<ScrollBar x:Name="PatientSimulateHorizontalScrollbar"  Value="0" Minimum="0" Maximum="{Binding ElementName=sv0, Path=ScrollableWidth }" Grid.Column="1" Grid.Row="3" Orientation="Horizontal" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" ValueChanged="ScrollBar_ValueChanged" SmallChange="5" LargeChange="10" Loaded="PatientSimulateHorizontalScrollbar_Loaded"/>
+							<ScrollBar x:Name="PatientSimulateHorizontalScrollbar"  Value="0" Minimum="0" Maximum="{Binding ElementName=sv0, Path=ScrollableWidth }" Grid.Column="1" Grid.Row="3" Orientation="Horizontal" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ValueChanged="ScrollBar_ValueChanged" SmallChange="50" LargeChange="100" Loaded="PatientSimulateHorizontalScrollbar_Loaded"/>
 						</Grid>
 					</TabItem>
 				</TabControl>

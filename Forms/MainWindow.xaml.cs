@@ -118,8 +118,8 @@ namespace HM4DesignTool.Forms
             xaml += "</Grid></ItemsPanelTemplate>";
 
 
-            this.PatientSimulateGrid.ItemsPanel = XamlReader.Parse(xaml) as ItemsPanelTemplate; 
-            
+            this.PatientSimulateGrid.ItemsPanel = XamlReader.Parse(xaml) as ItemsPanelTemplate;
+
 
         }
 
@@ -353,6 +353,11 @@ namespace HM4DesignTool.Forms
                 this.PatientSimulateHorizontalScrollbar.Track.ViewportSize = double.NaN;
                 this.PatientSimulateHorizontalScrollbar.Track.Thumb.Width = 150;
             }
+        }
+
+        private void dummy_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }
