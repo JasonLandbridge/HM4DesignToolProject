@@ -321,8 +321,12 @@ namespace HM4DesignTool.Level
             get => Enum.GetName(typeof(TreatmentTypeEnum), this.TreatmentType);
             set
             {
-                this.TreatmentType = (TreatmentTypeEnum)Enum.Parse(typeof(TreatmentTypeEnum), value);
-                this.OnPropertyChanged();
+                TreatmentTypeEnum unused = TreatmentTypeEnum.Unknown;
+                if (Enum.TryParse(value, true, out unused))
+                {
+                    this.TreatmentType = (TreatmentTypeEnum)Enum.Parse(typeof(TreatmentTypeEnum), value);
+                    this.OnPropertyChanged();
+                }
             }
         }
         /// <summary>

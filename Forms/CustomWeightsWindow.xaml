@@ -23,7 +23,7 @@
 		</Grid.RowDefinitions>
 
 		<!-- CustomTreatmentWeight Overview Header -->
-		<Grid Margin="0,5" Grid.Row="0" Grid.Column="0" ShowGridLines="True">
+		<Grid Margin="0,5" Grid.Row="0" Grid.Column="0">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
 			</Grid.RowDefinitions>
@@ -54,7 +54,7 @@
 				<ItemsControl.ItemTemplate>
 					<!--CustomTreatmentWeightRow Template-->
 					<DataTemplate>
-						<Grid Margin="0,5" ShowGridLines="True">
+						<Grid Margin="0,5">
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto"/>
 							</Grid.RowDefinitions>
